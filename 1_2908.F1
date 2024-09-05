@@ -1,0 +1,34 @@
+Definir Cursor Cur_E085Cli;
+Definir numero gCodEmp;
+Definir numero gCodCli;
+Definir numero gCtaRed;
+
+gCodEmp = E140Ipv.CodEmp;
+gCodCli = E140Nfv.CodCli;
+gCtaRed = 0;
+
+Cur_E085Cli.Sql "Select CodCli from E085Cli where CodCli=:gCodCli";
+
+Cur_E085Cli.AbrirCursor();
+Se (Cur_E085Cli.Achou)
+   Inicio
+     gCodCli = Cur_E085Cli.CodCli;
+   Fim;
+Cur_E085Cli.FecharCursor();
+
+Se (gCodCli = 177)
+    gCtaRed = 226;
+
+Senao
+Se (gCodCli = 382)
+    gCtaRed = 227;
+
+Senao
+Se (gCodCli = 3007)
+    gCtaRed = 3317;
+
+Senao
+    gCtaRed = E140Ipv.CtaRed;
+
+VCtaDeb1 = 0;
+VCtaDeb1 = gCtaRed;

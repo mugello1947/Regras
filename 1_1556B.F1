@@ -1,0 +1,110 @@
+Definir Cursor Cur_E075PRO;
+Definir Cursor Cur_E012FAM;
+Definir Cursor Cur_E440IPC;
+Definir Cursor Cur_E440RAT;
+Definir Numero VCtaDeb1;
+Definir Numero VCodEmp;
+Definir Numero VCodFil;
+Definir Numero VNumNfc;
+Definir Numero VSeqIpc;
+Definir Numero VCtaDeb;
+Definir Alfa   VCodSnf;
+Definir Alfa   VCodFam;
+Definir Alfa   VCodPro;
+Definir Alfa   VCodDer;
+
+Definir Alfa   SCodSnf;
+Definir Alfa   SCodFam;
+Definir Alfa   SCodPro;
+Definir Alfa   SCodDer;
+
+
+VCodEmp = E440IPC.CodEmp;
+VCodFil = E440IPC.CodFil;
+VNumNfc = E440IPC.NumNfc;
+VCodSnf = E440IPC.CodSnf;
+VSeqIpc = E440IPC.SeqIpc;
+VCodFam = E440IPC.CodFam;
+VCodPro = E440IPC.CodPro;
+VCodDer = E440IPC.CodDer;
+VCtaDeb = 0;
+VCtaRcr = 0;
+
+SCodEmp = E440RAT.CodEmp;
+SCodFil = E440RAT.CodFil;
+SNumNfc = E440RAT.NumNfc;
+SCodSnf = E440RAT.CodSnf;
+SSeqIpc = E440RAT.SeqIpc;
+SCtaDeb = 0;
+SCtaRcr = 0;
+
+EstaNulo(VCodPro,VRet);
+
+Se (VCtaDeb = 0)
+      Inicio
+        Cur_E075PRO.Sql "Select CtaRed, CtaRcr  \
+                           From E075PRO \
+                          Where CodEmp = :VCodEmp \
+                            And CodPro = :VCodPro";
+        Cur_E075PRO.AbrirCursor();
+        Se (Cur_E075PRO.Achou)
+          Inicio
+            VCtaDeb = Cur_E075PRO.CtaRed;
+            VCtaRcr = Cur_E075PRO.CtaRcr;
+          Fim;
+        Cur_E075PRO.FecharCursor();
+        
+        Se (VCtaDeb = 0)
+          VCtaDeb = VCtaRcr;
+      Fim;
+
+Se (VRet = 0)
+  Inicio
+    Cur_E012FAM.Sql "Select CtaRed  \
+                       From E012FAM \
+                      Where CodEmp = :VCodEmp \
+                        And CodFam = :VCodFam";
+    Cur_E012FAM.AbrirCursor();
+    Se (Cur_E012FAM.Achou)
+       Inicio
+         VCtaDeb = Cur_E012FAM.CtaRed;
+       Fim;
+    Cur_E012FAM.FecharCursor();
+  
+     Se (VCtaDeb = 0)
+       Inicio
+         Cur_E440IPC.Sql "Select CtaRed  \
+                            From E440IPC \
+                           Where CodEmp = :VCodEmp \
+                             And CodFil = :VCodFil \
+                             And NumNfc = :VNumNfc \
+                             And CodSnf = :VCodSnf \
+                             And SeqIpc = :VSeqIpc";
+         Cur_E440IPC.AbrirCursor();
+         Se (Cur_E440IPC.Achou)
+           Inicio
+             VCtaDeb = Cur_E440IPC.CtaRed;
+           Fim;
+         Cur_E440IPC.FecharCursor();
+       Fim;
+  Fim;
+
+Se (VCtaDeb = 0)    
+       Inicio
+         Cur_E440rat.Sql "Select CtaRed  \
+                            From E440rat \
+                           Where CodEmp = :SCodEmp \
+                             And CodFil = :SCodFil \
+                             And NumNfc = :SNumNfc \
+                             And CodSnf = :SCodSnf \
+                             And SeqIpc = :SSeqIpc";
+         Cur_E440rat.AbrirCursor();
+         Se (Cur_E440rat.Achou)
+           Inicio
+             VCtaDeb = Cur_E440rat.CtaRed;
+           Fim;
+         Cur_E440rat.FecharCursor();
+       Fim;
+
+VCtaDeb1 = VCtaDeb;
+x=1;

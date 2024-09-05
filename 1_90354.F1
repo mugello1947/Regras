@@ -1,0 +1,17 @@
+Definir Alfa VaCodTpt;
+VaCodTpt = E301MCR.CodTpt;
+
+
+@ Cheques - conta 1071 @
+
+Se (VaCodTpt = "03")
+ VCtaCre1 = 1071;
+
+Se (VaCodTpt = "04")
+ VCtaCre1 = 1071;
+
+Se (VaCodTpt = "04A")
+ VCtaCre1 = 1071;
+
+Se (VaCodTpt = "01")
+ VCtaCre1 = 71;

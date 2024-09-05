@@ -1,0 +1,14 @@
+/*** Se a Origem for "OU" CONTABILIZA ****/
+
+Definir Alfa vOriMcc;
+Definir Alfa vTipMcc;
+vOriMcc = E600Mcc.OriMcc;
+vTipMcc = E600Mcc.TipMcc;
+
+Se (vOriMcc = "CP")
+   vVlrBas1 = 0;
+
+Se (vTipMcc <> "M")
+   vVlrBas1 = 0;
+
+x=1;

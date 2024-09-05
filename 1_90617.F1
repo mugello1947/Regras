@@ -1,0 +1,10 @@
+/*** Se a Origem for "OU" CONTABILIZA ****/
+/****
+Definir Numero vDatMov;
+vDatMov = E600Mcc.DatMov;
+
+Se (E600MCC.DatMov < 31/05/2012)
+ vVlrBas2 = 0;
+
+x=0;
+********/

@@ -1,0 +1,24 @@
+Definir Cursor Cur_E002HTT;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodFor;
+
+gCtaDeb = 0;
+
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+      gCtaDeb = Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaDeb = 0)
+    gCtaDeb = 270;
+
+VCtaDeb1 = gCtaDeb; 

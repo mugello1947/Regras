@@ -1,0 +1,27 @@
+Se (E501Mcp.NumCco = " ")
+   vVlrBas3 = 0;
+
+Se (gCodFor = 1076)
+   VVlrBas3 = 0;
+  
+Se (gCodFor = 1077)
+   VVlrBas3 = 0;
+
+Se (gCodFor = 753)
+   VVlrBas3 = 0;
+
+
+
+Se (E501Mcp.CodFor = 1071){
+   vCtaDeb3 = 84;
+   VctaCre3 = 1235;
+   VVlrBas3 = E501Mcp.VlrCor;
+}
+   
+
+
+
+
+
+
+    

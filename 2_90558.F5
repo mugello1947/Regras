@@ -1,0 +1,133 @@
+/* Gustavo   adto baixar*/
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VCplBas1;
+Definir Alfa VaTptRlc;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.TptRlc;
+gCodCrp = E501TCP.CodCrp;
+VaTptRlc = E501MCP.TptRlc;
+
+gCtaRed = 0;
+
+Cur_E095Hfo.Sql "Select CtaRcr from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt"; 
+
+Cur_E023Hrp.Sql "Select CtaRcr from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRcr ;
+Cur_E095Hfo.FecharCursor();
+
+Se ((gCtaRed = 0) e (gCodCrp <> "24"))
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRcr ;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRcr;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+
+VCtaCre5 = gCtaRed;
+
+/************* Regra para trazer a CtaDeb 325 quando for. igual 1068 ******/
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+
+Se (gCodTpt = "30")
+   VCtaCre5 = 29;
+
+Se (gCodTpt = "34")
+    vVlrBas5 = 0;
+
+Se (gCodTpt = "83")
+    vVlrBas5 = 0;
+
+Se (gCodFor = 1068)
+   vCtaCre5 = 325;
+
+/************* Regra para Bloquear Titulos "01" e "150110" CodTpt = 30  ******/
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+gCtaCre5 = 0;
+
+Se ((gCodFor = 765) e (gCodTpt = "30") e (gNumTit="01"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1071) e (gCodTpt = "43") e (gNumTit="201017"))
+    vCtaCre5 = 814;
+
+Se ((gCodFor = 765) e (gNumTit="150110") e (gCodTpt = "30"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 399) e (gNumTit="22222") e (gCodTpt = "30"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1566) e (gNumTit="4848") e (gCodTpt = "14"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1566) e (gNumTit="FGTSDE") e (gCodTpt = "16"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1143) e (gNumTit="2123") e (gCodTpt = "21"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1076) e (gNumTit="2100") e (gCodTpt = "83"))
+    vVlrBas5 = 0;
+
+Se ((gCodFor = 1076) e (gNumTit="2101") e (gCodTpt = "83"))
+    vVlrBas5 = 0;
+
+Se (gCodTpt = "34")
+    vVlrBas5 = 0;
+
+Se (gCodTpt = "83")
+    vVlrBas5 = 0;
+
+Se (gCodTpt = "21")
+    vVlrBas5 = 0;
+
+Se (gCodTpt = "12") @ Ferias @
+  VVlrBas5 = 0;
+
+Se (gCodTpt <> "66") @ Adiantamento de Viagens @
+  VVlrBas5 = 0;
+
+
+Definir alfa gCodTpt;
+gCodtpt = E501Mcp.CodTpt;
+
+Se (gCodTpt = "31")
+  VVlrBas5 = 0;
+
+
+
+x=1;

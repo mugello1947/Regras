@@ -1,0 +1,21 @@
+Definir Cursor Cur_E023HRP;
+Definir Alfa gCodCrp;
+Definir numero gCodEmp;
+
+gCtaDeb = 0;
+
+gCodEmp = E501Mcp.CodEmp;
+gCodFil = E501Mcp.CodFil;
+gCodCrp = E501Tcp.CodCrp;
+
+Cur_E023Hrp.Sql "Select CtaFcr from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E023Hrp.AbrirCursor();
+  Se (Cur_E023Hrp.Achou)
+      gCtaDeb = Cur_E023Hrp.CtaFcr;
+Cur_E023Hrp.FecharCursor();
+ 
+Se (gCtaDeb = 0)
+    gCtaDeb = 5328;
+
+VCtaDeb2 = gCtaDeb; 

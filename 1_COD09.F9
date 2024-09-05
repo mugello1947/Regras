@@ -1,0 +1,163 @@
+/* REGRA_PARCIAL */
+Definir alfa   aCodCcu;	
+Definir alfa   aCodMod;
+Definir alfa   aCodSer;	
+Definir alfa   aCodSnf;	
+Definir alfa   aCodTns;	
+Definir alfa   aNomVar;	
+Definir alfa   aQtdReg;	
+Definir alfa   aRetSql;	
+Definir alfa   aVarAux;
+Definir Alfa   TClaSql;
+Definir Alfa   CCurNfe;
+Definir Alfa   CCurMvp;
+Definir Alfa   CCurCcu;	
+Definir Alfa CBusCtaEst;
+Definir Alfa   VaClaCta;
+
+nCodEmp =E440RAT.CodEmp;
+nCodFil =E440RAT.CodFil;
+nNumNfc =E440RAT.NumNfc;
+nSeqRat =E440RAT.SeqRat;
+nCodFor =E440RAT.CodFor;
+aCodSnf =E440RAT.CodSnf;
+aCodCcu =E440RAT.CodCcu;
+aCodTns =E440RAT.TnsSer;
+nCtaRed =E440RAT.CtaRed; 
+nUsuLog =CodUsu;
+nVlrLct =0;
+VAchou = 0;
+VAchouEstoque = 0;
+nVlrBas  = 0;
+
+@Seguro: 735-DC; 637-CPP e 831-DA@
+
+
+@ Busca Conta Contabil para saber se é de estoque@
+TClaSql = "Select E045PLA.ClaCta As VaClaCta, \
+                  E045PLA.AplCta As VaAplCta \  
+             From E045PLA \
+            Where E045PLA.CodEmp = :nCodEmp \
+              And E045PLA.CtaRed = :nCtaRed";
+SQL_Criar(CBusCtaEst);
+SQL_DefinirComando(CBusCtaEst, TClaSql);
+SQL_DefinirInteiro(CBusCtaEst,"nCodEmp",nCodEmp);
+SQL_DefinirInteiro(CBusCtaEst,"nCtaRed",nCtaRed);     
+SQL_AbrirCursor(CBusCtaEst);
+Se (SQL_EOF(CBusCtaEst) = 0)
+ {
+   SQL_RetornarAlfa(CBusCtaEst,"VaClaCta",VaClaCta);
+   @IntParaAlfa(VnClaCta, VaClaCta);@
+   CopiarAlfa(VaClaCta,1,3);
+   Se (VaClaCta = "117")
+     VAchouEstoque = 1; @ É Conta Contabil de Estoque @ 
+                                       
+ }
+SQL_Destruir(CBusCtaEst);
+
+VnVlrSeg = E440NFC.VlrSeg;
+
+/* Buscar Impostos */
+TClaSql = "Select E440ISC.VecIcm VnVecIcm,  \ 
+                  E440ISC.VlrDfa VnVlrDfa,  \ 
+                  E440ISC.VecIpi VnVecIpi,  \
+                  E440ISC.VlrPis VnVlrPis,  \
+                  E440ISC.VlrCor VnVlrCor,  \
+                  E440ISC.VlrLiq VnVlrLiq   \
+             From E440ISC \
+            Where E440ISC.CodEmp = :nCodEmp \
+              And E440ISC.CodFil = :nCodFil \
+              And E440ISC.CodFor = :nCodFor \
+              And E440ISC.CodSnf = :aCodSnf \
+              And E440ISC.NumNfc = :nNumNfc";
+    SQL_Criar(CCurNfe);
+    SQL_DefinirComando(CCurNfe, TClaSql);
+    SQL_DefinirInteiro(CCurNfe,"nCodEmp",nCodEmp);
+    SQL_DefinirInteiro(CCurNfe,"nCodFil",nCodFil);
+    SQL_DefinirInteiro(CCurNfe,"nCodFor",nCodFor);
+    SQL_DefinirAlfa(CCurNfe,"aCodSnf",aCodSnf);
+    SQL_DefinirInteiro(CCurNfe,"nNumNfc",nNumNfc);   
+    SQL_AbrirCursor(CCurNfe);
+    Se (SQL_EOF(CCurNfe) = 0)
+      {
+        SQL_RetornarFlutuante(CCurNfe,"VnVecIcm",VnVecIcm);
+        SQL_RetornarFlutuante(CCurNfe,"VnVlrDfa",VnVlrDfa);
+        SQL_RetornarFlutuante(CCurNfe,"VnVecIpi",VnVecIpi);
+        SQL_RetornarFlutuante(CCurNfe,"VnVlrPis",VnVlrPis);
+        SQL_RetornarFlutuante(CCurNfe,"VnVlrCor",VnVlrCor);
+        SQL_RetornarFlutuante(CCurNfe,"VnVlrLiq",VnVlrLiq);
+
+        Se (VnVlrLiq <> 0)
+           VnPerSeg = ((VnVlrSeg *100)/ VnVlrLiq)/100; 
+
+        VnVlrImp = VnVecIcm + VnVecIpi + VnVlrPis + VnVlrCor;
+        VnVlrImp = VnVlrImp * VnPerSeg;
+
+        Se (VnVecIcm <> 0)
+          nVlrBas = VnVlrSeg - VnVlrImp;
+        senao
+          nVlrBas = VnVlrSeg - VnVlrImp + (VnVlrDfa * VnPerSeg);
+
+        ArredondarValor(nVlrBas,2);
+        }
+    SQL_Destruir(CCurNfe);
+
+SE (VVlrBas9 <> 0)
+   VVlrBas9 = ((nVlrBas * E440RAT.PerCta)/100) * (E440RAT.PerRat/100);
+
+TClaSql = "Select E044CCU.TipCcu VnTipCcu \  
+             From E044CCU \
+            Where E044CCU.CodEmp = :nCodEmp \
+              And E044CCU.CodCcu = :aCodCcu";
+SQL_Criar(CCurCcu);
+SQL_DefinirComando(CCurCcu, TClaSql);
+SQL_DefinirInteiro(CCurCcu,"nCodEmp",nCodEmp);
+SQL_DefinirAlfa(CCurCcu,"aCodCcu",aCodCcu);  
+SQL_AbrirCursor(CCurCcu);
+Se (SQL_EOF(CCurCcu) = 0)
+  {
+   SQL_RetornarInteiro(CCurCcu,"VnTipCcu",VnTipCcu);
+    Se (VnTipCcu = 1) @ Indiretos @
+        VCtaDeb9 = 637;
+    Se (VnTipCcu = 2) @ Diretos @
+       VCtaDeb9 = 637;
+    Se (VnTipCcu = 3) @ Administrativo @
+       VCtaDeb9 = 831;
+    Se (VnTipCcu = 4) @ Comercial @
+       VCtaDeb9 = 735;
+    Se (VnTipCcu = 5) @ Financeiro @
+       VCtaDeb9 = 831;
+  }
+SQL_Destruir(CCurCcu);
+
+
+/* Busca o tipo de centro de custo 
+   Não movimentou estoque */
+Se (VAchouEstoque = 0)
+inicio
+   TClaSql = "Select E044CCU.TipCcu VnTipCcu \  
+                From E044CCU \
+               Where E044CCU.CodEmp = :nCodEmp \
+                 And E044CCU.CodCcu = :aCodCcu";
+   SQL_Criar(CCurCcu);
+   SQL_DefinirComando(CCurCcu, TClaSql);
+   SQL_DefinirInteiro(CCurCcu,"nCodEmp",nCodEmp);
+   SQL_DefinirAlfa(CCurCcu,"aCodCcu",aCodCcu);  
+   SQL_AbrirCursor(CCurCcu);
+   Se (SQL_EOF(CCurCcu) = 0)
+     {
+       SQL_RetornarInteiro(CCurCcu,"VnTipCcu",VnTipCcu);
+       Se (VCtaCre9 <> 849)
+          VCtaCre9 = 755;
+       Se (VnTipCcu = 1) @ Indiretos @
+          VCtaCre9 = 648;
+       Se (VnTipCcu = 2) @ Diretos @
+          VCtaCre9 = 648;
+     }
+   SQL_Destruir(CCurCcu);
+Fim;
+
+
+
+Se (VAchouEstoque = 1)
+  VVlrBas9 =0;

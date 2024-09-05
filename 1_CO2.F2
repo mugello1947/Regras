@@ -1,0 +1,8 @@
+Definir Numero vDatBas2;
+Definir Numero VVlrBas2;
+UltimoDia(vDatBas2); 
+
+
+Se (E661OAS.ALIIMP <> 7.60) {
+    VVlrBas2 = 0;
+}

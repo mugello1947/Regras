@@ -1,0 +1,83 @@
+Definir Alfa VaCodBem;
+Definir Numero VnDatMov;
+Definir Data VdDatMov;
+Definir Alfa VaDatMov;
+Definir Alfa VaCodTns;
+Definir Alfa VaTipAcr;
+Definir numero VnCodEmp;
+Definir numero VnVlrSoci; @ Valor Total do Societario @
+Definir Alfa BusSoci; @ Busca a depreciação Societária @
+Definir Alfa BusBem;
+Definir Alfa xSqlAux;
+
+VaCodBem = E670Mov.CodBem;
+VnDatMov = E670Mov.DatMov;
+VnCodEmp = E670MOV.CodEmp;
+VnCodEsp = E670Mov.CodEsp;
+VdDatMov = vDatBas3;
+VnVlrNor = 0;
+
+
+@ Busca Custo Atribuidos @
+
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+fim; 
+SQL_Destruir(BusBem); 
+
+/*
+Se ((VnCodEsp = 35) ou (VnCodEsp = 36))
+   VaCodTns = "90817"; @ Transação de Amortização @
+senao
+   VaCodTns = "90815"; @ Transação de Depreciação Normal @
+
+xSqlAux = "Select * from E670Mov where CodEmp =:VnCodEmp and CodBem =:VaCodBem and DatMov =:VdDatMov and CodTns =:VaCodTns";
+
+SQL_Criar(BusSoci); 
+SQL_DefinirComando(BusSoci,xSqlAux);
+SQL_DefinirInteiro(BusSoci,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusSoci,"VaCodBem",VaCodBem);
+SQL_DefinirAlfa(BusSoci,"VaCodTns",VaCodTns);
+SQL_DefinirData(BusSoci,"VdDatMov",VdDatMov);
+SQL_AbrirCursor(BusSoci); 
+Se (SQL_EOF(BusSoci) = 0)
+inicio
+  SQL_RetornarFlutuante(BusSoci,"VlrMvt",VnVlrNor);
+fim; 
+SQL_Destruir(BusSoci); 
+
+VVlrBas3 = VnVlrNor - VVlrBas3; @ Buca o valor da Depreciação Normal - Depreciação Paralela @
+
+*/
+
+
+@ Busca Custo Atribuidos @
+Se (VaTipAcr = "J") @ Custo Atribuido @
+inicio
+     VctaCre3 = 5005;
+     VctaDeb3 = 5744;
+     VCodHpd3 = 126;
+Fim;
+
+VVlrBas3 = VVlrBas3 * 0.09; @ CLSS de 9%@
+ArredondarValor(VVlrBas3,2);
+
+
+@ Adoção Inicial negativa @
+Se (VvlrBas3 < 0)
+inicio
+   VvlrBas3=(VVlrBas3 * -1);
+   Vctacre=vctacre3;
+   VctaCre3=VctaDeb3;
+   VctaDeb3=vctacre;
+Fim;
+
+x=0;

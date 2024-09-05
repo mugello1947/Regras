@@ -1,0 +1,9 @@
+Se (E440IPC.TnsPro = "1352I")
+    vCtaDeb7 =10081;
+
+Se (E440IPC.TnsPro = "2352I")
+    vCtaDeb7 =10081;
+
+
+Se (E440IPC.VecIcm = 0)
+    vVlrBas7 =0;

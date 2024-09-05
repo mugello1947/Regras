@@ -1,0 +1,187 @@
+Definir Cursor Cur_E440Isc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa   gCodSnf;
+Definir Numero gSeqIsc;
+
+@Sequencia 2@
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIsc = E440Rat.SeqIsc;
+gPerCta = E440Rat.PerCta;
+
+
+/* Implementação da lógica abaixo, limpeza de variáveis - ARF 13/05/2016 - 2137 */
+Se ((GerTabNum[1] <> gNumNfc) e (GerTabAlf[1] <> gCodSnf) e (GerTabNum[2] <> gCodFor) e (GerTabNum[3] <> gSeqIsc))
+ Inicio
+   LimpaGerTabNum();
+   LimpaGerTabAlf();
+ Fim;
+
+Cur_E440Isc.Sql "Select vlrliq, vlriss, vlrirf, vlrpit, vlrcrt, vlrcsl, vlrour, vlrins, vlrpis, vlrcor \
+                   From E440Isc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf \
+                    And SeqIsc=:gSeqIsc";
+Cur_E440Isc.AbrirCursor();
+Se (Cur_E440Isc.Achou)
+   Inicio
+     gVlrLiq = Cur_E440Isc.VlrLiq;
+     gVlrIss = Cur_E440Isc.VlrIss;
+     ArredondarValor(gVlrIss,2);
+     gVlrCsl = Cur_E440Isc.VlrCsl;
+     ArredondarValor(gVlrCsl,2);
+     gVlrIns = Cur_E440Isc.VlrIns;
+     ArredondarValor(gVlrIns,2);
+     gVlrIrf = Cur_E440Isc.VlrIrf;
+     ArredondarValor(gVlrIrf,2);
+     gVlrOur = Cur_E440Isc.VlrOur;
+     ArredondarValor(gVlrOur,2);
+     gVlrPit = Cur_E440Isc.VlrPit;
+     ArredondarValor(gVlrPit,2);
+     gVlrCrt = Cur_E440Isc.VlrCrt;
+     ArredondarValor(gVlrCrt,2);   
+     gVlrPis = Cur_E440Isc.VlrPis;
+     ArredondarValor(gVlrPis,2);
+     gVlrCor = Cur_E440Isc.VlrCor;
+     ArredondarValor(gVlrCor,2);
+   Fim;
+Cur_E440Isc.FecharCursor();
+
+/* Implementação da lógica abaixo, limpeza de variável - ARF 13/05/2016 - 2137 */
+GRatIss = 0;
+VRatIss = 0;
+gRatIss = (gVlrIss *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIss,2);
+vRatIss = (gRatIss *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatIss,2);@
+
+GRatIrf = 0;
+VRatIrf = 0;
+gRatIrf = (gVlrIrf *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIrf,2);
+vRatIrf = (gRatIrf *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatIrf,2);@ 
+
+GRatOur = 0;
+VRatOur = 0;
+gRatOur = (gVlrOur *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatOur,2);
+vRatOur = (gRatOur *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatOur,2);@
+
+GRatCsl = 0;
+VRatCsl = 0;
+gRatCsl = (gVlrCsl *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCsl,2);
+vRatCsl = (gRatCsl *( E440RAT.PerRat / 100) ); 
+@ArredondarValor(vRatCsl,2);@
+
+GRatIns = 0;
+VRatIns = 0;
+gRatIns = (gVlrIns *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIns,2);
+vRatIns = (gRatIns *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatIns,2); @
+
+GRatPit = 0;
+VRatPit = 0;
+gRatPit = (gVlrPit *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatPit,2);
+vRatPit = (gRatPit *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatPit,2);@
+
+GRatCrt = 0;
+VRatCrt = 0;
+gRatCrt = (gVlrCrt *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCrt,2);
+vRatCrt = (gRatCrt *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatCrt,2);@
+
+/*
+GRatPis = 0;
+VRatPis = 0;
+gRatPis = (gVlrPis *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatPis,2);
+vRatPis = (gRatPis *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatPis,2);@
+
+GRatCor = 0;
+VRatCor = 0;
+gRatCor = (gVlrCor *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCor,2);
+vRatCor = (gRatCor *( E440RAT.PerRat / 100) );
+@ArredondarValor(vRatCor,2);@
+*/
+
+VVlrBas2 = E440RAT.VlrRat + (vRatIss +vRatIrf + vRatCsl + vRatOur + vRatIns + vRatPit + vRatCrt); @ - (vRatPis + vRatCor);@
+ArredondarValor(VVlrBas2,2);
+
+/* Implementação da lógica abaixo, limpeza de variável - ARF 13/05/2016 - 2137 */
+VNfcLiq  = 0;
+
+VNfcLiq  = gVlrLiq + gVlrIss + gVlrCsl + gVlrIns + gVlrIrf + gVlrOur + gVlrPit + gVlrCrt;
+
+Se (gPerCta <> 100)
+Inicio
+  Se ((GerTabNum[1] <> gNumNfc) e (GerTabAlf[1] <> gCodSnf) e (GerTabNum[2] <> gCodFor) e (GerTabNum[3] <> gSeqIsc))
+   Inicio
+    GerTabNum[1] = gNumNfc;
+    GerTabAlf[1] = gCodSnf;
+    GerTabNum[2] = gCodFor;
+    GerTabNum[3] = gSeqIsc;
+    GerTabNum[4] = 0;
+   Fim;
+Fim;
+
+/* Implementação da lógica abaixo, limpeza de variável - ARF 13/05/2016 - 2137 */
+VlrDif = 0;
+
+Se (gPerCta <> 100)
+  Inicio
+    Se ((GerTabNum[1] = gNumNfc) e (GerTabAlf[1] = gCodSnf) e (GerTabNum[2] = gCodFor) e (GerTabNum[3] = gSeqIsc))
+      Inicio
+        GerTabNum[1] = gNumNfc;
+        GerTabAlf[1] = gCodSnf;
+        GerTabNum[2] = gCodFor;
+        GerTabNum[3] = gSeqIsc;
+        GerTabNum[4] = GertabNum[4] + VVlrBas2;
+        TotCta       = GerTabNum[4];
+        VlrDif       = VNfcLiq - TotCta;
+
+        Se (VlrDif < 0.04)
+          Inicio
+            Se (VlrDif <> 0)
+              Inicio
+                VVlrBas2 = VVlrBas2 + VlrDif;
+                GerTabNum[1] = 0;
+                GerTabAlf[1] = "";
+                GerTabNum[2] = 0;
+                GerTabNum[3] = 0;
+                GerTabNum[4] = 0;
+              Fim;
+          Fim;
+      Fim;
+  Fim;
+
+Se (gCodFor = 4695) @ Latina @
+ VCtaDeb2 = 763; @ Serviço de Cobrança @
+
+Definir Alfa VaTnspro;
+VaTnspro = E440Rat.TnsPro;
+Se (VaTnsPro = "1352U")
+  VVlrBas2 = 0;
+Se (VaTnsPro = "2352C")
+  VVlrBas2 = 0;
+
+@1933S@
+x=1;

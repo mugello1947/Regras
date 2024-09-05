@@ -1,0 +1,136 @@
+vAbgFil2 = E140IPV.CODFIL;
+vDatBas2 = E140NFV.DATEMI;
+vCtaDeb2 = 0;
+vCtaCre2 = E140IPV.CTARED;
+vVlrBas2 = E140IPV.VLRLIQ-(E140IPV.VLRICM+E140IPV.VLRIIC+E140IPV.VLRPIS+E140IPV.VLRCOR+E140IPV.VLRIPD);
+vCodHpd2 = 2021;
+Definir Alfa vObsCpl2S[200]; vObsCpl2S = E140IPV.TNSPRO;
+vCgcCpf2 = 0;
+vCgcCre2 = 0;
+vCodMoe2 = 0;
+vCplBas21 = E140IPV.NUMNFV;
+Definir Alfa vCplBas22S[200]; vCplBas22S = E085CLI.APECLI;
+/* REGRA_PARCIAL */
+Definir Cursor Cur_E012Fam;
+Definir alfa   gCodPro;
+Definir alfa   gCodFam;
+gCodFam = E140Ipv.CodFam;
+gCodPro = E140Ipv.CodPro;
+vCtaRed = E140Ipv.CtaRed;
+gCodEmp = E140Ipv.CodEmp;
+gCtaCre = 0;
+
+Cur_E012Fam.Sql "Select CtaRed From E012fam where CodFam=:gCodFam and CodEmp=:gCodEmp";
+
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+  Inicio
+    gCtaCre = Cur_E012Fam.CtaRed;
+  Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (gCtaCre = 0)
+    gCtaCre = E140Ipv.CtaRed;
+
+vCtaCre2 = gCtaCre;
+
+@ Verifica se existe Credito de ICMS nas notas de Entrada @
+Definir Cursor  Cur_E440Ipc;  @ Cursor @
+Definir Numero  VnCodEmp;     @ Codigo da Empresa @
+Definir Numero  VnFilNfc;     @ Codigo da Filial @
+Definir Numero  VnNumNfc;     @ Numero da NF Entrada @
+Definir Numero  VnCodFor;     @ Codigo do Fornecedor @
+Definir Alfa    VaCodSnf;     @ Serie da NF Compra @
+Definir Numero  VnSeqIpc;     @ Sequencia do item @
+
+VnCodEmp = E140IPV.CodEmp;
+VnFilNfc = E140IPV.FilNfc;    
+VnNumNfc = E140IPV.NumNfc;     
+VnCodFor = E140IPV.CodFor;     
+VaCodSnf = E140IPV.SnfNfc;     
+VnSeqIpc = E140IPV.SeqIpc;  
+
+VVecIcm = 0;      
+   
+Cur_E440Ipc.Sql"Select VecIcm \
+                   From E440Ipc \
+                 Where CodEmp =:VnCodEmp \
+                   And CodFil =:VnFilNfc \
+                   And CodSnf =:VaCodSnf \
+                   And NumNfc =:VnNumNfc \
+                   And SeqIpc =:VnSeqIpc";
+Cur_E440Ipc.AbrirCursor();
+  Se (Cur_E440Ipc.Achou)
+  Inicio
+    VVecIcm  = Cur_E440Ipc.VecIcm ;  
+  Fim;
+Cur_E440Ipc.FecharCursor();
+
+
+Se (VVecIcm  = 0)
+   VVlrBas2 = VVlrBas2 + E140IPV.VLRICM + E140IPV.VLRDFA;
+
+
+
+Definir cursor Cur_E210MVP;
+Definir cursor Cur_E019SUB;
+Definir cursor Cur01_E440NFC;
+Definir cursor Cur_E440EXF;
+Definir alfa   aCodSnf;
+Definir alfa   aVarAux;
+Definir alfa   aCodTst;
+Definir alfa   aSnfRlc;
+
+nCodEmp =E140IPV.CodEmp;
+nCodFil =E140IPV.CodFil;
+nCodCli =E140NFV.CodCli;
+nNumNfv =E140IPV.NumNfv;
+nSeqIpv =E140IPV.SeqIpv;
+aCodSnf =E140IPV.CodSnf;
+aCodTst =E140IPV.CodTst;
+
+nVlrMov = 0;
+
+/* Consiste o valor do movimento de estoque */
+Cur_E210MVP.SQL "Select VlrMov \
+                   from E210MVP \
+                  where NumNfv =:nNumNfv \
+                    and CodCli =:nCodCli \
+                    and CodEmp =:nCodEmp \
+                    and CodFil =:nCodFil \
+                    and SeqIpv =:nSeqIpv \
+                    and CodSnf =:aCodSnf \
+                    and EstEos = 'S' "; 
+Cur_E210MVP.AbrirCursor();
+Se (Cur_E210MVP.Achou)
+    Inicio
+      Enquanto (Cur_E210MVP.Achou)
+      Inicio
+        nVlrMov = nVlrMov + Cur_E210MVP.VlrMov;
+        Cur_E210MVP.Proximo();
+      Fim;
+
+      ArredondarValor(nVlrMov,2);
+      ArredondarValor(vVlrBas2,2);
+      Se (nVlrMov <> vVlrBas2)
+          Inicio
+            Cur_E210MVP.FecharCursor();
+          @  GeraLog("Regra: valor movimento de estoque diverge do calculado na forma de contabilização.");@
+          Fim;
+    Fim;
+Senao
+    Inicio
+      Cur_E210MVP.FecharCursor();
+      vVlrBas2 =0;
+      Cancel(1);
+    Fim;
+Cur_E210MVP.FecharCursor();
+
+
+/* Consiste a conta de estoque do produto */
+vCtaCre2 = E075PRO.CtaRed;
+Se (vCtaCre2 =0)
+    Inicio
+      aVarAux ="Regra: Não existe conta de estoque para o produto: " + E140IPV.CodPro;
+      GeraLog(aVarAux);
+    Fim;

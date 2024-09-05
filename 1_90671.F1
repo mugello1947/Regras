@@ -1,0 +1,9 @@
+/********* Se numero do Cheque for 787889 nao contabilizar *********/
+
+Definir Numero vNroChe;
+vNroChe = E600Mcc.NroChe;
+
+Se (vNroChe = 787889)
+ vVlrBas1 = 0;
+
+x=0;

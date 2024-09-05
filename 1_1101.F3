@@ -1,0 +1,27 @@
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecIcm;
+Definir alfa gCodPro;
+Definir numero gCodEmp;
+
+Cur_E075Pro.Sql "Select RecIcm from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor  = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro.RecIcm;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (gRecIcm = 'S') 
+  Inicio
+  Se (E440IPC.VlrIsn <> 0)
+    gValor = E440IPC.VlrIsn;
+   Senao
+    gValor = E440Ipc.VlrIcm;
+  Fim;
+
+VVlrBas3 = gValor;

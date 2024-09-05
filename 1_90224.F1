@@ -1,0 +1,158 @@
+/***
+Se (E012Fam.CtaFcr = 0)
+   CtaCre1 = E075Pro.CtaFcr;
+***/
+
+Definir Cursor Cur_E440Ipc;
+
+Definir Cursor Cur_E012Fam;
+Definir Cursor Cur_E075Pro;
+Definir Cursor Cur_E075Pro1;
+Definir Cursor Cur_E210Mvp;
+Definir Cursor Cur_E210Rat;
+
+Definir Numero vCtaCre1;
+Definir Numero vCodEmp;
+Definir Numero vNumNfc;
+Definir Numero VCodFor;
+Definir Numero VSeqIpc;
+
+Definir Alfa vCodTns;
+Definir Alfa vCodFam;
+Definir Alfa vCodPro;
+Definir Alfa vCodOri;
+Definir Alfa vOriOrp;
+Definir Alfa vSnfNfc;
+Definir Alfa vTnsNfc;
+Definir Alfa vTnsPro;
+
+vCodEmp = E210Mvp.CodEmp;
+vCodFil = E210Mvp.CodFil;
+vCodTns = E210Mvp.CodTns;
+vCodpro = E210Mvp.Codpro;
+vSeqMov = E210Mvp.SeqMov;
+vCtaFcr = E210Mvp.CtaRed;
+vOriOrp = E210Mvp.OriOrp;
+vNumNfc = E210Mvp.NumNfc;
+vCodFor = E210Mvp.CodFor;
+vSnfNfc = E210Mvp.SnfNfc;
+VSeqIpc = E210Mvp.SeqIpc;
+
+vCodFam = "0";
+
+vCtaCre1 = 0;
+vCtaFcr  = 0;
+
+EstaNulo(vCodpro,VRet);
+
+/* Busca no cadastro do Produto o Codigo Da Familia***********************/
+ 
+      Inicio
+        Cur_E075Pro1.Sql "Select CodFam  \
+                           From E075Pro \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro";
+        Cur_E075Pro1.AbrirCursor();
+        Se (Cur_E075Pro1.Achou)
+          Inicio
+            vCodFam = Cur_E075Pro1.CodFam;
+         Fim;
+      Cur_E075Pro1.FecharCursor();
+         Fim;
+
+/* Busca a Conta Contabil no Cadastro da Familia***********************/
+ 
+    Inicio
+      Cur_E012Fam.Sql "Select CtaFcr  \
+                       From E012Fam \
+                      Where CodEmp = :vCodEmp \
+                        And CodFam = :vCodFam";
+      Cur_E012Fam.AbrirCursor();
+      Se (Cur_E012Fam.Achou)
+         Inicio
+         vCtaCre1 = Cur_E012Fam.CtaFcr;
+         Fim;
+      Cur_E012Fam.FecharCursor();
+      Fim;
+
+/* Se não achou Conta Contabil na Família - Busca no cadastro do Produto ***********************/
+ 
+  Se ((vCtaCre1 = 0) e (vCodpro <> ' '))
+      Inicio
+        Cur_E075Pro.Sql "Select CtaFcr  \
+                           From E075Pro \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro";
+        Cur_E075Pro.AbrirCursor();
+        Se (Cur_E075Pro.Achou)
+          Inicio
+            vCtaCre1 = Cur_E075Pro.CtaFcr;
+         Fim;
+      Cur_E075Pro.FecharCursor();
+ Fim;
+
+/* Se não achou Conta Contabil no PRODUTO Busca no Movimento *******************************/
+
+ Se ((vCtaCre1 = 0) e (vCodpro <> ' '))
+   Inicio
+     Cur_E210Mvp.Sql "Select CtaRed \
+                        From E210Mvp \
+                       Where CodEmp = :VCodEmp \
+                         And CodFil = :VCodFil \
+                         And CodPro = :VCodPro \
+                         And SeqMov = :VSeqMov";
+     Cur_E210Mvp.AbrirCursor();
+     Se (Cur_E210Mvp.Achou)
+       Inicio
+         vCtaCre1 = Cur_E210Mvp.CtaRed;
+       Fim;
+     Cur_E210Mvp.FecharCursor();
+   Fim;
+
+/**** Objeções a Contabilização ****/
+
+Definir Alfa gCodFam;
+Definir Alfa gCodpro;
+Definir Alfa gCodOri; 
+
+gCodFam = E075Pro.CodFam;
+gCodPro = E075Pro.CodPro;
+gCodOri = E075pro.CodOri;
+
+Se ((gCodFam = "7552") e (gCodFam = "7554") e (gCodFam = "7555"))
+VvlrBas1 = 0;
+x=0;
+
+Se ((gCodPro <> "20030014") e (gCodFam <> "6004"))
+VvlrBas1 = 0;
+x=0;
+
+/*********** Não contabilizar se a ORIGEM da Familia for = 100 - Conversão (Acabados) ****************/
+Se (gCodOri = "100")
+     vVlrBas1 = 0;
+
+/*********** Não contabilizar se a TNS de ORIGEM de entrada for = 2903 ****************/
+
+Se (vCodTns <> ' ')
+Inicio
+CUR_E440IPC.Sql "SELECT TnsPro \
+                  FROM E440IPC \ 
+                 WHERE CodEmp = :VCODEMP \
+                   AND CodFil = :VCODFIL \ 
+                   AND CodFor = :VCODFOR \
+                   AND NumNfc = :VNUMNFC \
+                   AND CodSnf = :VSNFNFC \
+                   AND SeqIpc = :VSEQIPC ";
+  Cur_E440IPC.AbrirCursor();
+  Se (Cur_E440IPC.Achou)
+   Inicio
+     VTnsPro = Cur_E440IPC.TnsPro;
+     vVlrBas1 = E210MVP.VlrMov;   
+   Fim;
+   Cur_E440IPC.FecharCursor();
+Fim;
+
+Se (VTnsPro = "2903")
+     vVlrBas1 = 0;
+
+x=0;

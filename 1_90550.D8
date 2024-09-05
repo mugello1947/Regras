@@ -1,0 +1,93 @@
+vAbgFil8 = E501TCP.CODFIL;
+vDatBas8 = E501MCP.DATMOV;
+vCtaDeb8 = 0;
+vCtaCre8 = 1208;
+vVlrBas8 = E501MCP.VLRLIQ;
+vCodHpd8 = 550;
+Definir Alfa vObsCpl8S[200]; vObsCpl8S = E501MCP.CODTNS;
+vCgcCpf8 = 0;
+vCgcCre8 = 0;
+vCodMoe8 = 0;
+Definir Alfa vCplBas81S[200]; vCplBas81S = E501MCP.NUMTIT;
+Definir Alfa vCplBas82S[200]; vCplBas82S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VaSitTit;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+VaSitTit = E501TCP.SitTit;
+Definir Cursor Cur_E501Tc3;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select PreCar from E606PRE where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumTit =:vaNumTit and CodTpt=:vxCodTpt  and TipPre = 'P'";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VaPreCar = Cur_E501Tc2.PreCar;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  Se (VaPreCar <> "S")
+    vVlrBas8 = E501TCP.JrsNeg + E501TCP.OutNeg;
+  Senao
+    vVlrBas8 = E501TCP.JrsNeg + E501TCP.OutNeg + E501TCP.VlrOri;
+  
+  Se (VaSitTit = "AB")
+     vVlrBas8 = E501MCP.VLRLIQ;
+
+  Se (E501TCP.CodTns = "90512")
+     VCtaCre8 = 1209;
+ 
+
+Fim;
+
+
+Se (vxCodTpt <> "97"){
+   vVlrBas8 = 0;
+ }
+
+
+
+@ Leasing @
+  vnNumCcr = E501TCP.NumCcr;
+  Cur_E501Tc3.Sql "Select CodPbc from E606CCr where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumCCr=:vnNumCcr";
+
+  Cur_E501Tc3.AbrirCursor();
+  Se (Cur_E501Tc3.Achou)
+  Inicio
+     VnCodPbc = Cur_E501Tc3.CodPbc;
+  Fim;
+  Cur_E501Tc3.FecharCursor();
+
+Se (VnCodPbc = 2){
+   VCtaCre8 = 459;
+}
+Se (E501TCP.NumCcr = 16){
+   VCtaCre8 = 459;
+}
+Se (E501TCP.NumCcr = 19){
+   VCtaCre8 = 459;
+}
+Se (E501TCP.NumCcr = 20){
+   VCtaCre8 = 459;
+}

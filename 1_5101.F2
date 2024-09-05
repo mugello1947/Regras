@@ -1,0 +1,105 @@
+Definir Cursor Cur_E075PRO;
+Definir Cursor Cur_E012FAM;
+Definir Cursor Cur_E140IPV;
+Definir Cursor Cur_E140Rat;
+Definir Numero VCtaCre2;
+Definir Numero VCodEmp;
+Definir Numero VCodFil;
+Definir Numero VNumNfv;
+Definir Numero VSeqIpv;
+Definir Numero VCtaCre;
+Definir Alfa   VCodSnf;
+Definir Alfa   VCodFam;
+Definir Alfa   VCodPro;
+Definir Alfa   VCodDer;
+
+/*
+Inativado conforme chamado 5320, Alexandre - 15/12/2016
+VCodEmp = E140IPV.CodEmp;
+VCodFil = E140IPV.CodFil;
+VNumNfc = E140IPV.NumNfc;
+VCodSnf = E140IPV.CodSnf;
+VSeqIpc = E140IPV.SeqIpv;
+VCodFam = E140IPV.CodFam;
+VCodPro = E140IPV.CodPro;
+VCodDer = E140IPV.CodDer;
+VCtaCre = 0;
+VCtaRcr = 0;
+
+VCodEmp = E140Rat.CodEmp;
+VCodFil = E140Rat.CodFil;
+VNumNfv = E140Rat.NumNfv;
+VCodSnf = E140Rat.CodSnf;
+VSeqIpv = E140Rat.SeqIpv;
+VCtaCre = 0;
+VCtaRcr = 0;
+*/
+
+
+VCodEmp = E140IPV.CodEmp;
+VCodFil = E140IPV.CodFil;
+VNumNfv = E140IPV.NumNfv;
+VCodSnf = E140IPV.CodSnf;
+VSeqIpv = E140IPV.SeqIpv;
+VCodFam = E140IPV.CodFam;
+VCodPro = E140IPV.CodPro;
+VCodDer = E140IPV.CodDer;
+VCtaCre = 0;
+VCtaRcr = 0;
+
+EstaNulo(VCodPro,VRet);
+
+/*** Busca Conta Contabil no Cadastro da Familia ***/
+Se (VRet = 0)
+  Inicio
+    Cur_E012FAM.Sql "Select CtaRcr  \
+                       From E012FAM \
+                      Where CodEmp = :VCodEmp \
+                        And CodFam = :VCodFam";
+    Cur_E012FAM.AbrirCursor();
+    Se (Cur_E012FAM.Achou)
+       Inicio
+         VCtaCre = Cur_E012FAM.CtaRcr;
+       Fim;
+    Cur_E012FAM.FecharCursor();
+  
+/**** Se não achou Conta Contabil na Família - Busca no cadastro do Produto ***/
+Se (VCtaCre = 0)
+      Inicio
+        Cur_E075PRO.Sql "Select CtaRcr  \
+                           From E075PRO \
+                          Where CodEmp = :VCodEmp \
+                            And CodPro = :VCodPro";
+        Cur_E075PRO.AbrirCursor();
+        Se (Cur_E075PRO.Achou)
+          Inicio
+            VCtaRcr = Cur_E075PRO.CtaRcr;
+          Fim;
+        Cur_E075PRO.FecharCursor();
+        
+        Se (VCtaCre = 0)
+          VCtaCre = VCtaRcr;
+      Fim;
+/***
+     Se (VCtaCre = 0)
+       Inicio
+         Cur_E140IPV.Sql "Select CtaRed  \
+                            From E140IPV \
+                           Where CodEmp = :VCodEmp \
+                             And CodFil = :VCodFil \
+                             And NumNfv = :VNumNfv \
+                             And CodSnf = :VCodSnf \
+                             And SeqIpv = :VSeqIpv";
+         Cur_E140IPV.AbrirCursor();
+         Se (Cur_E140IPV.Achou)
+           Inicio
+             VCtaCre = Cur_E140IPV.CtaRed;
+           Fim;
+         Cur_E140IPV.FecharCursor();
+       Fim;
+***/
+
+  Fim;
+
+VCtaCre2 = VCtaCre;
+x=1;

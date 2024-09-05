@@ -1,0 +1,67 @@
+/* REGRA_PARCIAL */
+Definir Cursor Cur_E600TRF;
+Definir Cursor Cur_E600CCO;
+Definir Cursor Cur_E606CCR;
+Definir Data   vDatMov;
+Definir Alfa   vNumCco;
+Definir Alfa   vCcoTrf;
+
+vCodEmp = E600MCC.CodEmp;
+vnCodFil = E600MCC.FilCcr;
+vNumCco = E600MCC.NumCco;
+vDatMov = E600MCC.DatMov;
+vSeqMov = E600MCC.SeqMov;
+vnNumCcr = E600MCC.NumCcr;
+vCcoTrf = "";
+
+/**** Busca a Conta 1 da Conta Interna de Transferência ****/
+Cur_E600CCO.SQL "Select CtaRed From E600CCO \
+                  Where CodEmp = :vCodEmp \
+                    And NumCco = :vCcoTrf";
+Cur_E600CCO.AbrirCursor()
+Se (Cur_E600CCO.Achou)
+   vCtaRed = Cur_E600CCO.CtaRed;
+Cur_E600CCO.FecharCursor();
+
+vCtaDeb1   = vCtaRed;
+Se ((E600Mcc.OriMcc = "CP") ou (E600Mcc.OriMcc = "CR"))
+    vVlrBas1 = 0;
+
+
+
+/**** Busca Dados da Conta de Transferência ****/
+/*********
+Cur_E600TRF.SQL "Select NumCco From E600TRF \
+                  Where CodEmp = :vCodEmp \
+                    And CcoTra = :vNumCco \
+                    And DatMov = :vDatMov \
+                    And SeqTrf = :vSeqMov";
+Cur_E600TRF.AbrirCursor()
+Se (Cur_E600TRF.Achou)
+   vCcoTrf = Cur_E600TRF.NumCco;
+Cur_E600TRF.FecharCursor();
+
+Se (vCcoTrf = "")
+   Inicio
+   Cur_E600TRF.SQL "Select CcoTra From E600TRF \
+                     Where CodEmp = :vCodEmp \
+                       And NumCco = :vNumCco \
+                       And DatMov = :vDatMov \
+                       And SeqMov = :vSeqMov";
+   Cur_E600TRF.AbrirCursor()
+   Se (Cur_E600TRF.Achou)
+      vCcoTrf = Cur_E600TRF.CcoTra;
+   Cur_E600TRF.FecharCursor();
+   Fim;
+*********/
+
+/*Se (vnNumCcr <> 0){
+  Cur_E606CCR.Sql "Select CtaRlp from E606CCR where CodEmp=:vCodEmp and CodFil=:vnCodFil and NumCcr=:vnNumCcr";
+  Cur_E606CCR.AbrirCursor();
+  Se (Cur_E606CCR.Achou)
+  Inicio
+     VCtaDeb1 = Cur_E606CCR.CtaRlp;
+  Fim;
+  Cur_E606CCR.FecharCursor();
+
+}*/

@@ -1,0 +1,143 @@
+Definir Cursor Cur_E440Isc;
+Definir Cursor Cur_E440Nfc;
+Definir Cursor Cur_ECtaRed;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqIsc;
+Definir Alfa gCodPro;
+Definir Alfa vCodFamPro;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIsc = E440Rat.SeqIpc;
+gPerCta = E440Rat.PerCta;
+gPerRat = E440Rat.PerRat;
+
+xVlrLiqNf = 0;
+xVlrPisNf = 0;
+xVlrCorNf = 0;
+xVlrIcmNf = 0;
+xVlrIpiNf = 0;
+Cur_E440Nfc.Sql "Select codpro, vlrliq, vlrpis, vlrcor, vlricm, vlripi \
+                   From E440Ipc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf ";
+Cur_E440Nfc.AbrirCursor();
+Enquanto (Cur_E440Nfc.Achou) {
+   xVlrLiqNf = xVlrLiqNf + Cur_E440Nfc.VlrLiq;
+   xVlrPisNf = xVlrPisNf + Cur_E440Nfc.VlrPis;
+   xVlrCorNf = xVlrCorNf + Cur_E440Nfc.VlrCor;
+   xVlrIcmNf = xVlrIcmNf + Cur_E440Nfc.VlrIcm;
+   xVlrIpiNf = xVlrIpiNf + Cur_E440Nfc.VlrIpi;
+   Cur_E440Nfc.Proximo();
+}
+Cur_E440Nfc.FecharCursor();
+
+Cur_E440Isc.Sql "Select codpro, vlrliq, vlrpis, vlrcor, vlricm, vlripi \
+                   From E440Ipc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf \
+                    And SeqIpc=:gSeqIsc";
+Cur_E440Isc.AbrirCursor();
+Se (Cur_E440Isc.Achou)
+   Inicio
+   gCodPro = Cur_E440ISC.CodPro;
+   xVlrLiq = Cur_E440ISC.VlrLiq;
+   xVlrPis = Cur_E440ISC.VlrPis;
+   xVlrCor = Cur_E440ISC.VlrCor;
+   xVlrIcm = Cur_E440ISC.VlrIcm;
+   xVlrIpi = Cur_E440ISC.VlrIpi;
+   Fim;
+Cur_E440Isc.FecharCursor();
+
+vCodFamPro = "";
+vCtaRedPro = 0;
+Cur_ECtaRed.SQL "SELECT CODFAM, CTARED FROM E075PRO \
+                  WHERE CODEMP = :gCodEmp \
+                    AND CODPRO = :gCodPro";
+Cur_ECtaRed.AbrirCursor();
+Se (Cur_ECtaRed.Achou) {
+   vCodFamPro = Cur_ECtaRed.CodFam;
+   vCtaRedPro = Cur_ECtaRed.CtaRed;
+}
+Cur_ECtaRed.FecharCursor();
+
+vCtaRedFam = 0;
+Cur_ECtaRed.SQL "SELECT CTARED FROM E012FAM \
+                  WHERE CODEMP = :gCodEmp \
+                    AND CODFAM = :vCodFamPro";
+Cur_ECtaRed.AbrirCursor();
+Se (Cur_ECtaRed.Achou) {
+   VCtaRedFam = Cur_ECtaRed.CtaRed;
+}
+Cur_ECtaRed.FecharCursor();
+
+vCtaDeb1 = VCtaRedFam; @ Conta Reduzida da Familia @
+
+Se (vCtaDeb1 = 0)
+   vCtaDeb1 = VCtaRedPro; @ Conta Reduzida do Produto @
+
+Se (vCtaDeb1 = 0) 
+   vCtaDeb1 = E440RAT.CtaRed; @ Conta Reduzida do Rateio @
+
+@ Valor Líquido Proporcional ao Rateio @
+xVlrLiqRat = xVlrLiq * gPerCta / 100;
+xVlrLiqRat = xVlrLiqRat * gPerRat / 100;
+
+@ Valor PIS Proporcional ao Rateio @
+xVlrPisRat = xVlrPis * gPerCta / 100;
+xVlrPisRat = xVlrPisRat * gPerRat / 100;
+
+@ Valor COFINS Proporcional ao Rateio @
+xVlrCorRat = xVlrCor * gPerCta / 100;
+xVlrCorRat = xVlrCorRat * gPerRat / 100;
+
+@ Valor ICMS Proporcional ao Rateio @
+xVlrIcmRat = xVlrIcm * gPerCta / 100;
+xVlrIcmRat = xVlrIcmRat * gPerRat / 100;
+
+@ Valor IPI Proporcional ao Rateio @
+xVlrIpiRat = xVlrIpi * gPerCta / 100;
+xVlrIpiRat = xVlrIpiRat * gPerRat / 100;
+
+@ Valor do Lançamento Contábil proporcional ao rateio @
+VVlrBas1 = xVlrLiqRat - xVlrPisRat - xVlrCorRat - xVlrIcmRat - xVlrIpiRat;
+ArredondarValor(VVlrBas1,2);
+
+  Se ((GerTabNum[1] = gNumNfc) e (GerTabAlf[1] = gCodSnf) e (GerTabNum[2] = gCodFor)) {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = VVlrBas1;
+     GerTabNum[3] = GerTabNum[3] + VVlrBas1;
+  }
+  Senao {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = VVlrBas1;
+  }
+
+  xVlrDif = (xVlrLiqNf - xVlrPisNf - xVlrCorNf - xVlrIcmNf - xVlrIpiNf)- GerTabNum[3];
+  ArredondarValor(xVlrDif,2);
+  Se (xVlrDif < 0.10) {
+     VVlrBas1 = VVlrBas1 + xVlrDif;
+    ArredondarValor(VVlrBas1,2);
+  }
+
+Se ((VCtaDeb = 79) ou (VCtaDeb = 83) ou (VCtaDeb = 85) ou (VCtaDeb = 89) ou  (VCtaDeb = 95) ou (VCtaDeb = 96) ou (VCtaDeb = 97) ou (VCtaDeb = 98) ou (VCtaDeb = 99) ou (VCtaDeb = 102) ou (VCtaDeb = 103))
+   VVlrBas1 = 0;
+
+x=1;

@@ -1,0 +1,38 @@
+Definir Alfa xSqlAux;
+Definir Alfa BusBem;
+Definir Alfa VaCodBem;
+Definir Alfa VaTipAcr;
+
+VnCodEmp = E670MOV.CodEmp;
+VaCodBem = E670MOV.CodBem;
+VnCodEsp = E670MOV.CodEsp;
+
+@ Busca Custo Atribuidos @
+
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+fim; 
+SQL_Destruir(BusBem); 
+
+@ Busca Custo Atribuidos @
+
+Se (VaTipAcr = "J")
+inicio
+   VCodHpd1 = 124;
+   Se (VnCodEsp = 7)
+   inicio
+     VctaDeb1 = 5175;
+   Fim;
+   Se (VnCodEsp = 4)
+   inicio
+     VctaDeb1 = 5171;
+   Fim;
+Fim;

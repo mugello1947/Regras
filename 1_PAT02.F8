@@ -1,0 +1,82 @@
+Definir Alfa VaCodBem;
+Definir Numero VnDatMov;
+Definir Data VdDatMov;
+Definir Alfa VaDatMov;
+Definir Alfa VaCodTns;
+Definir Alfa VaTipAcr;
+Definir Data VdDatBai; @ Data da Baixa @
+Definir numero VnCodEmp;
+Definir numero VnVlrSoci; @ Valor Total do Societario @
+Definir Alfa BusSoci; @ Busca a depreciação Societária @
+Definir Alfa BusBem;
+Definir Alfa xSqlAux;
+Definir Data VdDatIni;
+Definir Data VdDatFim;
+
+VaCodBem = E670Mov.CodBem;
+VnDatMov = E670Mov.DatMov;
+VnCodEmp = E670MOV.CodEmp;
+VnCodEsp = E670Mov.CodEsp;
+VdDatMov = vDatBas8;
+VnDprAcu = 0;
+VnVdpAcu = 0;
+
+
+DesmontaData (vDatBas8,VDia,VMes,VAno);
+MontaData (01,VMes,VAno,VdDatIni);
+VdDatFim = vDatBas8;
+UltimoDia(VdDatFim);
+
+
+@ Busca Custo Atribuidos @
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+  SQL_RetornarData(BusBem,"DatBai",VdDatBai);
+  SQL_RetornarFlutuante(BusBem,"QtdItm",VnQtdItm);
+fim; 
+SQL_Destruir(BusBem); 
+
+se ((VdDatBai >= VdDatIni) e (VdDatBai <= VdDatFim)) @ Se teve Baixa no mês @
+inicio
+
+  xSqlAux = "Select * from E670Cal where CodEmp =:VnCodEmp and CodBem =:VaCodBem and DatCal =:VdDatMov";
+
+  SQL_Criar(BusSoci); 
+  SQL_DefinirComando(BusSoci,xSqlAux);
+  SQL_DefinirInteiro(BusSoci,"VnCodEmp",VnCodEmp);
+  SQL_DefinirAlfa(BusSoci,"VaCodBem",VaCodBem);
+  SQL_DefinirData(BusSoci,"VdDatMov",VdDatMov);
+  SQL_AbrirCursor(BusSoci); 
+  Se (SQL_EOF(BusSoci) = 0)
+  inicio
+    SQL_RetornarFlutuante(BusSoci,"DprAcu",VnDprAcu);
+    SQL_RetornarFlutuante(BusSoci,"VdpAcu",VnVdpAcu);
+  fim; 
+  SQL_Destruir(BusSoci); 
+    VVlrBas8 = (VnVdpAcu * VnQtdItm); @ Buca o valor da Depreciação Acumulada Normal - Depreciação Acumulada Paralela @
+
+
+   VVlrBas8 = VVlrBas8 * 0.09; @ CLSS de 9%@
+   ArredondarValor(VVlrBas8,2);
+
+  @ Adoção Inicial negativa @
+  Se (VVlrBas8 < 0)
+  inicio
+     VvlrBas8=(VVlrBas8 * -1);
+     Vctacre=vctacre8;
+     VctaCre8=VctaDeb8;
+     VctaDeb8=vctacre;
+  Fim;
+Fim;
+senao
+  VvlrBas8=0;
+
+x=0;

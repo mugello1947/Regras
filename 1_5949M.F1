@@ -1,0 +1,59 @@
+Definir Alfa VCodSnf;
+Definir Alfa vCodCcu1;
+Definir Alfa VCodCcu;
+Definir Alfa VCcuIpv;
+Definir Alfa VCcuRat;
+VCodEmp = E140IPV.CodEmp; @ Empresa @
+VCodFil = E140IPV.CodFil; @ Filial @
+VCodSnf = E140IPV.CodSnf; @ Série nota @
+VNumNfv = E140IPV.NumNfv; @ Número da nota @
+VSeqIpv = E140IPV.SeqIpv; @ Sequencia item da nota @
+VCcuIpv = E140IPV.CodCcu; @ Centro de Custo do item da nota @
+VCodCcu = "";
+VCcuRat = "";
+RateioIntegracao("Excluir_Tudo",xPosicao1,vCodCcu1,vPerRat1,vVlrRat1); @ Função para excluir os rateios @
+XPosicao1 = 1;
+VPerRat1 = 100;
+VVlrRat1 = vVlrBas1;
+
+@ Busca o centro de custo do rateio do item da nota @
+Definir Alfa TClaSql;
+Definir Alfa CCurRat;
+TClaSql = "Select E140RAT.CodCcu WWCodCcu \  
+             From E140RAT \
+            Where E140RAT.CodEmp = :VCodEmp \
+              And E140RAT.CodFil = :VCodFil \
+              And E140RAT.CodSnf = :VCodSnf \
+              And E140RAT.NumNfv = :VNumNfv \
+              And E140RAT.SeqIpv = :VSeqIpv";
+SQL_Criar(CCurRat);
+SQL_DefinirComando(CCurRat, TClaSql);
+SQL_DefinirInteiro(CCurRat,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurRat,"VCodFil",VCodFil);
+SQL_DefinirAlfa(CCurRat,"VCodSnf",VCodSnf);
+SQL_DefinirInteiro(CCurRat,"VNumNfv",VNumNfv);
+SQL_DefinirInteiro(CCurRat,"VSeqIpv",VSeqIpv);
+SQL_AbrirCursor(CCurRat);
+Se (SQL_EOF(CCurRat) = 0)
+  {
+    SQL_RetornarAlfa(CCurRat,"WWCodCcu",VCcuRat);
+  }
+SQL_Destruir(CCurRat); 
+
+EstaNulo(VCcuRat,VRetRat); @ Verifica se existe centro de custo do rateio @
+Se (VRetRat = 0)
+  VCodCcu = VCcuRat;
+ Senao
+   {
+     EstaNulo(VCcuIpv,VRetIpv); @ Não encontrou centro de custo do rateio, verifica se existe no item da nota @ 
+     Se (VRetIpv = 0)
+      VCodCcu = VCcuIpv;
+     Senao
+       VCodCcu = "1210"; @ VENDAS - Caso não encontre no rateio, item da nota, o centro de custo fixo @
+   } 
+
+
+VCodCcu1 = VCodCcu; @ Recebe no centro de custo para gerar novo rateio @
+RateioIntegracao("Inserir",xPosicao1,vCodCcu1,vPerRat1,vVlrRat1);
+  
+x=1;

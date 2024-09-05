@@ -1,0 +1,5 @@
+Se ((E501MCP.CodTns = "90511") e (E501TCP.TitCar = "S"))
+  VVlrBas3 = VVlrBas3 + E501MCP.VlrMov;
+
+Se (E501MCP.CodTns = "90512")
+  VVlrBas3 = 0;

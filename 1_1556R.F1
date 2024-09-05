@@ -1,0 +1,56 @@
+Definir Cursor Cur_E440IPC;
+Definir Cursor Cur_E440NFC;
+Definir Alfa vCodSnf;
+
+vCodEmp = E440Rat.CodEmp;
+vCodFil = E440Rat.CodFil;
+vCodFor = E440Rat.CodFor;
+vNumNfc = E440Rat.NumNfc;
+vCodSnf = E440Rat.CodSnf;
+vSeqIpc = E440Rat.SeqIpc;
+vCtaRed = E440Rat.CtaRed;
+vPerCta = E440Rat.PerCta;
+vVlrRat = E440Rat.VlrRat;
+vPerRat = E440Rat.PerRat;
+
+Cur_E440NFC.Sql "Select DatEnt \
+                   from E440NFC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf";
+Cur_E440NFC.AbrirCursor();
+Se (Cur_E440NFC.Achou)
+ Inicio
+   vDatBas1 = Cur_E440NFC.DatEnt;
+ Fim;
+Cur_E440NFC.FecharCursor();
+
+Cur_E440IPC.Sql "Select VlrLiq,VlrIcm, VlrIpi, VlrCor, VlrPis \
+                   from E440IPC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf \
+			And SeqIpc = :VSeqIpc";
+Cur_E440IPC.AbrirCursor();
+Se (Cur_E440IPC.Achou)
+ Inicio  
+    vCtaDeb1 = vCtaRed;  
+    vVlrLiq = Cur_E440IPC.VlrLiq;
+    vVlrIcm = Cur_E440IPC.VlrIcm;
+    vVlrCor = Cur_E440IPC.VlrCor;
+    vVlrPis = Cur_E440IPC.VlrPis;
+    vVlrLiq = vVlrliq - ( vVlrIcm + vVlrIpi + vVlrCor + vVlrPis);
+    ArredondarValor (vVlrLiq,2);
+    vVlrAux = ((vVlrLiq * vPerCta)/100); 
+    vVlrBas1 = ((vVlrAux * vPerRat)/100);
+    Se ((vVlrIcm = 0) e (vVlrIpi = 0) e (vVlrCor = 0) e (vVlrPis = 0))
+       vVlrBas1 = vVlrRat;
+    ArredondarValor (vVlrBas1,2);
+  Fim;
+Cur_E440IPC.FecharCursor();
+
+x=1;

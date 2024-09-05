@@ -1,0 +1,195 @@
+vAbgFil7 = E501RAT.CODFIL;
+vDatBas7 = E501MCP.DATMOV;
+vCtaDeb7 = E501RAT.CTARED;
+vCtaCre7 = 0;
+vVlrBas7 = E501RAT.VLRRAT;
+vCodHpd7 = 550;
+Definir Alfa vObsCpl7S[200]; vObsCpl7S = E501RAT.CODTNS;
+vCgcCpf7 = 0;
+vCgcCre7 = 0;
+vCodMoe7 = 0;
+Definir Alfa vCplBas71S[200]; vCplBas71S = E501RAT.NUMTIT;
+Definir Alfa vCplBas72S[200]; vCplBas72S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa gCodCcu;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+Definir cursor Cur_E044Ccu;
+
+gCodFor = E501RAT.CodFor;
+gCodEmp = E501RAT.CodEmp;
+gCodFil = E501RAT.CodFil;
+gNumTit = E501RAT.NumTit;
+gCodTpt = E501RAT.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCodCcu = E501RAT.CodCcu;
+gCtaRed = VCtaDeb7;
+
+Se(gCodCrp = "20"){
+  VVlrBas7 = 0;
+  Cancel(1);
+}
+
+Se(gCodCrp = "35"){
+  VVlrBas7 = 0;
+  Cancel(1);
+}
+
+Se(gCodCrp = "30"){
+  VVlrBas7 = 0;
+  Cancel(1);
+}
+@ Busca o tipo de centro de custo @
+Cur_E044Ccu.Sql "Select TipCcu from E044CCU where CodEmp=:gCodEmp and CodCcu=:gCodCcu";
+Cur_E044Ccu.AbrirCursor();
+  Se (Cur_E044Ccu.Achou)
+      VnTipCcu = Cur_E044Ccu.TipCcu;
+Cur_E044Ccu.FecharCursor();
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+   @   gCtaRed = Cur_E095Hfo.CtaRed;@
+Cur_E095Hfo.FecharCursor();
+
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+     gCtaRed = Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+
+/* Incluido regra dia 01/04/2011, para contabilizar os títulos do tipo 12 na conta contábil 26 */
+
+Se (gCodTpt = "12") 
+    gCtaRed = 26;
+
+/* Rodrigo Costa */
+
+Se (gCodTpt = "57") 
+    gCtaRed = 319;
+
+
+/* Incluido regra dia 03/05/2011, para contabilizar os títulos do tipo 43 na conta contábil 330 */
+
+Se (gCodTpt = "43") 
+    gCtaRed = 330;
+
+Se (gCodTpt = "45") 
+    gCtaRed = 390;
+
+Se(gCodCrp="24")@Representante a pagar@ 
+   gCtaRed =30002; 
+
+/*Se(gCodTpt = "64")  Conforme acima a baixa pagamento tem que ser lançado no representantes a pagar.
+    gCtaRed = 762;*/
+
+Se(gCodTpt = "81")
+    gCtaRed = 9961;
+
+Se((gCodTpt = "22") e (gCodFor = 6308))
+    gCtaRed = 314;
+
+Se((gCodTpt = "49") e (gCodFor = 7044))
+    gCtaRed = 2108;
+
+Se((gCodTpt = "35") e (gCodFor = 1123))
+    gCtaRed = 874;
+
+Se(gCodTpt = "81")
+    gCtaRed = 9961;
+
+Se(gCodTpt = "35")
+    gCtaRed = 874;
+
+
+Se(gCodCrp = "25")
+  gCtaRed = 334;
+
+
+
+
+Inicio
+  Definir Cursor Cur_E095For;
+  Definir Cursor Cur_E600Cco;
+
+  Definir Alfa vCplBas11s; 
+  Definir Alfa vCplBas12s;
+  Definir Alfa vCplBas13s;
+  Definir Alfa gNomFor;
+  Definir Alfa gDesCco;
+  Definir Alfa gNumCco;
+
+  gNumCco = E501Mcp.NumCco;  
+  gCodFor = E501Mcp.CodFor; 
+
+  Definir numero vCodHpd1;
+ 
+  gDesCco = "";
+  gNomFor = "";
+
+  Cur_E095For.Sql "Select NomFor from E095For where CodFor=:gCodFor";
+  Cur_E600Cco.Sql "Select DesCco from E600Cco where CodEmp=:gCodEmp and NumCco=:gNumCco";
+
+  Cur_E095For.AbrirCursor();
+  Se (Cur_E095For.Achou)
+     gNomFor = Cur_E095For.NomFor;
+  Cur_E095For.FecharCursor();
+
+  Cur_E600Cco.AbrirCursor();
+  Se (Cur_E600Cco.Achou)
+     gDesCco = Cur_E600Cco.DesCco;
+  Cur_E600Cco.FecharCursor();
+
+  vCodHpd1 = 56;
+  vCplBas11s = gNumTit;
+  vCplBas12s = gNomFor;
+  vCplBas13s = gDesCco;
+
+Se((gCodTpt = "22") e (gCodFor = 6308))
+    gCtaRed = 314;
+
+Se((gCodTpt = "49") e (gCodFor = 7044))
+    gCtaRed = 2108;
+
+Se((gCodTpt = "35") e (gCodFor = 1123))
+    gCtaRed = 874;
+
+
+Se(gCodTpt = "81")
+    gCtaRed = 9961;
+
+Se(gCodTpt = "35")
+    gCtaRed = 874;
+
+Fim;
+
+Se (gCtaRed <> 0)
+  VCtaDeb7 = gCtaRed; 
+
+Se(gCodTpt = "20")
+  VVlrBas7 = 0;
+
+@Se (gCodCrp = "30")@
+ VVlrBas7 = VVlrBas7 - (E501MCP.VLRJRS+E501MCP.VLROAC) + (E501MCP.VLRDSC+E501MCP.VLRODE) - (E501MCP.VLRMUL+E501MCP.VLRCOR+E501MCP.VLROAC+E501MCP.VLRENC);
+
+
+x = 1;

@@ -1,0 +1,29 @@
+Definir Cursor Cur_E095Hfo;
+Definir numero gCodEmp;
+Definir numero gCodFor;
+@Sequencia 1@
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFor=:gCodFor and CodEmp=:gCodEmp";
+/*
+Alteração efetuada conforme chamado 2137 - ARF - 17/05/2016
+gCodEmp = E440Ipc.CodEmp;
+gCodFor = E440Nfc.CodFor;
+*/
+gCodEmp = E440ISC.CodEmp;
+gCodFor = E440ISC.CodFor;
+gCtaCre = 0;
+
+Cur_E095Hfo.AbrirCursor();
+Se (Cur_E095Hfo.Achou)
+   Inicio
+     gCtaCre = Cur_E095Hfo.CtaRed;
+   Fim;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaCre = 0)
+    gCtaCre = 300;
+
+VCtaCre1 = gCtaCre;
+
+@1933S@
+X=1;

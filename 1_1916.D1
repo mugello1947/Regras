@@ -1,0 +1,13 @@
+vAbgFil1 = E440IPC.CODFIL;
+vDatBas1 = E440NFC.DATENT;
+vCtaDeb1 = 377;
+vCtaCre1 = E095HFO.CTAFCR;
+vVlrBas1 = E440IPC.VLRLIQ;
+vCodHpd1 = 41;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+vCplBas11 = E440NFC.NUMNFC;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */

@@ -1,0 +1,43 @@
+/*
+- Configuração do histórico padrão personalizada, monta o número da nota fiscal e o nome do cliente da nota fiscal de faturamento;
+- 26/01/2017 - ARF (implantação);
+*/
+Definir Alfa VCplBas11S;
+Definir Alfa TClaSql;
+Definir Alfa CCurCli;
+Definir Alfa VNumTit;
+Definir Alfa VCodTpt;
+Definir Alfa VNomCli;
+Definir Alfa VCodSnf;
+VCodEmp = E301MCR.CodEmp;
+VCodFil = E301MCR.CodFil;
+VNumTit = E301MCR.NumTit;
+VCodTpt = E301MCR.CodTpt;
+VCodSnf = "E";
+VCplBas11S = "";
+VNomCli = "";
+AlfaParaInt(VNumTit,VNumNfv);
+@ Busca o nome do cliente da nota fiscal de faturamento @
+TClaSql = "Select E085CLI.NomCli WWNomCli \  
+             From E140NFV, E085CLI \
+            Where E140NFV.CodCli = E085CLI.CodCli \
+              And E140NFV.CodEmp = :VCodEmp \
+              And E140NFV.CodFil = :VCodFil \
+              And E140NFV.CodSnf = :VCodSnf \
+              And E140NFV.NumNfv = :VNumNfv";
+SQL_Criar(CCurCli);
+SQL_DefinirComando(CCurCli, TClaSql);
+SQL_DefinirInteiro(CCurCli,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurCli,"VCodFil",VCodFil);
+SQL_DefinirAlfa(CCurCli,"VCodSnf",VCodSnf);
+SQL_DefinirInteiro(CCurCli,"VNumNfv",VNumNfv);
+SQL_AbrirCursor(CCurCli);
+Se (SQL_EOF(CCurCli) = 0)
+  {
+    SQL_RetornarAlfa(CCurCli,"WWNomCli",VNomCli);
+  }
+SQL_Destruir(CCurCli);  
+
+VCplBas11S = VNumTit + " - " + VNomCli;
+
+x=1;

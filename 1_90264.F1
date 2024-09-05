@@ -1,0 +1,56 @@
+Definir Alfa VaOriOrp;
+Definir Alfa VaCodDep;
+
+VaOriOrp = E210MVP.OriOrp;
+VaCodDep = E210Mvp.CodDep;
+/*
+Se (VaCodDep= "08.01")
+inicio
+  VCtaCre1 = 1179;
+  VCtaDeb1 = 1604;
+fim;
+
+Se (VaOriOrp = " ")
+inicio
+  VCtaCre1 = 1179;
+  VCtaDeb1 = 1604;
+fim;
+
+Se (VaOriOrp = "200")
+inicio
+  VCtaCre1 = 1179;
+  VCtaDeb1 = 1604;
+fim;
+
+Se (VaOriOrp = "190")
+inicio
+  VCtaCre1 = 1179;
+  VCtaDeb1 = 1604;
+fim;
+
+
+Se (VaOriOrp <> " ")
+inicio
+  VCtaDeb1 = 1604;
+fim;
+*/
+Definir numero xposicao;
+definir alfa vcodccu;
+definir numero vperrat;
+definir numero vvlrrat;
+vCodCcu = E210MVP.CodCcu;
+LimpaEspacos(vCodCcu);
+
+
+@Regra para Inserir 100% Rateio Integração@
+Se (vCodCcu <> "")
+inicio
+  /* Para excluir todos registros de rateios que vieram */
+  xPosicao = 1;
+  RateioIntegracao("Excluir_Tudo",xPosicao,vCodCcu,vPerRat,vVlrRat); 
+
+  /* Para inserir um rateio único */
+  vPerRat = 100;
+  vVlrRat = E210MVP.VLRMOV;
+  RateioIntegracao("Inserir",xPosicao,vCodCcu,vPerRat,vVlrRat);
+Fim;

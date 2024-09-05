@@ -1,0 +1,31 @@
+Definir cursor Cur_E001TNS;
+Definir cursor Cur_E501TCP;
+Definir alfa   aCodSnf;
+Definir alfa   aCodTns;
+Definir alfa   aVarAux;
+
+nCodEmp =E440ISC.CodEmp;
+nCodFil =E440ISC.CodFil;
+nCodFor =E440ISC.CodFor;
+nNumNfc =E440ISC.NumNfc;
+aCodSnf =E440ISC.CodSnf;
+aCodTns =E440ISC.TnsSer;
+
+/* valor contábil */
+Se (vVlrBas11 = 0)
+    Cancel(1);
+
+/* iss retido */
+Cur_E001TNS.SQL "Select CodEmp \
+                   from E001TNS \
+                  where CodEmp =:nCodEmp \
+                    and CodTns =:aCodTns \
+                    and CprIss ='-'";
+Cur_E001TNS.AbrirCursor();
+Se (Cur_E001TNS.NaoAchou)
+    Inicio
+      Cur_E001TNS.FecharCursor(); 
+      vVlrBas11 =0;
+      Cancel(1);
+    Fim;
+Cur_E001TNS.FecharCursor();

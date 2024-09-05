@@ -1,0 +1,5 @@
+Se (E501TCP.TitCar = "S")
+  VVlrBas2 = VVlrBas2 + E501MCP.VlrMov;
+
+Se (E501TCP.OriSub <> 0)
+  VVlrBas2 = 0;

@@ -1,0 +1,37 @@
+@ Verifica se existe Credito de ICMS nas notas de Entrada @
+Definir Cursor  Cur_E440ISC;  @ Cursor @
+Definir Numero  VnCodEmp;     @ Codigo da Empresa @
+Definir Numero  VnFilNfc;     @ Codigo da Filial @
+Definir Numero  VnNumNfc;     @ Numero da NF Entrada @
+Definir Numero  VnCodFor;     @ Codigo do Fornecedor @
+Definir Alfa    VaCodSnf;     @ Serie da NF Compra @
+Definir Numero  VnSeqIpc;     @ Sequencia do item @
+
+VnCodEmp = E140ISV.CodEmp;
+VnFilNfc = E140ISV.FilNfc;    
+VnNumNfc = E140ISV.NumNfc;     
+VnCodFor = E140ISV.CodFor;     
+VaCodSnf = E140ISV.SnfNfc;     
+VnSeqIsc = E140ISV.SeqIsc;  
+
+VVecIcm = 0;      
+   
+Cur_E440ISC.Sql"Select VecIcm \
+                   From E440ISc \
+                 Where CodEmp =:VnCodEmp \
+                   And CodFil =:VnFilNfc \
+                   And CodSnf =:VaCodSnf \
+                   And NumNfc =:VnNumNfc";
+Cur_E440ISC.AbrirCursor();
+  Se (Cur_E440ISC.Achou)
+  Inicio
+    VVecIcm  = Cur_E440ISC.VecIcm ;  
+  Fim;
+Cur_E440ISC.FecharCursor();
+
+
+Se (VVecIcm  = 0)
+   VVlrBas13 = 0;
+
+
+X =1;

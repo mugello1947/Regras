@@ -1,0 +1,41 @@
+vAbgFil1 = E501RAT.CODFIL;
+vDatBas1 = E501MCP.DATMOV;
+vCtaDeb1 = E501RAT.CTARED;
+vCtaCre1 = 0;
+vVlrBas1 = E501RAT.VLRRAT;
+vCodHpd1 = 501;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = E501RAT.CODTNS;
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+Definir Alfa vCplBas11S[200]; vCplBas11S = E501RAT.NUMTIT;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Definir Alfa vCplBas12s;
+Definir Alfa gObsTcp;
+Definir Alfa gNomFor;
+
+gCodFor = E501Rat.CodFor;
+gObsTcp = E501Tcp.ObsTcp;
+
+Se (gCodFor = 1)
+   vCplBas12S = gObsTcp;
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501Rat.CodFor;
+gCodEmp = E501Rat.CodEmp;
+gCodFil = E501Rat.CodFil;
+gNumTit = E501Rat.NumTit;
+gCodTpt = E501Rat.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCtaRed = 0;
+
+
+Se((gCodCrp <> "20") e (gCodCrp <> "24") e (gCodTpt <> "66") e (gCodTpt <> "40") e (gCodTpt <> "51"))
+      VVlrBas1 = 0;

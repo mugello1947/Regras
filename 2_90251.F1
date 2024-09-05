@@ -1,0 +1,97 @@
+Definir Cursor Cur_E012Fam;
+Definir Cursor Cur_E075Pro;
+Definir Numero vCtaCre1;
+Definir Numero vCodEmp;
+Definir Alfa   vCodFam;
+Definir Alfa   vCodPro;
+Definir Alfa   vCodOri;
+Definir Alfa   vCodAgp;
+/*** Definir Alfa   vCodDer; ***/
+
+vCodEmp = E210Mvp.CodEmp;
+vCodPro = E210Mvp.CodPro;
+vCodOri = E075pro.CodOri;
+vCodAgp = E075pro.CodAgp;
+/*** vCodDer = E075pro.Codder; ***/
+
+vCtaCre1 = 0;
+vCtaRed  = 0;
+
+EstaNulo(vCodpro,VRet);
+
+/* Busca no cadastro do Produto o Codigo Da Familia***********************/
+ 
+      Inicio
+        Cur_E075Pro.Sql "Select CodFam  \
+                           From E075Pro \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro";
+        Cur_E075Pro.AbrirCursor();
+        Se (Cur_E075Pro.Achou)
+          Inicio
+            vCodFam = Cur_E075Pro.CodFam;
+         Fim;
+      Cur_E075Pro.FecharCursor();
+         Fim;
+
+/* Busca a Conta Contabil no Cadastro da Familia***********************/
+ 
+    Inicio
+      Cur_E012Fam.Sql "Select CtaRed  \
+                       From E012Fam \
+                      Where CodEmp = :vCodEmp \
+                        And CodFam = :vCodFam";
+      Cur_E012Fam.AbrirCursor();
+      Se (Cur_E012Fam.Achou)
+         Inicio
+         VCtaCre1 = Cur_E012Fam.CtaRed;
+         Fim;
+      Cur_E012Fam.FecharCursor();
+      Fim;
+
+/* Se PRODUTO = '20060003'  - Usar Conta Contabil - 91 ***********************/
+ 
+  Se (vCodpro = "20060003")
+      Inicio
+        Cur_E075Pro.Sql "Select CtaRed  \
+                           From E075Pro \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro";
+        Cur_E075Pro.AbrirCursor();
+        Se (Cur_E075Pro.Achou)
+          Inicio
+            vCtaCre1 = Cur_E075Pro.CtaRed;
+          Fim;
+        Cur_E075Pro.FecharCursor();
+      Fim;
+
+/*********** Não contabilizar se a ORIGEM da Familia for = 100 - Conversão (Acabados) ****************/
+Se ((vCodOri = "100"))
+     vVlrBas1 = 0;
+x=0;
+
+
+/*** Se a data de entrada for menor que 28/01/2010, não contabilizar. ***/
+
+Definir Data vDatBas;
+Definir Data vDatMov;
+
+MontaData(28,01,2010,vDatBas);
+vDatMov = E210MVP.DatMov;
+Se (vDatMov < vDatBas)
+  vVlrBas1 = 0;
+
+x=0;
+
+@ Conforme alinhado com Rodrigo/Silvio quando o produto tem o agrupamento P011 irá contabilizar na conta do cadastro do produto e nao na conta da família. @ 
+Se (vCodAgp = "P011") {
+   Cur_E075Pro.Sql "Select CtaRed  \
+                      From E075Pro \
+                     Where CodEmp = :vCodEmp \
+                       And Codpro = :vCodpro";
+   Cur_E075Pro.AbrirCursor();
+   Se (Cur_E075Pro.Achou)
+      vCtaCre1 = Cur_E075Pro.CtaRed;
+   Cur_E075Pro.FecharCursor();
+}
+x=0;

@@ -1,0 +1,26 @@
+Definir Alfa VaCodTpt;
+
+VaCodTpt = E501MCP.CodTpt;
+
+Se (VaCodTpt <> "34")
+  VVlrBas1 = 0;
+
+
+Definir cursor Cur_E600CCO;
+Definir alfa   aNumCco;
+
+nCodEmp =E501TCP.CodEmp;
+aNumCco =E501MCP.NumCco;
+
+/* devolução adiantamento na tesouraria */
+Se (E501MCP.EmpCco >0)
+    Inicio
+      Cur_E600CCO.SQL "Select CtaRed \
+                         from E600CCO \
+                        where CodEmp =:nCodEmp \
+                          and NumCco =:aNumCco";
+      Cur_E600CCO.AbrirCursor();
+      Se (Cur_E600CCO.Achou)
+          vCtaDeb1 =Cur_E600CCO.CtaRed;
+      Cur_E600CCO.FecharCursor();           
+    Fim;

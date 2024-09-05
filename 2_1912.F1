@@ -1,0 +1,43 @@
+Definir Cursor Cur_E095For;
+Definir numero gCodEmp;
+Definir numero gCodFor;
+Definir numero gCtaRed;
+
+gCodEmp = E440Ipc.CodEmp;
+gCodFor = E440Nfc.CodFor;
+gCtaRed = 0;
+
+Cur_E095For.Sql "Select CodFor from E095For where CodFor=:gCodFor";
+
+Cur_E095For.AbrirCursor();
+Se (Cur_E095For.Achou)
+   Inicio
+     gCodFor = Cur_E095For.CodFor;
+   Fim;
+Cur_E095For.FecharCursor();
+
+Se (gCodFor = 5) @ Projesan @
+    gCtaRed = 550;
+Se (gCodFor = 145) @ Hercules @
+    gCtaRed = 552;
+Se (gCodFor = 850) @ Hercules @
+    gCtaRed = 1018;
+Se (gCodFor = 149) @ HERGEN @
+    gCtaRed = 1025;
+Se (gCodFor = 4253) @ Commfi @
+    gCtaRed = 4253;
+Se (gCodFor = 113) @ TECNO @
+    gCtaRed = 1050;
+
+
+/****
+Se (gCodFor = 581) @ Auti @
+    gCtaRed = 1034;
+****/
+
+Senao
+    gCtaRed = E440Ipc.CtaRed;
+
+VCtaCre1 = gCtaRed;
+
+X=0;

@@ -1,0 +1,16 @@
+
+
+Definir data xDatAux;
+xDatAux=vDatBas5;
+
+vCodEmp = CodEmp;
+vCodFil = CodFil;
+Definir alfa xCodFil;
+IntParaAlfa(vCodFil,xCodFil);
+vCtaRed = 81;
+FSalAnt = 0;
+CarregaSaldoContabilAbr(vCodEmp, xCodFil, xDatAux, xDatAux, 1); 
+Saldo(vCtaRed, FSalIni);
+
+vVlrBas5 = FSalIni;
+x=1;

@@ -1,0 +1,36 @@
+
+Definir Alfa   TClaSql; 
+Definir Alfa   CCurCip;
+VCodEmp = CodEmp; 
+VFilCal = CodFil;                                                           
+VVlrPar = 0; 
+Definir data Vdata;
+
+VData=vDatBas2;
+Definir Data pDatIni;
+Definir Data pDatFim;
+
+DesmontaData (VData,VDia,VMes,VAno);
+Vdia=01;
+MontaData (VDia,VMes,VAno,VData);
+VDatIni = VData;
+
+
+    TClaSql = "select VlrAjs WWVlrPar from E661AJS,E661lra  \
+               where E661AJS.ideajs=E661lra.IdeAjs and E661AJS.DesAjs like '%CIAP%'  and E661AJS.TIPAJS=4 \
+                and E661lra.DatApi=:VDatIni  and E661lra.CodImp='ICM' and E661lra.CodEmp=:VCodEmp and E661lra.CodFil=:VFilCal  ";
+
+    SQL_Criar(CCurCip);
+    SQL_DefinirComando(CCurCip, TClaSql);
+    SQL_DefinirInteiro(CCurCip,"VCodEmp",VCodEmp);
+    SQL_DefinirInteiro(CCurCip,"VFilCal",VFilCal);
+    SQL_DefinirData(CCurCip,"VDatIni",VDatIni);
+
+    SQL_AbrirCursor(CCurCip);
+    Se (SQL_EOF(CCurCip) = 0)
+      {
+        SQL_RetornarFlutuante(CCurCip,"WWVlrPar",VVlrPar);
+      }
+    SQL_Destruir(CCurCip);
+     
+vVlrBas2 = VVlrPar;

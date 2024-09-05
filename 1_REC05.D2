@@ -1,0 +1,43 @@
+vAbgFil2 = E301MCR.CODFIL;
+vDatBas2 = E301MCR.DATMOV;
+vCtaDeb2 = E085HCL.CTAAAD;
+vCtaCre2 = 0;
+vVlrBas2 = E301MCR.VLRMOV;
+vCodHpd2 = 148;
+Definir Alfa vObsCpl2S[200]; vObsCpl2S = E301MCR.CODTNS;
+vCgcCpf2 = 0;
+vCgcCre2 = 0;
+vCodMoe2 = 0;
+Definir Alfa vCplBas21S[200]; vCplBas21S = E301MCR.NUMTIT;
+Definir Alfa vCplBas22S[200]; vCplBas22S = E085CLI.NOMCLI;
+Definir Alfa vCplBas23S[200]; vCplBas23S = E301MCR.NUMRLC;
+Definir Alfa vCplBas24S[200]; vCplBas24S = E301MCR.NUMRLC;
+/* REGRA_PARCIAL */
+Definir cursor Cur_E085CLI;
+Definir alfa   vCplBas14S;
+Definir alfa   aCodTpt;
+Definir alfa   aNumTit;
+
+nCodEmp =E301MCR.CodEmp;
+nCodFil =E301MCR.FilRlc;
+aCodTpt =E301MCR.TptRlc;
+aNumTit =E301MCR.NumRlc;
+
+/* cliente relacionado */
+Cur_E085CLI.SQL "Select E085CLI.NomCli \
+                   from E085CLI, \
+                        E301TCR \
+                  where E301TCR.CodEmp =:nCodEmp \
+                    and E301TCR.CodFil =:nCodFil \
+                    and E301TCR.CodTpt =:aCodTpt \
+                    and E301TCR.NumTit =:aNumTit \
+                    and E085CLI.CodCli =E301TCR.CodCli"; 
+Cur_E085CLI.AbrirCursor();
+Se (Cur_E085CLI.Achou)
+    vCplBas14S =Cur_E085CLI.NomCli;
+Senao
+    Inicio
+      Cur_E085CLI.FecharCursor();
+      GeraLog("Regra: Não foi encontrado cliente ou título compensado.");
+    Fim;
+Cur_E085CLI.FecharCursor();

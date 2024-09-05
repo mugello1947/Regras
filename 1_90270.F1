@@ -1,0 +1,42 @@
+Definir numero VnNumNfv;
+Definir numero VnCodEmp;
+Definir numero VnCodFil;
+Definir numero VnSeqIpv;
+Definir Alfa   VaCodSnf;
+Definir Alfa   VaCodTns;
+Definir Alfa   xSqlAux;
+Definir Alfa   BusAjus;
+
+VnNumNfv = E210MVP.NumNfv;
+VnCodEmp = E210MVP.CodEmp;
+VnCodFil = E210MVP.CodFil;
+VnSeqIpv = E210MVP.SeqIpv;
+VaCodSnf = E210MVP.CodSnf;
+
+vnVlrMovE = 0;
+vnVlrMovS = 0;
+
+xSqlAux = "Select TnsPro \
+                     from E140IPV \
+                    where NumNfv =:VnNumNfv \
+                      and CodEmp =:VnCodEmp \
+                      and CodFil =:VnCodFil \
+                      and SeqIpv =:VnSeqIpv \
+                      and CodSnf =:VaCodSnf"; 
+
+SQL_Criar(BusAjus); 
+SQL_DefinirComando(BusAjus,xSqlAux);
+SQL_DefinirInteiro(BusAjus,"VnNumNfv",VnNumNfv);
+SQL_DefinirInteiro(BusAjus,"VnCodEmp",VnCodEmp);
+SQL_DefinirInteiro(BusAjus,"VnCodFil",VnCodFil);
+SQL_DefinirInteiro(BusAjus,"VnSeqIpv",VnSeqIpv);
+SQL_DefinirAlfa(BusAjus,"VaCodSnf",VaCodSnf);
+SQL_AbrirCursor(BusAjus); 
+Enquanto (SQL_EOF(BusAjus) = 0)
+inicio
+  SQL_RetornarAlfa(BusAjus,"TnsPro",VaCodTns);
+  Se (VaCodTns = "6949E")
+     VCtaDeb1 = 3064;
+  SQL_Proximo(BusAjus);
+fim; 
+SQL_Destruir(BusAjus); 

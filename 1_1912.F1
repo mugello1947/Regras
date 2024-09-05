@@ -1,0 +1,56 @@
+Definir Cursor Cur_E095For;
+Definir numero gCodEmp;
+Definir numero gCodFor;
+Definir numero gCtaRed;
+Definir Alfa VaCodPro;
+Definir Alfa VaCodOri;
+
+gCodEmp = E440Ipc.CodEmp;
+gCodFor = E440Nfc.CodFor;
+VaCodPro = E440IPC.CodPro;
+gCtaRed = 0;
+VaCodOri = VaCodPro;
+Copiaralfa(VaCodOri,1,3);
+
+
+Cur_E095For.Sql "Select CodFor from E095For where CodFor=:gCodFor";
+
+Cur_E095For.AbrirCursor();
+Se (Cur_E095For.Achou)
+   Inicio
+     gCodFor = Cur_E095For.CodFor;
+   Fim;
+Cur_E095For.FecharCursor();
+
+Se (gCodFor = 5) @ Projesan @
+    gCtaRed = 550;
+Se (gCodFor = 145) @ Hercules @
+    gCtaRed = 552;
+Se (gCodFor = 850) @ Hercules @
+    gCtaRed = 1018;
+Se (gCodFor = 149) @ HERGEN @
+    gCtaRed = 1025;
+Se (gCodFor = 4253) @ Commfi @
+    gCtaRed = 4253;
+Se (gCodFor = 113) @ TECNO @
+    gCtaRed = 1050;
+
+
+@ PERINI PAPEL devolvido em 14/03 @
+Se ((gCodFor = 2021)  e ((VaCodOri= "190") ou (VaCodOri = "200"))) @ Chamado 22367 - ECC@
+inicio
+    VCtaDeb1 = 66;
+    gCtaRed = 746;
+fim;
+
+/****
+Se (gCodFor = 581) @ Auti @
+    gCtaRed = 1034;
+****/
+
+Senao
+    gCtaRed = E440Ipc.CtaRed;
+
+VCtaCre1 = gCtaRed;
+
+X=0;

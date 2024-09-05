@@ -1,0 +1,48 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+Definir Alfa gCodTns;
+gCtaCre = 0;
+
+
+
+Se ((gCodTpt = "10") e (gCodCli = 430))
+  vCtaCre1 = 119;
+
+
+Se (gCtaCre = 0)
+    gCtaCre = 70;
+
+
+
+
+Definir Alfa gCodTpt;
+gCodTpt = E501Mcp.CodTpt;
+
+
+@Baixa de titulo da folha - tratamento vendas lojas - desconto de adto@
+Se(gCodTpt ="68")
+inicio
+ VVlrBas5=0;
+ Cancel(1);
+fim;
+
+@tratamento ipi a recuperar @
+Se(gCodTpt ="21")
+inicio
+ VVlrBas5=0;
+ Cancel(1);
+fim;
+
+gSeqMcr=E501MCP.SeqMcr;
+
+Se(gSeqMcr>0)
+inicio
+ VVlrBas5=0;
+ Cancel(1);
+fim;

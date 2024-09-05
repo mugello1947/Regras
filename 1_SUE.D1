@@ -1,0 +1,41 @@
+vAbgFil1 = E661RUF.CODFIL;
+vDatBas1 = E661RUF.DATAPI;
+vCtaDeb1 = 0;
+vCtaCre1 = 0;
+vVlrBas1 = E661RUF.TOTCRE+E661RUF.TOTDEB;
+vCodHpd1 = 169;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+vCplBas11 = E661CUF.DATAPF;
+/* REGRA_PARCIAL */
+Definir numero vTotCre;
+Definir numero vTotDeb;
+
+vTotCre = E661RUF.TotCre;
+vTotDeb = E661RUF.TotDeb;
+
+vValor = 0;
+gCtaDeb = 0;
+gCtaCre = 0;
+
+Se (vTotCre > vTotDeb) @ Se o total de Crédito for maior que o total de Débitos, contabiliza o Débito na conta 43 - ICMS Substituto a Recuperar @
+  Inicio    
+    vValor = vTotCre - vTotDeb;
+    gCtaDeb = 43;
+    gCtaCre = 929;
+  Fim;
+Senao
+  Inicio
+    vValor = vTotDeb - vTotCre;  @ Se o total de Débito for maior que o total de Créditos, contabiliza o Crédito na conta 313 - ICMS Substituto a Recolher @
+
+    gCtaDeb = 929;
+    gCtaCre = 313;
+  Fim;
+
+vVlrBas1 = vValor;
+vCtaDeb1 = gCtaDeb;
+vCtaCre1 = gCtaCre;
+
+UltimoDia(vDatBas1); 

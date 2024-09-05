@@ -1,0 +1,88 @@
+Definir Numero gCodFor;
+Definir Alfa gCodTpt;
+
+
+gCodTpt = E501MCP.CodTpt;
+gCodFor = E501MCP.Codfor;
+
+vCtaDeb2 = 913;
+
+
+Se ((gCodFor = 2976) e (gCodTpt = "01"))
+ vCtaDeb2 = 916;
+
+
+Se ((gCodFor = 3515) e (gCodTpt = "01"))
+ vCtaDeb2 = 916;
+
+
+Se ((gCodFor = 4592) e (gCodTpt = "02"))
+ vCtaDeb2 = 916;
+
+
+Se ((gCodFor = 4593) e (gCodTpt = "02"))
+ vCtaDeb2 = 916;
+
+
+
+@ Criado para contabilizar a conta 916 o valor de juros - ECC em 30/08/2017 - Chamado 6539 @
+
+
+Se (E501TCP.CodCrp = "30") @ Grupo de Emprestimos e Financiamentos @
+    vCtaDeb2 = 916;
+
+
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select PreCar from E606PRE where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumTit =:vaNumTit and CodTpt=:vxCodTpt  and TipPre = 'P'";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VaPreCar = Cur_E501Tc2.PreCar;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  Se (VaPreCar = "S"){
+    vCtaDeb2 = 1208;
+   
+    @ Leasing @
+    Se (E501TCP.NumCcr = 15)
+      VCtaDeb2 = 459;
+    Se (E501TCP.NumCcr = 16)
+      VCtaDeb3 = 459;
+  }
+
+  Se (VaPreCar <> "S")
+    VVlrBas2 = VVlrBas2 - E501MCP.JrsCal;
+
+  Se (VvlrBas2 < 0)
+  inicio
+    VvlrBas2=(VVlrBas2 * -1);
+    Vctacre=vctacre2;
+    VctaCre2=VctaDeb2;
+    VctaDeb2=vctacre;
+  Fim;
+  
+Fim;

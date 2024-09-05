@@ -1,0 +1,61 @@
+Definir Alfa VaCodBem;
+Definir Numero VnDatMov;
+Definir Data VdDatMov;
+Definir Alfa VaDatMov;
+Definir Alfa VaCodTns;
+Definir Alfa VaTipAcr;
+Definir numero VnCodEmp;
+Definir numero VnCodFil;
+Definir numero VnVlrSoci; @ Valor Total do Societario @
+Definir Alfa BusSoci; @ Busca a depreciação Societária @
+Definir Alfa BusBem;
+Definir Alfa xSqlAux;
+
+VaCodBem = E670Mov.CodBem;
+VnDatMov = E670Mov.DatMov;
+VnCodEmp = E670MOV.CodEmp;
+VnCodEsp = E670Mov.CodEsp;
+VdDatMov = vDatBas4;
+VnVlrNor = 0;
+
+@ Busca Custo Atribuidos @
+
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+fim; 
+SQL_Destruir(BusBem); 
+
+@ Busca Custo Atribuidos @
+
+Se (VaTipAcr = "J") @ Custo Atribuido @
+inicio
+     VctaCre4 = 5004;
+     VctaDeb4 = 5743;
+     VCodHpd4 = 125;
+Fim;
+
+VVlrBas4 = VVlrBas4 * 0.25; @ IPRJ de 25%@
+ArredondarValor(VVlrBas4,2);
+
+@ Adoção Inicial negativa @
+Se (VvlrBas4 < 0)
+inicio
+   VvlrBas4=(VVlrBas4 * -1);
+   Vctacre=vctacre4;
+   VctaCre4=VctaDeb4;
+   VctaDeb4=vctacre;
+Fim;
+
+VnCtaRed = E670MOV.CtaRed;
+Se ((VnCtaRed = 2141) ou (VnCtaRed = 2142))
+  VvlrBas4 = 0; 
+
+x=0;

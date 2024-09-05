@@ -1,0 +1,31 @@
+Definir Alfa   vCodOri;
+vCodOri = E075pro.CodOri;
+Definir Numero vCtaDeb1;
+
+
+Se(vCodOri="100")
+   vCtaDeb1 = 699;
+
+
+Se(vCodOri="110")
+   vCtaDeb1 = 699;
+
+Se(vCodOri="200")
+   vCtaDeb1 = 1699; 
+
+Se(vCodOri="400")
+   vCtaDeb1 = 2699;
+
+
+
+Se(vCodOri="120") @ Adicionado em 31/05/2017 - RFC @
+   vCtaDeb1 = 699; 
+
+Se(vCodOri="250") @a partir do mes 11/2017@
+   vCtaDeb1 = 4699; 
+
+Se(vCodOri="500")  @cavaco@
+   vCtaDeb1 = 3699;
+
+Se(vCodOri="190")  @ Bobina rebobinada - Adicionado em 22/08/2018 - ECC @
+   vCtaDeb1 = 1699;

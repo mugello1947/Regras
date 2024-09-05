@@ -1,0 +1,187 @@
+vAbgFil2 = E440RAT.CODFIL;
+vDatBas2 = E440NFC.DATENT;
+vCtaDeb2 = E440RAT.CTARED;
+vCtaCre2 = 0;
+vVlrBas2 = E440RAT.VLRRAT;
+vCodHpd2 = 31;
+Definir Alfa vObsCpl2S[200]; vObsCpl2S = E440RAT.TNSPRO;
+vCgcCpf2 = 0;
+vCgcCre2 = 0;
+vCodMoe2 = 0;
+vCplBas21 = E440RAT.NUMNFC;
+Definir Alfa vCplBas22S[200]; vCplBas22S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Definir cursor Cur_R999ENT;
+Definir alfa   aCmdSql;
+Definir alfa   aCmdSql1;	
+Definir alfa   aCodCcu;	
+Definir alfa   aCodMod;
+Definir alfa   aCodSer;	
+Definir alfa   aCodSnf;	
+Definir alfa   aCodTns;	
+Definir alfa   aNomVar;	
+Definir alfa   aQtdReg;	
+Definir alfa   aRetSql;	
+Definir alfa   aVarAux;
+Definir Alfa   TClaSql;
+Definir Alfa   CCurNfe;	
+
+nCodEmp =E440RAT.CodEmp;
+nCodFil =E440RAT.CodFil;
+nNumNfc =E440RAT.NumNfc;
+nSeqRat =E440RAT.SeqRat;
+nCodFor =E440RAT.CodFor;
+aCodSnf =E440RAT.CodSnf;
+aCodCcu =E440RAT.CodCcu;
+aCodTns =E440RAT.TnsSer;
+nUsuLog =CodUsu;
+nVlrLct =0;
+
+/* transação */
+IntParaAlfa(nSeqIsc,aVarAux);
+aCodMod = "COD03" + "-" + aVarAux;
+VAchou = 0;
+
+/* Ver tem ICM Creditado */
+TClaSql = "Select E440IPC.VecIcm  \  
+             From E440IPC \
+            Where E440IPC.CodEmp = :nCodEmp \
+              And E440IPC.CodFil = :nCodFil \
+              And E440IPC.CodFor = :nCodFor \
+              And E440IPC.CodSnf = :aCodSnf \
+              And E440IPC.NumNfc = :nNumNfc \
+              And E440IPC.VecIcm <> 0";
+    SQL_Criar(CCurNfe);
+    SQL_DefinirComando(CCurNfe, TClaSql);
+    SQL_DefinirInteiro(CCurNfe,"nCodEmp",nCodEmp);
+    SQL_DefinirInteiro(CCurNfe,"nCodFil",nCodFil);
+    SQL_DefinirInteiro(CCurNfe,"nCodFor",nCodFor);
+    SQL_DefinirAlfa(CCurNfe,"aCodSnf",aCodSnf);
+    SQL_DefinirInteiro(CCurNfe,"nNumNfc",nNumNfc);   
+    SQL_AbrirCursor(CCurNfe);
+    Se (SQL_EOF(CCurNfe) = 0)
+      {
+        VAchou = 1;
+      }
+    SQL_Destruir(CCurNfe);
+
+se (VAchou = 0)
+  aCmdSql = "VlrLiq - VecIcm - VecIpi - VlrPis - VlrCor";
+senao
+  aCmdSql = "VlrLiq + VlrDfa - VecIcm - VecIpi - VlrPis - VlrCor";
+
+/* valor base */
+IntParaAlfa(nCodEmp,aVarAux);
+aCmdSql =aCmdSql + "   from E440IPC \
+                      where CodEmp =" + aVarAux;
+IntParaAlfa(nCodFil,aVarAux);
+aCmdSql =aCmdSql + "    and CodFil =" + aVarAux;
+IntParaAlfa(nCodFor,aVarAux);
+aCmdSql =aCmdSql + "    and CodFor =" + aVarAux;
+IntParaAlfa(nNumNfc,aVarAux);
+aCmdSql =aCmdSql + "    and NumNfc =" + aVarAux;
+aCmdSql =aCmdSql + "    and CodSnf ='" + aCodSnf + "'";
+IntParaAlfa(nSeqIpc,aVarAux);
+@ aCmdSql =aCmdSql + "    and SeqIpc =" + aVarAux; @
+SelecaoTabelas(aCmdSql,aRetSql,aVarAux);
+AlfaParaInt(aRetSql,nVlrBas);
+
+/* qtde rateios */
+aCmdSql ="                 count(*)";
+aCmdSql =aCmdSql + "  from E440RAT";
+IntParaAlfa(nCodEmp,aVarAux);
+aCmdSql =aCmdSql + " where CodEmp =" + aVarAux;
+IntParaAlfa(nCodFil,aVarAux);
+aCmdSql =aCmdSql + "   and CodFil =" + aVarAux;
+IntParaAlfa(nCodFor,aVarAux);
+aCmdSql =aCmdSql + "   and CodFor =" + aVarAux;
+IntParaAlfa(nNumNfc,aVarAux);
+aCmdSql =aCmdSql + "   and NumNfc =" + aVarAux;
+aCmdSql =aCmdSql + "   and CodSnf ='" + aCodSnf + "'";
+IntParaAlfa(nSeqRat,aVarAux);
+aCmdSql =aCmdSql + "   and VlrRat <> 0";
+SelecaoTabelas(aCmdSql,aRetSql,aVarAux);
+AlfaParaInt(aRetSql,nQtdRat);
+
+/* nota fiscal */
+ConverteMascara(1,nCodEmp,aNomVar,"9[4]");
+ConverteMascara(1,nCodFil,aVarAux,"9[4]");
+aNomVar =aNomVar + aVarAux;
+ConverteMascara(1,nCodFor,aVarAux,"9[9]");
+aNomVar =aNomVar + aVarAux;
+ConverteMascara(1,nNumNfc,aVarAux,"9[9]");
+aNomVar =aNomVar + aVarAux + aCodSnf;
+
+Se (nQtdRat >1)
+    Inicio  
+      /* recálculo valor rateado */
+      nVlrLct  =((nVlrBas * E440RAT.PerCta)/100) * (E440RAT.PerRat/100);
+      ArredondarValor(nVlrLct,2);
+
+      /* controle valores rateados */
+      Cur_R999ENT.SQL "Select ValNum, \
+                              ValStr \
+                         from R999ENT \
+                        where CodUsu =:nUsuLog \
+                          and CodMod =:aCodMod \
+                          and NomVar =:aNomVar";
+      Cur_R999ENT.AbrirCursor();
+      Se (Cur_R999ENT.Achou)
+          Inicio
+            aVarAux =Cur_R999ENT.ValStr;
+            AlfaParaInt(aVarAux,nQtdReg);
+
+            /* último rateio */
+            Se (nQtdReg +1 =nQtdRat)
+                Inicio
+                  nQtdReg++;
+                  nVlrLct =nVlrBas - Cur_R999ENT.ValNum;
+                  ExecSQL "update R999ENT \
+                              set ValNum =0, \
+                                  ValStr ='0' \
+                            where CodUsu =:nUsuLog \
+                              and CodMod =:aCodMod \
+                              and NomVar =:aNomVar";
+                Fim;
+
+            /* acumular rateio */
+            Se (nQtdReg <> nQtdRat)
+                Inicio
+                  nQtdReg++;
+                  nVarAux =nVlrLct + Cur_R999ENT.ValNum;
+                  IntParaAlfa(nQtdReg,aQtdReg);
+                  ExecSQL "update R999ENT \
+                              set ValNum =:nVarAux, \
+                                  ValStr =:aQtdReg \
+                            where CodUsu =:nUsuLog \
+                              and CodMod =:aCodMod \
+                              and NomVar =:aNomVar";
+                Fim;
+          Fim;
+      Se (Cur_R999ENT.NaoAchou)
+          ExecSQL "insert into R999ENT (CodUsu,CodMod,NomVar,ValSeq,TipVar,ValNum,ValStr) values \
+                                       (:nUsuLog,:aCodMod,:aNomVar,1,0,:nVlrLct,'1')";
+      Cur_R999ENT.FecharCursor();
+    Fim;
+
+Se (nQtdRat =1)
+    Inicio
+      nVlrLct =nVlrBas;
+      ExecSQL "update R999ENT \
+                  set ValNum =0, \
+                      ValStr ='0' \
+                where CodUsu =:nUsuLog \
+                  and CodMod =:aCodMod \
+                  and NomVar =:aNomVar";
+    Fim;
+
+vVlrBas2 =nVlrLct;
+
+
+x=1;
+
+
+
+
+
+x=1;

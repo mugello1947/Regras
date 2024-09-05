@@ -1,0 +1,62 @@
+Definir numero VnNumNfc;
+Definir numero VnCodFor;
+Definir numero VnCodEmp;
+Definir numero VnCodFil;
+Definir numero VnSeqIpc;
+Definir numero VnVlrMovE;
+Definir numero VnVlrMovS;
+Definir Alfa   VaCodSnf;
+Definir Alfa   VaCodTns;
+Definir Alfa   xSqlAux;
+Definir Alfa   BusAjus;
+
+VnNumNfc = E210MVP.NumNfc;
+VnCodFor = E210MVP.CodFor;
+VnCodEmp = E210MVP.CodEmp;
+VnCodFil = E210MVP.CodFil;
+VnSeqIpc = E210MVP.SeqIpc;
+VaCodSnf = E210MVP.SnfNfc;
+
+vnVlrMovE = 0;
+vnVlrMovS = 0;
+
+xSqlAux = "Select sum(VlrMov) as VlrMov, CodTns \
+                     from E210MVP \
+                    where NumNfc =:VnNumNfc \
+                      and CodFor =:VnCodFor \
+                      and CodEmp =:VnCodEmp \
+                      and CodFil =:VnCodFil \
+                      and SeqIpc =:VnSeqIpc \
+                      and SnfNfc =:VaCodSnf \
+                      group by CodTns"; 
+
+SQL_Criar(BusAjus); 
+SQL_DefinirComando(BusAjus,xSqlAux);
+SQL_DefinirInteiro(BusAjus,"VnNumNfc",VnNumNfc);
+SQL_DefinirInteiro(BusAjus,"VnCodFor",VnCodFor);
+SQL_DefinirInteiro(BusAjus,"VnCodEmp",VnCodEmp);
+SQL_DefinirInteiro(BusAjus,"VnCodFil",VnCodFil);
+SQL_DefinirInteiro(BusAjus,"VnSeqIpc",VnSeqIpc);
+SQL_DefinirAlfa(BusAjus,"VaCodSnf",VaCodSnf);
+SQL_AbrirCursor(BusAjus); 
+Enquanto (SQL_EOF(BusAjus) = 0)
+inicio
+  SQL_RetornarAlfa(BusAjus,"CodTns",VaCodTns);
+  Se (VaCodTns = "90231")
+     SQL_RetornarFlutuante(BusAjus,"VlrMov",VnVlrMovE);
+  Se (VaCodTns = "90257")
+     SQL_RetornarFlutuante(BusAjus,"VlrMov",VnVlrMovS);
+  SQL_Proximo(BusAjus);
+fim; 
+SQL_Destruir(BusAjus); 
+
+VVlrBas1 = VnVlrMovE - VnVlrMovS;
+
+@ Saldo a menor @
+Se (VvlrBas1 < 0)
+inicio
+   VvlrBas1=(VVlrBas1 * -1);
+   Vctacre=vctacre1;
+   VctaCre1=VctaDeb1;
+   VctaDeb1=vctacre;
+Fim;

@@ -1,0 +1,152 @@
+/* REGRA_PARCIAL */
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+Definir Cursor Cur_E600Cco;
+Definir Cursor Cur_E501MCP;
+
+Definir Alfa vNumCco;
+Definir Alfa gCodTpt;
+Definir Alfa vCodTpt;
+Definir Alfa gNumTit;
+
+Definir Numero vCodEmp;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodCli;
+Definir Numero gVlrMov;
+Definir Numero gCodFor;
+
+gCtaDeb = 0;
+vCtaCre = 0;
+
+vCodEmp = E301Mcr.CodEmp;
+vNumCco = E301Mcr.NumCco;
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gNumTit = E301Mcr.NumTit;
+gVlrMov = E301Mcr.VlrMov;
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor()
+  Se (Cur_E002Htt.Achou)
+      gCtaDeb = Cur_E002Htt.CtaRcr;
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaDeb = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaDeb = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se (gCtaDeb = 0)
+    gCtaDeb = 70;
+
+VCtaDeb1 = gCtaDeb; 
+
+@ Buscar TIPO do Título ligado ao Contas à Pagar - 29/05/2013 - Rodrigo Costa@
+
+Cur_E501MCP.Sql " Select CodTpt \
+                    From E501MCP \
+                   Where CodEmp = :gCodEmp \
+                     And CodFil = :gCodFil \
+                     And CodTpt = '44' \
+                     And VlrMov = :gVlrMov"
+
+Cur_E501MCP.AbrirCursor();
+Se (Cur_E501MCP.Achou)
+  vCodTpt = Cur_E501MCP.CodTpt;
+Cur_E501MCP.FecharCursor();
+
+@ Fim - Buscar TIPO do Título ligado ao Contas à Pagar @
+
+@ Inclusao CRE na Tesouraria @
+
+Se (vNumCco <> " ")
+  Inicio
+    Cur_E600Cco.Sql "Select CtaRed from E600Cco where CodEmp=:vCodEmp and NumCco=:vNumCco";
+
+    Cur_E600Cco.AbrirCursor();
+      Se (Cur_E600Cco.Achou)
+        vCtaCre = Cur_E600Cco.CtaRed;
+    Cur_E600Cco.FecharCursor();
+
+    vCtaCre1 = vCtaCre;
+  Fim;
+
+Se (vCtaCre = 0)
+   vCtaCre = E301Rat.CtaRed;
+
+vCtaCre1 = vCtaCre;
+
+
+/*
+Se((gCodTpt = "01") ou (gCodTpt = "08") e (gCodCli = 23))
+    VVlrBas1 = 0;
+*/
+
+Se((gCodTpt = "08") e (gNumTit = "4154"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "10") e (gNumTit = "0103"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "04") e (gNumTit = "000546R"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "04") e (gNumTit = "000356RR"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "04") e (gNumTit = "000201J"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "10") e (gNumTit = "36"))
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "04") 
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "08") 
+    VVlrBas1 = 0;
+
+/*
+Se(gCodTpt = "09") 
+    VVlrBas1 = 0;
+*/
+
+Se(gCodTpt = "93") 
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "10") e (gCodCli = 2493))
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "86") 
+    VCtaDeb1 = 1800;
+
+Se(gCodTpt = "01") 
+    VCtaDeb1 = 70;
+
+Se (gCodCli = 2971)
+    VCtaDeb1 = 1912;
+
+
+Se(gCodTpt = "44")
+inicio
+   vCtaCre1 = 313;
+   vVlrBas1 = gVlrMov;
+  @ vVlrBas1 = 0;@
+Fim;
+
+/* Retidado em: 24/09/2020 conforme chamado #15199
+Se (gCodCli = 2825) @ Latina @
+  vCtaCre1 = 763; @ Serviços de Cobrança - Deduzindo do valor da fatura da Latina @
+*/
+
+x=1;

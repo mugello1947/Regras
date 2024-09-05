@@ -1,0 +1,9 @@
+Definir Numero VCtaDeb1;
+Definir Alfa   VCodFam;
+VCodFam = E075PRO.CodFam;
+
+Se(VCodFam = "3002") @ cavaco @
+  VCtaDeb1 = 50200;
+ Senao
+  Se(VCodFam = "3001") @ lenha @
+    VCtaDeb1 = 50237; 

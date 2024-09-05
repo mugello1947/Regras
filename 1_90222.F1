@@ -1,0 +1,18 @@
+/*********** Não Contabilizar se a Familia for Igual a 1001 ****************/
+
+Definir Alfa gCodfam;
+gCodFam = E012Fam.CodFam;
+
+Se ((gCodFam = "1001"))
+VvlrBas1 = 0;
+
+x=0;
+
+Definir Alfa   vCodAgp;
+vCodAgp = E075pro.CodAgp;
+
+@ Conforme alinhado com Luiz, quando o produto tem o agrupamento P011 e a Forma de COntabilização for 90202, não irá contabilizar@ 
+Se (vCodAgp = "P011")
+vVlrBas1 = 0;
+
+x=0;

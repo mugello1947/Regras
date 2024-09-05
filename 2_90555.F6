@@ -1,0 +1,150 @@
+/*Gustavo   adto baixar
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VCplBas1;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+gCtaRed = 0;
+
+
+Cur_E095Hfo.Sql "Select CtaRcr from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRcr from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRcr ;
+Cur_E095Hfo.FecharCursor();
+
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRcr ;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRcr;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+VCtaCre6 = gCtaRed; */
+
+
+
+
+
+/************* Regra para trazer a CtaDeb 325 quando for. igual 1068 
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+
+Se (gCodTpt = "30")
+   VCtaCre6 = 29;
+
+Se (gCodTpt = "34")
+    vVlrBas6 = 0;
+
+Se (gCodFor = 1068)
+   vCtaCre6 = 325;
+******/
+
+
+/************* Regra para Bloquear Titulos "01" e "150110" CodTpt = 30  
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+gCtaCre6 = 0;
+
+Se ((gCodFor = 765) e (gCodTpt = "30") e (gNumTit="01"))
+    vVlrBas6 = 0;
+
+Se ((gCodFor = 765) e (gNumTit="150110") e (gCodTpt = "30"))
+    vVlrBas6 = 0;
+
+Se ((gCodFor = 399) e (gNumTit="22222") e (gCodTpt = "30"))
+    vVlrBas6 = 0;
+
+
+Se (VCtaDeb1 <> 512)    @ Através do código de ramo de atividade, identifica se o fornecedor é colaborador - ARF - chamado 5017 @
+  {
+    Definir Alfa TClaSql;
+    Definir Alfa CCurRam;
+    Definir Alfa VCodRam;
+    VCodFor = E501MCP.CodFor;
+    VCodRam = "";
+    TClaSql = "Select E095FOR.CodRam VCodRam  \ 
+              From E095FOR \
+          Where E095FOR.CodFor = :VCodFor";
+    SQL_Criar(CCurRam);
+    SQL_DefinirComando(CCurRam, TClaSql);
+    SQL_DefinirInteiro(CCurRam,"VCodFor",VCodFor);
+    SQL_AbrirCursor(CCurRam);
+    Se (SQL_EOF(CCurRam) = 0)
+      {
+        SQL_RetornarAlfa(CCurRam,"VCodRam",VCodRam);
+      }
+    SQL_Destruir(CCurRam);
+   
+    Se((VCodRam = "6") OU (VCodRam = "13") OU (VCodRam = "14")) @ 6 - Colaborador, 13 - Lider e 14 - Superint/Gerente @
+      VCtaCre1 = 512;
+ }
+******/
+
+Definir cursor Cur_E600CCO;
+Definir alfa   aNumCco;
+Definir alfa   aCodSnf;
+
+nCodEmp =E501TCP.CodEmp;
+nCodFil =E501TCP.FilNfv;
+nNumNfv =E501TCP.NumNfv;
+aCodSnf =E501TCP.SnfNfv;
+aNumCco =E501MCP.NumCco;
+
+/* conta interna */
+Se ((E501MCP.EmpCco =0) ou (E501MCP.CodTpt = "31"))
+    Inicio
+      vVlrBas6 =0;
+      Cancel(1);
+    Fim;
+
+/* devolução adiantamento na tesouraria */
+Se (E501MCP.EmpCco >0)
+    Inicio
+      Cur_E600CCO.SQL "Select CtaRed \
+                         from E600CCO \
+                        where CodEmp =:nCodEmp \
+                          and NumCco =:aNumCco";
+      Cur_E600CCO.AbrirCursor();
+      Se (Cur_E600CCO.Achou)
+          vCtaDeb6 =Cur_E600CCO.CtaRed;
+      Cur_E600CCO.FecharCursor();           
+    Fim;
+
+
+x=0;

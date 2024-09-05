@@ -1,0 +1,17 @@
+/***************************
+Definir Numero vCtaDeb6;
+Definir Numero gCodCli;
+gCodCli = E301TCR.CodCli;
+
+vCtaDeb6 = 913;
+
+@*** Se o Cliente for 770 - Devera contabilizar na conta 918 - Variação Cambial Passiva ***@
+Se (gCodCli = 770)
+  vCtaDeb6 = 918;
+x=1;
+
+@*** Se o Cliente for 771 - Devera contabilizar na conta 918 - Variação Cambial Passiva ***@
+Se (gCodCli = 771)
+ vCtaDeb6 = 918;
+x=1;
+***************************/

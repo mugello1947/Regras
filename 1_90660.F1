@@ -1,0 +1,17 @@
+/* REGRA_PARCIAL */
+
+/*** Se a Origem for "OU" CONTABILIZA ****/
+
+Definir Alfa vOriMCC;
+
+vOriMcc = E600Mcc.OriMcc;
+
+Se (vOriMcc <> "OU")
+   vVlrBas1 = 0;
+
+Se (gCtaDeb1 = 0)
+   Inicio
+      gCtaDeb1 = 300;
+   Fim;
+
+/*** Se não houver ****/

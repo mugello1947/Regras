@@ -1,0 +1,29 @@
+vAbgFil1 = E600RAT.CODFIL;
+vDatBas1 = E600MCC.DATMOV;
+vCtaDeb1 = E600RAT.CTARED;
+vCtaCre1 = E600CCO.CTARED;
+vVlrBas1 = E600RAT.VLRRAT;
+vCodHpd1 = 554;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+Definir Alfa vCplBas11S[200]; vCplBas11S = E001TNS.DESTNS;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E600MCC.HISMOV;
+/* REGRA_PARCIAL */
+
+/*** Se a Origem for "OU" CONTABILIZA ****/
+
+Definir Alfa vOriMCC;
+
+vOriMcc = E600Mcc.OriMcc;
+
+Se (vOriMcc <> "OU")
+   vVlrBas1 = 0;
+
+Se (gCtaDeb1 = 0)
+   Inicio
+      gCtaDeb1 = 300;
+   Fim;
+
+/*** Se não houver ****/

@@ -1,0 +1,29 @@
+Definir numero vTotCre;
+Definir numero vTotDeb;
+
+vTotCre = E661Res.TotCre;
+vTotDeb = E661Res.TotDeb;
+
+vValor = 0;
+gCtaDeb = 0;
+gCtaCre = 0;
+
+Se (vTotCre > vTotDeb) @ Se o total de Crédito for maior que o total de Débitos, contabiliza o Débito na conta 42 - PIS a Recuperar @
+  Inicio    
+    vValor = vTotCre - vTotDeb;
+    gCtaDeb = 42;
+    gCtaCre = 953;
+  Fim;
+Senao
+  Inicio
+    vValor = vTotDeb - vTotCre;  @ Se o total de Débito for maior que o total de Créditos, contabiliza o Crédito na conta 320 - PIS a Recolher @
+
+    gCtaDeb = 953;
+    gCtaCre = 320;
+  Fim;
+
+vVlrBas3 = vValor;
+vCtaDeb3 = gCtaDeb;
+vCtaCre3 = gCtaCre;
+
+UltimoDia(vDatBas3); 

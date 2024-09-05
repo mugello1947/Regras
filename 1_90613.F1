@@ -1,0 +1,107 @@
+
+Definir Alfa vOriMcc;
+vOriMcc = E600Mcc.OriMcc;
+
+Se (vOriMcc = "CR")  @90330 contabiliza o adiantamento@
+inicio
+  VVlrBas1 = 0;
+  Cancel(1);
+
+fim;
+
+Se (vOriMcc = "CP") @  mudei para ir abaixo se for CP ,  é desenecessária para adiantamento de cliente@
+inicio
+
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCtaRed = 0;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRed;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRdv;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+Se(gCodTpt = "31")
+    gCtaRed = 512;
+
+
+Se (gCtaRed = 0)
+    gCtaRed = 29;
+
+
+VCtaDeb1 = gCtaRed; 
+
+
+  Definir Cursor Cur_E095For;
+  Definir Cursor Cur_E600Cco;
+
+  Definir Alfa vCplBas11s; 
+  Definir Alfa vCplBas12s;
+  Definir Alfa vCplBas13s;
+  Definir Alfa gNomFor;
+  Definir Alfa gDesCco;
+  Definir Alfa gNumCco;
+
+  gNumCco = E501Mcp.NumCco;  
+  gCodFor = E501Mcp.CodFor; 
+
+  Definir numero vCodHpd1;
+ 
+  gDesCco = "";
+  gNomFor = "";
+
+  Cur_E095For.Sql "Select NomFor from E095For where CodFor=:gCodFor";
+  Cur_E600Cco.Sql "Select DesCco from E600Cco where CodEmp=:gCodEmp and NumCco=:gNumCco";
+
+  Cur_E095For.AbrirCursor();
+  Se (Cur_E095For.Achou)
+     gNomFor = Cur_E095For.NomFor;
+  Cur_E095For.FecharCursor();
+
+  Cur_E600Cco.AbrirCursor();
+  Se (Cur_E600Cco.Achou)
+     gDesCco = Cur_E600Cco.DesCco;
+  Cur_E600Cco.FecharCursor();
+
+  vCodHpd1 = 56;
+  vCplBas11s = gNumTit;
+  vCplBas12s = gNomFor;
+  vCplBas13s = gDesCco;
+
+
+
+fim;

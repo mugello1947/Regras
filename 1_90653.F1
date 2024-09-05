@@ -1,0 +1,23 @@
+/*** Se for Origem OU CONTABILIZA ****/
+
+Definir Alfa vNumCco;
+Definir Alfa vOriMcc;
+vNumCco = E600Mcc.NumCco;
+vOriMcc = E600Mcc.OriMcc;
+
+Se (vNumCco = "9999.1")
+   gCtaCre1 = 10;
+x=1;
+
+x=1;
+
+Se (vOriMcc = "CP")
+   vVlrBas1 = 0;
+
+
+Se (vOriMcc = "CR")
+   vVlrBas1 = 0;
+
+
+
+x=1;

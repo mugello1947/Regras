@@ -1,0 +1,96 @@
+Definir cursor Cur_E095HFO;
+Definir cursor Cur_E095FOR;
+Definir cursor Cur_E140IPV;
+Definir cursor Cur_E085CLI;
+Definir alfa vCplBas12S;
+Definir alfa aCodSnf;
+Definir alfa aVarAux;
+
+nCodEmp = E140IPV.CodEmp;
+nCodFil = E140IPV.CodFil;
+nNumNfv = E140IPV.NumNfv;
+nSeqIpv = E140IPV.SeqIpv;
+aCodSnf = E140IPV.CodSnf;
+nFilNfc = E140IPV.FilNfc;
+
+/* Busca o fornecedor indicado na prórpia nota (situação padrão para notas de devolução)*/
+nCodFor = E140IPV.CodFor;
+
+/* Para NFS de acerto busca o fornecedor da nota de origem */
+Se  (E140NFV.TipNfs = 9)
+    {
+    Cur_E140IPV.Sql "SELECT E140IPV.FILNFC, E140IPV.CODFOR \
+                       FROM E140IPV, E140REN \
+                      WHERE E140REN.CODEMP = :nCodEmp AND \
+                            E140REN.CODFIL = :nCodFil AND \
+                            E140REN.CODSNF = :aCodSnf AND \
+                            E140REN.NUMNFV = :nNumNfv AND \
+                            E140IPV.CODEMP = E140REN.EMPREL AND \
+                            E140IPV.CODFIL = E140REN.FILREL AND \
+                            E140IPV.CODSNF = E140REN.SNFREL AND \
+                            E140IPV.NUMNFV = E140REN.NFVREL AND \
+                            E140IPV.SEQIPV = :nSeqIpv";
+    Cur_E140IPV.AbrirCursor();
+    Se  (Cur_E140IPV.Achou)
+        {
+        nFilNfc = Cur_E140IPV.FilNfc;
+        nCodFor = Cur_E140IPV.CodFor;
+        }
+    Cur_E140IPV.FecharCursor();
+    }
+
+/* Se o fornecedor ainda não foi localizado, busca o fornecedor ligado ao cliente */
+Se  (nCodFor = 0)
+    {
+    Cur_E085CLI.Sql "SELECT E085CLI.CODFOR \
+                       FROM E085CLI, E140NFV \
+                      WHERE E140NFV.CODEMP = :nCodEmp AND \
+                            E140NFV.CODFIL = :nCodFil AND \
+                            E140NFV.CODSNF = :aCodSnf AND \
+                            E140NFV.NUMNFV = :nNumNfv AND \ 
+                            E085CLI.CODCLI = E140NFV.CODCLI";
+    Cur_E085CLI.AbrirCursor();
+    Se (Cur_E085CLI.Achou)
+       {
+       nCodFor = Cur_E085CLI.CodFor;
+       } 
+    Cur_E085CLI.FecharCursor();
+    }
+
+/* nf entrada */
+Se  (nCodFor = 0)
+    {
+    IntParaAlfa(E140IPV.NumNfv,aVarAux);
+    aVarAux = "Regra: NF: " + aVarAux + " sem vínculo com nota fiscal de entrada.";
+    GeraLog(aVarAux);
+    }
+
+/* fornecedor */
+Cur_E095FOR.SQL "Select NomFor \
+                   from E095FOR \
+                  where CodFor = :nCodFor";
+Cur_E095FOR.AbrirCursor();
+Se  (Cur_E095FOR.Achou)
+    vCplBas12S = Cur_E095FOR.NomFor;
+Cur_E095FOR.FecharCursor();
+
+/* conta contábil de adiantamento do fornecedor */
+Cur_E095HFO.SQL "Select CtaRcr \
+                   from E095HFO \
+                  where CodEmp = :nCodEmp \
+                    and CodFil = :nFilNfc \
+                    and CodFor = :nCodFor";
+Cur_E095HFO.AbrirCursor();
+Se  (Cur_E095HFO.Achou)
+    {
+    Se  (Cur_E095HFO.CtaRcr = 0)
+        {
+        Cur_E095HFO.FecharCursor();
+        IntParaAlfa(nCodFor,aVarAux);
+        aVarAux = "Não existe conta de adiantamento para o fornecedor " + aVarAux + ".";
+        GeraLog(aVarAux);
+        }
+    Senao
+        vCtaDeb1 = Cur_E095HFO.CtaRcr;   
+    }
+Cur_E095HFO.FecharCursor();

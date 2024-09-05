@@ -1,0 +1,35 @@
+Definir Alfa VaDepVir;
+Definir Alfa VaCodDep;
+Definir Alfa xSqlAux;
+Definir Alfa BusDep;
+Definir Alfa VaDepVir;
+Definir Alfa VaDepTrf;
+VaDepTrf = E210MVP.DepTrf;
+VaCodDep = E210MVP.CodDep;
+LimpaEspacos(VaDepTrf);
+
+VaDepVir = "N";
+
+Se(E210MVP.CodCli = 9736)
+{
+  VCtaDeb1 = 10171;
+  VCtaCre1 = 379;
+}
+
+Se((VaDepVir = "N") e (VaDepTrf <> ""))
+inicio
+  xSqlAux = "Select DepVir WWDepVir from E205DEP where CodDep = :VaDepTrf"; 
+
+  SQL_Criar(BusDep); 
+  SQL_DefinirComando(BusDep,xSqlAux);
+  SQL_DefinirAlfa(BusDep,"VaDepTrf",VaDepTrf);
+  SQL_AbrirCursor(BusDep); 
+  Se (SQL_EOF(BusDep) = 0)
+  inicio
+    SQL_RetornarAlfa(BusDep,"WWDepVir",VaDepVir);
+  fim; 
+  SQL_Destruir(BusDep); 
+Fim;
+
+Se (VaDepVir = "N")
+    VVlrBas1 = 0;

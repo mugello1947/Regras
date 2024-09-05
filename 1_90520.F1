@@ -1,0 +1,408 @@
+Definir Alfa vCplBas12s;
+Definir Alfa gObsTcp;
+Definir Alfa gNomFor;
+
+gCodFor = E501Rat.CodFor;
+gObsTcp = E501Tcp.ObsTcp;
+
+Se (gCodFor = 1)
+   vCplBas12S = gObsTcp;
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCtaRed = 0;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRed;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRdv;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+Se((gCodTpt = "09") e (gCodFor = 2753))
+      VVlrBas1 = 0;
+
+Se(gCodFor = 2768)
+inicio
+  VVlrBas1 = 0;
+ cancel(1);
+fim;
+
+Se((gCodTpt = "09") e (gCodFor = 5664))
+      VVlrBas1 = 0;
+
+/*
+@ Incluído conforme chamado 5017 - ARF - 24/10/2016@
+Se (gCodTpt = "31")
+  VVlrBas1 = 0;
+@ Incluído conforme chamado 5017 - ARF - 24/10/2016@
+Se (gCodTpt = "66")
+  VVlrBas1 = 0;
+*/
+
+Se (gCtaRed = 0)
+    gCtaRed = 300;
+
+VCtaCre1 = gCtaRed;
+
+ 
+/******************* Não CONTABILIZA Seguros e Financiamentos **********************/
+
+Se(((((((E501Rat.CodFor = 249) ou (E501Rat.CodFor = 197) OU (E501Rat.CodFor = 255) ou (E501Rat.CodFor = 385) ou (E501Rat.CodFor = 393) ou (E501Rat.CodFor = 458) ou (E501Rat.CodFor = 1799)))))))
+    VVlrBas1 = 0;
+
+Se(((((E501Rat.CodFor = 1800) ou (E501Rat.CodFor = 1801) ou (E501Rat.CodFor = 1802) ou (E501Rat.CodFor = 1961)))))
+    VVlrBas1 = 0;
+
+
+/******************** Por Solicitação do Sr Luiz em 19/05/2011 - Não CONTABILIZA pois a Provisão é de 2009 *******************/
+
+Se((E501Rat.CodFor = 108) e (E501Rat.CodTpt = "44"))
+     VVlrBas1 = 0;
+
+/******************** Por Solicitação do Sr Luiz em 19/05/2011 - Não CONTABILIZA os Titulos "14731209","100041209","012010","022010" pois a Provisão é de 2009 *******************/
+
+
+Se((E501Rat.NumTit = "IRPJ2012") e (E501Rat.CodFor <> 1076))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "012010") e (E501Rat.CodFor <> 1076))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "201568266A") e (E501Rat.CodFor <> 2751))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "201568186A") e (E501Rat.CodFor <> 2750))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "4493/1301") e (E501Rat.CodFor <> 1075))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "4493/13") e (E501Rat.CodFor <> 1075))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "0741308- 4") e (E501Rat.CodFor <> 1800))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "022010") e (E501Rat.CodTpt = "44"))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "14731209") e (E501Rat.CodTpt = "44"))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "100041209") e (E501Rat.CodTpt = "44"))
+    VVlrBas1 = 0;
+
+Se((E501Rat.NumTit = "130911") e (E501Rat.CodTpt = "10"))
+    VVlrBas1 = 0;
+
+
+/************* Por Solicitação do Sr Luiz em 19/05/2011 - Não CONTABILIZAR o Titulo "012010" pois a Provisão ja esta contabilizando direto dos IMPOSTOS *******/
+
+Se((E501Rat.CodFor = 1119) e (E501Rat.CodTpt = "44"))
+    VVlrBas1 = 0;
+
+/******************** Por Solicitação do Sr Luiz em 26/05/2011 - Não CONTABILIZA os Titulos "5647" pois nao tem Provisão *******************/
+
+Se((E501Rat.CodFor = 551) e (E501Rat.NumTit = "5647"))
+    VVlrBas1 = 0;
+
+
+/******************** Não CONTABILIZA Tipos de Titulos *******************/
+
+@Dia 25/10/2011 retirado a regra para não contabilizar o rateio quando o título for do tipo 11)@
+Se (((((((@( E501Rat.CodTpt = "11") OU@ (E501Rat.CodTpt = "12") OU (E501Rat.CodTpt = "42") OU (E501Rat.CodTpt = "16") OU (E501Rat.CodTpt = "21") OU (E501Rat.CodTpt = "22") OU (E501Rat.CodTpt = "57"))))))))
+    VVlrBas1 = 0;
+
+Se ((((((E501Rat.CodTpt = "24") OU (E501Rat.CodTpt = "27") OU (E501Rat.CodTpt = "28") OU (E501Rat.CodTpt = "33"))))))
+    VVlrBas1 = 0;
+
+
+Se((E501Rat.CodTpt = "10") e (E501Rat.CodFor = 197))
+   VVlrBasl = 0;
+
+Se((E501Rat.CodTpt = "19") e (E501Rat.CodFor = 1936))
+   VVlrBasl = 0;
+
+
+Se((E501Rat.CodTpt = "01") e (E501Rat.CodFor = 1800))
+   VVlrBasl = 0;
+
+Se((E501Rat.CodTpt = "26") e (E501Rat.CodFor = 1076))
+   vCtaCre1 = 310;
+
+Se(((E501Rat.CodTpt = "26") e (E501Rat.CodFor = 1076) e (E501Rat.NumTit = "1099")))
+   vCtaCre1 = 3100;
+
+Se(((E501Rat.CodTpt = "26") e (E501Rat.CodFor = 1076) e (E501Rat.NumTit = "1100")))
+   vCtaCre1 = 3100;
+
+/* Comentando para não contabilizar mais títulos do tipo 44 - Rodrigo Costa 18/01/2012*/
+/*se(E501Rat.CodTpt = "44")
+          VCtaCre1 = 313; */
+
+Se((E501Rat.CodFor = 1123) e (E501Rat.CodTpt = "01"))
+          VCtaCre1 = 313;
+
+
+Se((E501Rat.CodFor = 196) e (E501Rat.CodTpt = "10"))
+      VVlrBasl = 0;
+
+Se((E501Rat.CodFor = 3356) e (E501Rat.CodTpt = "09"))
+      VVlrBasl = 0;
+
+Se((E501Rat.CodFor = 3475) e (E501Rat.CodTpt = "09"))
+      VVlrBasl = 0;
+
+Se((E501Rat.CodFor = 3431) e (E501Rat.CodTpt = "09"))
+      VVlrBasl = 0;
+
+
+Se((gCodTpt = "02") e (gCodFor = 430))
+      VVlrBas1 = 0;
+
+
+Se((gCodTpt = "19") e (gCodFor = 5556))
+      VVlrBas1 = 0;
+
+
+Se((gCodTpt = "10") e (gCodFor = 430))
+      VVlrBas1 = 0;
+
+Se((gCodTpt = "55") e (gCodFor = 2447))
+      VVlrBas1 = 0;
+
+Se((gCodTpt = "10") e (gCodFor = 196))
+      VVlrBas1 = 0;
+
+Se(gCodTpt = "04")
+    VVlrBas1 = 0;
+
+Se((E501Rat.CodFor = 1074) e (E501Rat.CodTpt = "41"))
+          VCtaCre1 = 317;
+
+Se((E501Rat.CodFor <> 1074) e (E501Rat.CodTpt = "41"))
+      VVlrBasl = 0;
+
+Se((E501Rat.CodFor <> 971) e (E501Rat.CodTpt = "04"))
+      VVlrBasl = 0;
+
+Se(gCodTpt = "55")
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "65")
+    VVlrBas1 = 0;
+
+Se(gCodFor = 196)
+   VVlrBasl = 0;
+
+Se(gCodFor = 5664)
+   VVlrBasl = 0;
+
+Se(gCodFor = 2768)
+   VVlrBasl = 0;
+
+
+Se(gCodFor = 2750)
+   VVlrBasl = 0;
+
+Se(gCodFor = 2751)
+   VVlrBasl = 0;
+
+Se(gCodFor = 108)
+   VVlrBasl = 0;
+
+Se(gCodFor = 1047)
+   VVlrBasl = 0;
+
+Se((gCodTpt = "29") e (gCodFor = 110))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "29") e (gCodFor = 1065))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "01") e (gCodFor = 1800))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "01") e (gCodFor = 2106))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 3475))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 3356))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 4663))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "19") e (gCodFor = 2106))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "19") e (gCodFor = 1936))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "29") e (gCodFor = 110))
+      VCtaCre1 = 300;
+
+Se((gCodTpt = "43") e (gCodFor = 1071))
+      VCtaCre1 = 330;
+
+Se((gCodTpt = "06") e (gCodFor = 235))
+      VCtaCre1 = 300;
+
+Se((gCodTpt = "02") e (gCodFor = 108) e (gNumTit = "1112"))
+    VVlrBas1 = 0;
+
+/***Se((gCodTpt = "44") e (gCodFor = 1123) e (gNumTit = "12049"))***/
+Se((gCodTpt = "44") e (gCodFor = 1123))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "44") e (gCodFor = 1645) e (gNumTit = "13489"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 3356) e (gNumTit = "3356/60"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "01") e (gCodFor = 2960) e (gNumTit = "3-1170"))
+    VVlrBas1 = 0;
+
+Se (gCodFor = 945)
+   VVlrBas1 = 0;
+
+Se(gCodTpt = "58")
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "63")
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "64")
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "80")
+    VVlrBas1 = 0;
+
+Se(gCodTpt = "29")
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 34475) e (gNumTit = "877641B"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "65") e (gCodFor = 1434) e (gNumTit = "571912012"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 3431) e (gNumTit = "277973/001"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "01") e (gCodFor = 3400) e (gNumTit = "278948/001"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "01") e (gCodFor = 3401) e (gNumTit = "296455/001"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "19") e (gCodFor = 1936) e (gNumTit = "16270"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "23") e (gCodFor = 1075) e (gNumTit = "4493/1301"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "23") e (gCodFor = 1075) e (gNumTit = "4493/13"))
+    VVlrBas1 = 0;
+
+/*
+Se(gCodTpt = "90")
+    VVlrBas1 = 0;
+
+Se (gCodFor = 2144)
+    gCtaRed = 98;
+
+Se (gCodFor = 971)
+   VVlrBas1 = 0;
+
+Se (gCodFor = 1047)
+   VVlrBas1 = 0;
+
+Se (gCodFor = 1605)
+   VVlrBas1 = 0;
+
+Se (gCodFor = 2106)
+   VVlrBas1 = 0;
+
+
+Se((gCodTpt = "76") e (gCodFor = 2540))
+      VVlrBas1 = 0;
+
+Se((E501Rat.CodFor = 108) e (E501Rat.NumTit = "31-12/2009"))
+    VVlrBas1 = 0;
+
+
+Se((E501Rat.CodFor = 108) e (E501Rat.CodTpt = "44"))
+  VVlrBas1 = 0;
+
+Se (gCodFor = 5664)
+   VVlrBas1 = 0;
+
+
+Se (gCodFor = 2106)
+   VVlrBas1 = 0;
+
+Se (gCodFor = 2768)
+   VVlrBas1 = 0;
+
+
+Se(E501Rat.NumTit = "63137/001")
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 4663))
+      VVlrBas1 = 0;
+
+Se(E501Rat.NumTit = "3044034A")
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 2753) e (gNumTit = "240316"))
+    VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 2753))
+      VVlrBas1 = 0;
+
+Se((gCodTpt = "09") e (gCodFor = 5664))
+      VVlrBas1 = 0;
+
+Inicio
+    VVlrBas1 = 0;
+    vCtaCre1 = 300;
+ Fim;
+ 
+x=0;
+*/

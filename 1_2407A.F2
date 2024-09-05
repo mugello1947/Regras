@@ -1,0 +1,126 @@
+Definir Cursor Cur_E440IPC;
+Definir Cursor Cur_E440NFC;
+Definir Cursor Cur_E075PRO;
+Definir Cursor Cur_E012FAM;
+Definir Alfa vCodSnf;
+Definir Alfa vCodPro;
+Definir Alfa vCodFam;
+
+vCodEmp = E440Rat.CodEmp;
+vCodFil = E440Rat.CodFil;
+vCodFor = E440Rat.CodFor;
+vNumNfc = E440Rat.NumNfc;
+vCodSnf = E440Rat.CodSnf;
+vSeqIpc = E440Rat.SeqIpc;
+vCtaRedRat = E440Rat.CtaRed;
+vPerCta = E440Rat.PerCta;
+vVlrRat = E440Rat.VlrRat;
+vPerRat = E440Rat.PerRat;
+
+Cur_E440NFC.Sql "Select DatEnt \
+                   from E440NFC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf";
+Cur_E440NFC.AbrirCursor();
+Se (Cur_E440NFC.Achou)
+ Inicio
+   vDatBas2 = Cur_E440NFC.DatEnt;
+ Fim;
+Cur_E440NFC.FecharCursor();
+
+Cur_E440IPC.Sql "Select CodPro, VlrLiq,VlrIcm, VlrIpi, VlrCor, VlrPis \
+                   from E440IPC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf \
+			And SeqIpc = :VSeqIpc";
+Cur_E440IPC.AbrirCursor();
+Se (Cur_E440IPC.Achou)
+ Inicio  
+    vCodPro = Cur_E440IPC.CodPro;
+    vVlrLiq = Cur_E440IPC.VlrLiq;
+    vVlrIcm = Cur_E440IPC.VlrIcm;
+    vVlrCor = Cur_E440IPC.VlrCor;
+    vVlrPis = Cur_E440IPC.VlrPis;
+    vVlrIpi = Cur_E440IPC.VlrIpi;
+    vVlrLiq = vVlrliq - ( vVlrIcm + vVlrIpi + vVlrCor + vVlrPis);
+    ArredondarValor (vVlrLiq,2);
+    vVlrAux = ((vVlrLiq * vPerCta)/100); 
+    vVlrBas2 = ((vVlrAux * vPerRat)/100);
+    Se ((vVlrIcm = 0) e (vVlrIpi = 0) e (vVlrCor = 0) e (vVlrPis = 0))
+       vVlrBas2 = vVlrRat;
+    ArredondarValor (vVlrBas2,2);
+  Fim;
+Cur_E440IPC.FecharCursor();
+
+/* INATIVAÇÃO conforme chamado 4902 - ARF - 31/08/2016
+
+@ Procurar Familia do Produto e Conta Reduzida do Produto @
+Cur_E075PRO.Sql "Select CtaRed,CodFam From E075PRO \
+                 Where CodEmp = :VCodEmp \
+                   And CodPro = :VCodPro";
+Cur_E075PRO.AbrirCursor();
+Se (Cur_E075PRO.Achou)
+  Inicio
+    VCtaDeb2 = Cur_E075PRO.CtaRed;
+    vCodFam = Cur_E075PRO.CodFam;
+  Fim;
+Cur_E075PRO.FecharCursor();
+*/ 
+
+Definir Alfa TClaSql;
+Definir Alfa CCurPro;
+TClaSql = "Select E075PRO.CtaRed WWCtaDeb, E075PRO.CodFam WWCodFam \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarInteiro(CCurPro,"WWCtaDeb",VCtaDeb2);
+    SQL_RetornarAlfa(CCurPro,"WWCodFam",VCodFam);
+  }
+SQL_Destruir(CCurPro); 
+
+
+@ Procurar Conta Reduzida da Familia@
+
+Se ((vCodSnf = "1407") ou (vCodSnf = "2407"))
+Inicio
+ Cur_E012FAM.Sql "Select CtaRed \
+                     From E012FAM \
+                    Where CodEmp = :vCodEmp \
+                      And CodFam = :vCodFam";
+ Cur_E012FAM.AbrirCursor();
+ Se (Cur_E012FAM.Achou)
+  Inicio
+   vCtaDeb2 = Cur_E012FAM.CtaRed;
+  Fim;
+ Cur_E012FAM.FecharCursor();
+Fim;
+
+@ - Caso o resultado da busca da conta contábil na família seja  @
+@ igual a zero será aplicado a conta reduzida do produto @
+
+Se ((vCodSnf = "1407") ou (vCodSnf = "2407"))
+Inicio
+ Se (vCtaDeb2 = 0)
+     vCtaDeb2 = vCtaRed;
+Fim;
+
+@ Caso não encontre na Familia ou no produto@
+@ irá buscar no item da nota@  
+  
+Se (vCtaDeb2 = 0)
+  vCtaDeb2 = vCtaRedRat;
+
+x=1;

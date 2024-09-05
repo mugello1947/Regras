@@ -1,0 +1,29 @@
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecIcm;
+Definir Alfa gRecPis;
+Definir Alfa gRecCof;
+Definir alfa gCodPro;
+Definir numero gCtaRed;
+
+Cur_E075Pro.Sql "Select CtaRed, RecIcm, RecPis, RecCof from E075Pro where CodPro=:gCodPro";
+
+gCodPro = E440Ipc.CodPro;
+gValor  = E440Ipc.VlrLiq;
+gCtaRed = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro.RecIcm;
+     gRecPis = Cur_E075Pro.RecPis;
+     gRecCof = Cur_E075Pro.RecCof;
+     gCtaRed = Cur_E075Pro.CtaRed;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (gRecIcm = 'S')  gValor = gValor - E440Ipc.VlrIcm;
+Se (gRecPis = 'S')  gValor = gValor - E440Ipc.VlrPis;
+Se (gRecCof = 'S')  gValor = gValor - E440Ipc.VlrCor;
+
+VCtaDeb2 = gCtaRed;
+VVlrBas2 = gValor;

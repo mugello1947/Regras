@@ -1,0 +1,9 @@
+/*** Se a data de entrada for 12/09/2011, Contabilizar na Cta 89 ***/
+
+Definir Data vDatBas;
+Definir Data vDatMov;
+
+MontaData(12,09,2011,vDatBas);
+Se (vDatBas = 12/09/2011)
+     vCtaDeb7 = 89;  
+x=0;

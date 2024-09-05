@@ -1,0 +1,40 @@
+/*** Se a Origem for "OU" CONTABILIZA ****/
+
+Definir Alfa vOriMcc;
+
+vOriMcc = E600Mcc.OriMcc;
+
+Definir Cursor Cur_E600Rat;
+vCodEmp = E600RAT.CodEmp;
+vCodFil = E600RAT.CodFil;
+vSeqRat = E600RAT.SeqRat;
+
+Definir Cursor Cur_E600Mcc;
+vCodEmp = E600MCC.CodEmp;
+vCodFil = E600MCC.CodFil;
+
+Inicio
+  Cur_E600MCC.SQL "Select CtaRed From E600MCC Where CodEmp =:vCodEmp And CodFil =:vCodFil";
+  
+Cur_E600MCC.AbrirCursor()
+  Se (Cur_E600MCC.Achou)
+    vCtaDeb1 = Cur_E600MCC.CtaRed;
+Cur_E600MCC.FecharCursor();
+  Fim;
+
+Inicio
+  Cur_E600RAT.SQL "Select CtaRed From E600RAT Where CodEmp =:vCodEmp And CodFil =:vCodFil And SeqRat =:vSeqRat";
+  
+Cur_E600RAT.AbrirCursor()
+  Se (Cur_E600RAT.Achou)
+    vCtaDeb1 = Cur_E600RAT.CtaRed;
+Cur_E600RAT.FecharCursor();
+  Fim;
+
+Se (vOriMcc <> "OU")
+   vVlrBas1 = 0;
+
+Se (gCtaDeb1 = 0)
+   Inicio
+      gCtaDeb1 = 300;
+   Fim;

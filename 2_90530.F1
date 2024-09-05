@@ -1,0 +1,24 @@
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Numero gCodfor;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+vCtaDeb1 = 0;
+
+
+Se ((gCodFor = 1070) e (gCodTpt = "30"))
+   vCtaDeb1 = 0;
+
+Se ((gCodFor = 9120) e (gCodTpt = "30"))
+   vCtaDeb1 = 0;
+
+
+Se (gCodTpt = "31")
+   vCtaDeb1 = 512;
+
+
+Se (vCtaDeb1 = 0)
+    vCtaDeb1 = 29;
+
+x=0;

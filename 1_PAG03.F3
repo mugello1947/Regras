@@ -1,0 +1,51 @@
+Se ((E501MCP.CodTns = "90511") e (E501TCP.TitCar = "S"))
+  VVlrBas3 = VVlrBas3 + E501MCP.VlrMov;
+
+Se (E501MCP.CodTns = "90512")
+  VVlrBas3 = 0;
+
+
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  @ Leasing @
+  vnNumCcr = E501TCP.NumCcr;
+  Cur_E501Tc2.Sql "Select CodPbc from E606CCr where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumCCr=:vnNumCcr";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VnCodPbc = Cur_E501Tc2.CodPbc;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+
+
+
+@ Leasing @
+Se (VnCodPbc  = 2){
+   VCtaDeb3 = 459;
+   VCtaCre3 = 4459;
+}
+Se (E501TCP.NumCcr = 16){
+   VCtaDeb3 = 459;
+   VCtaCre3 = 4459;
+}
+Se (E501TCP.NumCcr = 19){
+   VCtaDeb3 = 459;
+   VCtaCre3 = 4459;
+}
+Se (E501TCP.NumCcr = 20){
+   VCtaDeb3 = 459;
+   VCtaCre3 = 4459;
+}

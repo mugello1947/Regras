@@ -1,0 +1,106 @@
+Definir numero gCodEmp;
+Definir numero gCtaRed;
+Definir Numero gNumNfc;
+Definir Numero gCodFor;
+Definir alfa   gCodPro;
+Definir Alfa   gCodSnf;
+Definir Alfa   gTnsPro;
+gCodEmp = E440Ipc.CodEmp;
+gCodPro = E440Ipc.CodPro;
+gNumNfc = E440IPC.NumNfc; 
+gCodSnf = E440IPC.CodSnf;
+gCodFor = E440IPC.CodFor;
+gTnsPro = E440IPC.TnsPro;
+gCtaRed = 0;
+
+Definir Alfa   TClaSql;
+Definir Alfa   CCurPro;
+Definir Numero VCodEmp;
+Definir Alfa   VCodPro;
+VCodEmp = E440IPC.CodEmp;
+VCodPro = E440IPC.CodPro;
+VCtaRed = 0;
+TClaSql = "Select E075PRO.CtaRed WWCtaRed \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarInteiro(CCurPro,"WWCtaRed",VCtaRed);
+  }
+SQL_Destruir(CCurPro); 
+VCtaDeb2 = VCtaRed;
+
+/*
+Definir Cursor Cur_E075Pro;
+
+Cur_E075Pro.Sql "Select CtaRed from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gCtaRed = Cur_E075Pro.CtaRed;
+   Fim;
+Cur_E075Pro.FecharCursor();
+*/
+
+Se (gCtaRed = 0)
+  gCtaRed = E440Ipc.CtaRed;
+
+VCtaDeb2 = gCtaRed;
+
+Definir Cursor Cur_E075Pro2;
+Definir Alfa gRecCof;
+Definir Alfa gRecIcm;
+Definir Alfa gRecPis;
+Definir alfa gCodPro;
+Definir alfa gCodIpi;
+Definir numero gCodEmp;
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor1 = 0;
+gValor2 = 0;
+gValor3 = 0;
+gValor4 = 0;
+
+Cur_E075Pro2.Sql "Select RecIcm,RecPis,RecCof,RecIpi from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+Cur_E075Pro2.AbrirCursor();
+Se (Cur_E075Pro2.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro2.RecIcm;
+     gRecPis = Cur_E075Pro2.RecPis;
+     gRecCof = Cur_E075Pro2.RecCof;
+     gRecIpi = Cur_E075Pro2.RecIpi;
+   Fim;
+Cur_E075Pro2.FecharCursor();
+
+Se (gRecIcm = 'S')  gValor1 = E440Ipc.VlrIcm;
+Se (gRecPis = 'S')  gValor2 = E440Ipc.VlrPis;
+Se (gRecCof = 'S')  gValor3 = E440Ipc.VlrCor;
+
+/* Adicionado tratamento para buscar o IPI Cred. Devi. caso seja diferente de 0 (zero) - Rodrigo Costa - 04/03/2013 */
+
+Se (gRecIpi= 'S')
+Inicio
+ Se (E440Ipc.VecIpi <> 0)
+   gValor4 = E440Ipc.VecIpi;
+ Senao
+   gValor4 = E440Ipc.VlrIpi;
+Fim;
+
+/* Fim - Adicionado trat... */
+
+
+   
+VVlrBas2 = (E440Ipc.VlrLiq + E440Ipc.VlrFun) - (E440Ipc.VlrIcm + gValor4 + E440Ipc.VlrPis + E440Ipc.VlrCor + E440Ipc.VlrIcs + E440Ipc.VlrIsd);
+
+Se ((gNumNfc = 1132) e (gCodSnf = "1") e (gCodFor = 3011) e (gTnsPro = "2102"))
+ vCtaDeb2 = 5001;
+
+x=1;

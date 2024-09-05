@@ -1,0 +1,3 @@
+gVlrIcm = E440Ipc.VlrIcm * (99/100);
+
+vVlrBas6 = gVlrIcm;

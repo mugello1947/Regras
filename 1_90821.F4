@@ -1,0 +1,84 @@
+Definir Alfa VaCodBem;
+Definir Numero VnDatMov;
+Definir Data VdDatMov;
+Definir Alfa VaDatMov;
+Definir Alfa VaCodTns;
+Definir Alfa VaTipAcr;
+Definir numero VnCodEmp;
+Definir numero VnCodFil;
+Definir numero VnVlrSoci; @ Valor Total do Societario @
+Definir Alfa BusSoci; @ Busca a depreciação Societária @
+Definir Alfa BusBem;
+Definir Alfa xSqlAux;
+
+VaCodBem = E670Mov.CodBem;
+VnDatMov = E670Mov.DatMov;
+VnCodEmp = E670MOV.CodEmp;
+VnCodEsp = E670Mov.CodEsp;
+VdDatMov = vDatBas2;
+VnVlrNor = 0;
+
+@ Busca Custo Atribuidos @
+
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+fim; 
+SQL_Destruir(BusBem); 
+
+
+Se (VaTipAcr = "J") @ Custo Atribuido @
+inicio
+  /*
+  Se ((VnCodEsp = 35) ou (VnCodEsp = 36))
+     VaCodTns = "90817"; @ Transação de Amortização @
+  senao
+     VaCodTns = "90815"; @ Transação de Depreciação Normal @
+
+  xSqlAux = "Select * from E670Mov where CodEmp =:VnCodEmp and CodBem =:VaCodBem and DatMov =:VdDatMov and CodTns =:VaCodTns";
+
+  SQL_Criar(BusSoci); 
+  SQL_DefinirComando(BusSoci,xSqlAux);
+  SQL_DefinirInteiro(BusSoci,"VnCodEmp",VnCodEmp);
+  SQL_DefinirAlfa(BusSoci,"VaCodBem",VaCodBem);
+  SQL_DefinirAlfa(BusSoci,"VaCodTns",VaCodTns);
+  SQL_DefinirData(BusSoci,"VdDatMov",VdDatMov);
+  SQL_AbrirCursor(BusSoci); 
+  Se (SQL_EOF(BusSoci) = 0)
+  inicio
+    SQL_RetornarFlutuante(BusSoci,"VlrMvt",VnVlrNor);
+  fim; 
+  SQL_Destruir(BusSoci); 
+
+  VVlrBas4 = VnVlrNor - VVlrBas4; @ Buca o valor da Depreciação Normal - Depreciação Paralela @
+  */
+
+  VVlrIRRJ = VVlrBas4 * 0.25; @ IPRJ de 25%@
+  ArredondarValor(VVlrBas2,2);
+
+  VVlrCLSS = VVlrBas4 * 0.09; @ CLSS de 9%@
+  ArredondarValor(VVlrBas3,2);
+
+
+  VVlrBas4 = VVlrIRRJ + VVlrCLSS;
+Fim; 
+senao
+  VVlrBas4 = 0;
+
+
+@ Negativa @
+Se (VvlrBas4 < 0)
+   VvlrBas4=(VVlrBas4 * -1);
+
+ArredondarValor(VVlrBas4,2);
+
+
+
+x=0;

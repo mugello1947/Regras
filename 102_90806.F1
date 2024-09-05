@@ -1,0 +1,100 @@
+Definir Alfa vTnsOri;
+
+Definir Cursor Cur_E670Mov;
+
+Definir Data vDatMov;
+Definir Numero vSeqMov;
+Definir Numero vCodEsp;
+Definir Alfa vCodBem;
+Definir Alfa vTnsori;
+Definir Alfa vCodTNs;
+
+vCodEmp = E670Mov.CodEmp;
+vDatMov = E670Mov.DatMov;
+vTnsOri = E670Mov.TnsOri;
+vCodTns = E670mov.CodTns;
+vCtaRed = E670Mov.CtaRed;
+vCodBem = E670Mov.CodBem;
+vCodEsp = E670Mov.CodEsp;
+
+/**** Busca Dados da Conta de Transferência ****/
+
+Se(vTnsOri = "90806")
+   Inicio 
+Cur_E670mov.SQL "Select CtaRed From E670mov \
+                  Where CodEmp = :vCodEmp \
+                    And DatMov = :vDatMov \
+                    And CodEsp = :vCodEsp \
+                    And CodBem = :vCodBem \
+                    And CodTns = 90801 \
+                    And TnsOri = :vTnsOri";
+
+ Cur_E670Mov.AbrirCursor()
+Se (Cur_E670mov.Achou)
+   vCtared = Cur_E670mov.CtaRed;
+Cur_E670Mov.FecharCursor();
+   Fim;
+
+Se (E670Mov.TnsOri <> "90806")
+      vVlrbas1 = 0;
+
+vCtaDeb1 = vCtaRed;
+
+x=0;
+
+/****Select CtaRed From E670Mov Where CodEmp = '1' And TnsOri = '90806' and CodTns = '90801' And DatMov >= '01/07/2011' ****/
+
+
+
+Definir Alfa vTnsOri;
+
+Definir Cursor Cur_E670Mov;
+
+Definir Data vDatMov;
+Definir Numero vSeqMov;
+Definir Numero vCodEsp;
+Definir Numero vNumMan;
+Definir Alfa vCodBem;
+Definir Alfa vTnsori;
+Definir Alfa vCodTNs;
+
+vCodEmp = E670Mov.CodEmp;
+vDatMov = E670Mov.DatMov;
+vTnsOri = E670Mov.TnsOri;
+vCodTns = E670mov.CodTns;
+vCtaRed = E670Mov.CtaRed;
+vCodBem = E670Mov.CodBem;
+vCodEsp = E670Mov.CodEsp;
+vNumMan = E670Mov.NumMan;
+vSeqMov = E670Mov.SeqMov;
+vSeqLoc = E670Mov.SeqLoc;
+
+/**** Busca Dados da Conta de Transferência ****/
+
+Se(vTnsOri = "90806")
+   Inicio 
+Cur_E670mov.SQL "Select CtaRed From E670mov \
+                  Where CodEmp = :vCodEmp \
+                    And DatMov = :vDatMov \
+                    And CodEsp = :vCodEsp \
+                    And CodBem = :vCodBem \
+                    And CodTns = 90801 \
+                    And TnsOri = 90806 \
+                    And SeqMov = :vSeqMov \
+                    And SeqLoc = :vSeqLoc \
+                    And NumMan = :vNumMan";
+
+ Cur_E670Mov.AbrirCursor()
+Se (Cur_E670mov.Achou)
+   vCtared = Cur_E670mov.CtaRed;
+Cur_E670Mov.FecharCursor();
+   Fim;
+
+Se (E670Mov.TnsOri <> "90806")
+      vVlrbas1 = 0;
+
+vCtaDeb1 = vCtaRed;
+
+x=0;
+
+/****Select CtaRed From E670Mov Where CodEmp = '1' And TnsOri = '90806' and CodTns = '90801' And DatMov >= '01/07/2011' ****/

@@ -1,0 +1,27 @@
+Definir Cursor Cur_E012Fam;
+Definir Cursor Cur_E085Ser;
+Definir numero gCodEmp;
+Definir alfa gCodFam;
+Definir numero gCtaRed;
+
+Cur_E012Fam.Sql "Select CtaRed from E012Fam where CodFam=:gCodFam and CodEmp=:gCodEmp";
+
+gCodEmp = E440Isc.CodEmp;
+gCodFam = E440Isc.CodFam;
+gCtaRed = 0;
+
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+   Inicio
+     gCtaRed = Cur_E012Fam.CtaRed;
+   Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (gCtaRed = 0)
+ gCtaRed = E440Isc.CtaRed;
+
+VCtaDeb2 = gCtaRed;
+
+VVlrBas2 = (E440Isc.VlrLiq + E440ISC.VlrDfa) - (E440Isc.VlrIpi + E440Isc.VlrPis + E440Isc.VlrCor + E440Isc.VlrIcs + E440Isc.VlrIsd);
+
+@ VVlrBas2 = E440Ipc.VlrLiq - (gValor1 + gValor2 + gValor3 + gValor4 + gValor8 + E440Ipc.VlrFun);@

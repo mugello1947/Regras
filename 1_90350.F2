@@ -1,0 +1,13 @@
+/********************
+Definir Numero vCtaDeb2;
+Definir Numero gCodCli;
+gCodCli = E301TCR.CodCli;
+
+vCtaDeb2 = 918;
+
+@********* Se o Cliente for 70 - Devera contabilizar na conta 910 *********@
+Se (gCodCli = 70)
+ vCtaDed2 = 910;
+
+x=1;
+*********************/

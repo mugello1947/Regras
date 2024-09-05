@@ -1,0 +1,147 @@
+/* REGRA_PARCIAL */
+Definir cursor Cur_E210MVP;
+Definir cursor Cur_E019SUB;
+Definir cursor Cur01_E440NFC;
+Definir cursor Cur_E440EXF;
+Definir alfa   aCodSnf;
+Definir alfa   aVarAux;
+Definir alfa   aCodTst;
+Definir alfa   aSnfRlc;
+
+nCodEmp =E440IPC.CodEmp;
+nCodFil =E440IPC.CodFil;
+nCodFor =E440IPC.CodFor;
+nNumNfc =E440IPC.NumNfc;
+nSeqIpc =E440IPC.SeqIpc;
+aCodSnf =E440IPC.CodSnf;
+aCodTst =E440IPC.CodTst;
+
+/* Tratamento para soma/subtração do ICMS ST do valor base*/
+Se  (E440IPC.VlrIcs >0)
+    {
+    /*F019TIS - Campo "Soma Líq." */
+    Cur_E019SUB.SQL "SELECT E019SUB.SOMNFS \
+                       FROM E019SUB, E095FOR \
+                      WHERE E095FOR.CODFOR = :nCodFor AND \
+                            E019SUB.SIGUFS = E095FOR.SIGUFS AND \                 
+                            E019SUB.CODEMP = :nCodEmp AND \
+                            E019SUB.CODFIL = :nCodFil AND \
+                            E019SUB.CODTST = :aCodTst";
+    Cur_E019SUB.AbrirCursor(); 
+    Se  (Cur_E019SUB.Achou)
+        {
+        Se  (E440IPC.VecIcm <= 0) 
+            {
+            Se  (Cur_E019SUB.SomNfs = 'N')
+                vVlrBas1 = vVlrBas1 + E440IPC.VlrIcs;
+            }
+        }
+    Cur_E019SUB.FecharCursor();   
+    }
+
+/* Consiste o valor do movimento de estoque (ignora notas de frete) */
+Cur01_E440NFC.SQL "Select NumNfc \
+                   from E440NFC \
+                  where NumNfc =:nNumNfc \
+                    and CodFor =:nCodFor \
+                    and CodEmp =:nCodEmp \
+                    and CodFil =:nCodFil \
+                    and CodSnf =:aCodSnf \
+                    and TipNfe <> 8 \
+                    and TipNfe <> 11";
+Cur01_E440NFC.AbrirCursor();
+Se (Cur01_E440NFC.Achou)
+Inicio
+  nVlrMov = 0;
+  Cur_E210MVP.SQL "Select VlrMov \
+                     from E210MVP \
+                    where NumNfc =:nNumNfc \
+                      and CodFor =:nCodFor \
+                      and CodEmp =:nCodEmp \
+                      and FilNfc =:nCodFil \
+                      and SeqIpc =:nSeqIpc \
+                      and SnfNfc =:aCodSnf \
+                      and EstEos = 'E' "; 
+  Cur_E210MVP.AbrirCursor();
+  Se (Cur_E210MVP.Achou)
+      Inicio
+        Enquanto (Cur_E210MVP.Achou)
+        Inicio
+          nVlrMov = nVlrMov + Cur_E210MVP.VlrMov;
+          Cur_E210MVP.Proximo();
+        Fim;
+
+        ArredondarValor(nVlrMov,2);
+        ArredondarValor(vVlrBas1,2);
+        Se (nVlrMov <> vVlrBas1)
+            Inicio
+              Cur_E210MVP.FecharCursor();
+              Cur01_E440NFC.FecharCursor();
+         @     GeraLog("Regra: valor movimento de estoque diverge do calculado na forma de contabilização.");@
+            Fim;
+      Fim;
+  Senao
+      Inicio
+        Cur_E210MVP.FecharCursor();
+	 Cur01_E440NFC.FecharCursor();
+        vVlrBas1 =0;
+        Cancel(1);
+      Fim;
+  Cur_E210MVP.FecharCursor();
+Fim;
+Cur01_E440NFC.FecharCursor();
+
+/* Verifica as notas de frete com notas de entrada/saída relacionadas  */
+Cur_E440EXF.SQL "Select FilRlc, ForRlc, NumRlc, SnfRlc \
+                  from E440EXF \
+                 where NumNfc =:nNumNfc \
+                   and CodFor =:nCodFor \
+                   and CodEmp =:nCodEmp \
+                   and CodFil =:nCodFil \
+                   and CodSnf =:aCodSnf";
+Cur_E440EXF.AbrirCursor();
+Se (Cur_E440EXF.Achou)
+   Inicio
+     nFilRlc = Cur_E440EXF.FilRlc;
+     nForRlc = Cur_E440EXF.ForRlc;
+     nNumRlc = Cur_E440EXF.NumRlc;
+     aSnfRlc = Cur_E440EXF.SnfRlc;
+
+     /* Não considera notas de frete ligadas com NF de saída pois não valoriza estoque */ 
+     Se (Cur_E440EXF.ForRlc = 0)
+     Inicio
+       vVlrBas1 =0;
+       Cur_E440EXF.FecharCursor();
+       Cancel(1);
+     Fim;
+     Senao
+     Inicio
+       Cur_E210MVP.SQL "Select VlrMov \
+                            from E210MVP \
+                           where NumNfc =:nNumRlc \
+                             and CodFor =:nForRlc \
+                             and CodEmp =:nCodEmp \
+                             and FilNfc =:nFilRlc \
+                             and SnfNfc =:aSnfRlc \
+                             and EstEos = 'E' "; 
+       Cur_E210MVP.AbrirCursor();
+       /* Não considera notas de frete ligadas com NF de entrada que não movimentaram estoque */ 
+       Se (Cur_E210MVP.NaoAchou)
+       Inicio
+         vVlrBas1 = 0;
+         Cur_E210MVP.FecharCursor();
+         Cur_E440EXF.FecharCursor();
+         Cancel(1);
+       Fim; 
+       Cur_E210MVP.FecharCursor();
+     Fim;
+   Fim;  
+Cur_E440EXF.FecharCursor();
+
+/* Consiste a conta de estoque do produto */
+vCtaDeb1 =E075PRO.CtaRed;
+Se (vCtaDeb1 =0)
+    Inicio
+      aVarAux ="Regra: Não existe conta de estoque para o produto: " + E440IPC.CodPro;
+      GeraLog(aVarAux);
+    Fim;

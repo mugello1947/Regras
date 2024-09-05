@@ -1,0 +1,10 @@
+/**********      Por Solicitação do Sr Luiz em 27/05/2011 - CONTABILIZAR 90501 de 01/01/2010 a 31/03/2010     *************/
+
+/**********
+        Se(E661RES.DatApi >= 01/01/2011)
+        vCtaDeb1 = 10160;
+x=0;
+
+UltimoDia(gDatBas1); 
+
+**********/

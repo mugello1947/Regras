@@ -1,0 +1,44 @@
+/* REGRA_PARCIAL */
+Definir Alfa   TClaSql; 
+Definir Alfa   CCurCip;
+VCodEmp = CodEmp; 
+VFilCal = CodFil;                                                           
+VVlrPar = 0; 
+Definir data Vdata;
+
+VData=vDatBas3;
+Definir Data pDatIni;
+Definir Data pDatFim;
+
+DesmontaData (VData,VDia,VMes,VAno);
+Vdia=01;
+MontaData (VDia,VMes,VAno,VData);
+VDatIni = VData;
+
+Se (E661OAS.ALIIMP <> 1.65)   {
+   vVlrBas3 = 0;
+}
+Senao {
+
+    TClaSql = "select VlrAjs WWVlrPar from E661ACC  \
+               where E661ACC.CodDfs=31 and E661ACC.CodImp ='PI1' \
+                and E661ACC.DatApi=:VDatIni and E661ACC.CodEmp=:VCodEmp and E661ACC.CodFil=:VFilCal  ";
+
+   SQL_Criar(CCurCip);
+    SQL_DefinirComando(CCurCip, TClaSql);
+    SQL_DefinirInteiro(CCurCip,"VCodEmp",VCodEmp);
+    SQL_DefinirInteiro(CCurCip,"VFilCal",VFilCal);
+    SQL_DefinirData(CCurCip,"VDatIni",VDatIni);
+
+
+
+    SQL_AbrirCursor(CCurCip);
+    Se (SQL_EOF(CCurCip) = 0)
+      {
+        SQL_RetornarFlutuante(CCurCip,"WWVlrPar",VVlrPar);
+      }
+
+    SQL_Destruir(CCurCip);
+      
+    vVlrBas3 = (VVlrPar);
+}

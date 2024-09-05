@@ -1,0 +1,16 @@
+vAbgFil1 = E501TCP.CODFIL;
+vDatBas1 = E501MCP.DATMOV;
+vCtaDeb1 = E606CCR.CTARLP;
+vCtaCre1 = E501TCP.CTARED;
+vVlrBas1 = E501TCP.OUTNEG;
+vCodHpd1 = 400;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = E501MCP.CODTNS;
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+Definir Alfa vCplBas11S[200]; vCplBas11S = E501MCP.NUMTIT;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E606CCR.NUMCBO;
+Definir Alfa vCplBas13S[200]; vCplBas13S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Se (E501MCP.CodTns = "90512")
+  VVlrBas1 = 0;

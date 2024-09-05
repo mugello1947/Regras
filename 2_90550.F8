@@ -1,0 +1,46 @@
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+Definir Data VdDatCcr;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+VdDatCcr = 0;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+  VnNumCcr = E501Tcp.NumCcr;
+
+
+  Cur_E501Tc2.Sql "Select DatCcr,VlrIof from E606CCR where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumCcr =:VnNumCcr";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VdDatCcr = Cur_E501Tc2.DatCcr;
+     vVlrBas8 = Cur_E501Tc2.VlrIof;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+Fim;
+
+Se (VdDatCcr <> E501Mcp.DatMov)
+  vVlrBas8 = 0;
+
+
+Se (vxCodTpt <> "97"){
+   vVlrBas8 = 0;
+ }

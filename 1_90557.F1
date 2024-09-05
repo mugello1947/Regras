@@ -1,0 +1,31 @@
+
+Definir Alfa gCodTpt;
+gCodTpt = E501Mcp.CodTpt;
+
+/*
+@Baixa de titulo da folha - tratamento vendas lojas - desconto de adto@
+Se(gCodTpt ="68")
+inicio
+ VVlrBas1=0;
+ Cancel(1);
+fim;
+
+
+@tratamento ipi a recuperar @
+Se(gCodTpt ="21")
+inicio
+ VVlrBas1=0;
+ Cancel(1);
+fim;
+*/
+
+@ tratamento para baixa por compensação , no caso contabiliza pelo 90357 @
+@ se tiver juros ou desconto deve ser lançado no contas a receber @
+
+gSeqMcr=E501MCP.SeqMcr;
+
+Se (gSeqMcr>0)
+inicio
+ VVlrBas1=0;
+ Cancel(1);
+fim;

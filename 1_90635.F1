@@ -1,0 +1,3 @@
+/* REGRA_PARCIAL */
+Se (E600MCC.OriMcc <> "OU")
+  VVlrBas1 = 0;

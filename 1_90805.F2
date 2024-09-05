@@ -1,0 +1,56 @@
+Definir Cursor Cur_E670Mov;
+Definir Data vDatMov;
+Definir Numero vSeqMov;
+Definir Numero vCodEsp;
+Definir Alfa vCodBem;
+Definir Alfa vTnsori;
+Definir Alfa vCodTns;
+Definir numero VnCodEsp;
+
+vCodEmp = E670Mov.CodEmp;
+vDatMov = E670Mov.DatMov;
+vTnsOri = E670Mov.TnsOri;
+vCodTns = E670mov.CodTns;
+vCtaRed = E670Mov.CtaRed;
+vCtaCre = E670Mov.CtaRcr;
+vCodBem = E670Mov.CodBem;
+vCodEsp = E670Mov.CodEsp;
+vSeqMov = E670Mov.SeqMov;
+
+
+
+Cur_E670mov.SQL "Select CtaRcr,CodEsp From E670bem \
+                     Where CodEmp = :vCodEmp \
+                       And CodBem = :vCodBem";
+
+Cur_E670Mov.AbrirCursor()
+Se (Cur_E670mov.Achou)
+   vCtaCre2= Cur_E670mov.CtaRcr;
+Cur_E670Mov.FecharCursor();
+
+
+
+/**** Busca Dados da Conta de Transferência ****/
+
+
+Se ((vTnsOri = "90806") e (vVlrbas2 <> 0))
+   Inicio 
+   Cur_E670mov.SQL "Select CtaRcr,CodEsp From E670mov \
+                     Where CodEmp = :vCodEmp \
+                       And CodBem = :vCodBem";
+
+   Cur_E670Mov.AbrirCursor()
+   Se (Cur_E670mov.Achou)
+      vCtaRedAux = Cur_E670mov.CtaRcr;
+      VnCodEsp = Cur_E670mov.CodEsp;
+   Cur_E670Mov.FecharCursor();
+   
+  Se (vCtaCre <> vCtaRedAux) 
+      vCtaDeb2 = vCtaCre;
+
+   Fim;
+Senao
+   Inicio
+   vVlrbas2 = 0;
+   Fim;
+x=0;

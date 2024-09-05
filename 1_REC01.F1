@@ -1,0 +1,54 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+Definir Cursor Cur_E600Cco;
+Definir Cursor Cur_E501MCP;
+
+Definir Alfa VaNumCco;
+Definir Alfa gCodTpt;
+Definir Alfa vCodTpt;
+Definir Alfa gNumTit;
+
+Definir Numero vCodEmp;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodCli;
+Definir Numero gVlrMov;
+Definir Numero gCodFor;
+
+vCodEmp = E301Mcr.CodEmp;
+VaNumCco = E301Mcr.NumCco;
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gNumTit = E301Mcr.NumTit;
+gVlrMov = E301Mcr.VlrMov;
+
+@ Buscar TIPO do Título ligado ao Contas à Pagar - 29/05/2013 - Rodrigo Costa@
+
+Cur_E501MCP.Sql " Select CodTpt \
+                    From E501MCP \
+                   Where CodEmp = :gCodEmp \
+                     And CodFil = :gCodFil \
+                     And CodTpt = '44' \
+                     And VlrMov = :gVlrMov"
+
+Cur_E501MCP.AbrirCursor();
+Se (Cur_E501MCP.Achou)
+  vCodTpt = Cur_E501MCP.CodTpt;
+Cur_E501MCP.FecharCursor();
+
+@ Fim - Buscar TIPO do Título ligado ao Contas à Pagar @
+
+Se((gCodTpt = "44") ou (vCodTpt = "44"))
+  Inicio
+    vCtaCre1 = 313;
+  Fim;
+
+Se (gCodCli = 2825) @ Latina @
+  vCtaCre1 = 763; @ Serviços de Cobrança - Deduzindo do valor da fatura da Latina @
+
+x=1;
+
+Se (VaNumCco <> " ")
+  vVlrBas1 = 0;

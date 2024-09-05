@@ -1,0 +1,34 @@
+Definir Cursor Cur_E440Ipc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir Numero gvlrDfa;
+Definir Numero gseqipc;
+
+Cur_E440Ipc.Sql "Select VlrDfa from E440Ipc where CodEmp=:gCodEmp and CodFil=:gCodFil and CodFor=:gCodFor and NumNfc=:gNumNfc and CodSnf=:gCodSnf and SeqIpc=:gSeqIpc";
+ 
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIpc = E440Rat.SeqIpc;
+ 
+Cur_E440Ipc.AbrirCursor();
+Se (Cur_E440Ipc.Achou)
+     Inicio
+     gVlrDfa = Cur_E440Ipc.VlrDfa;
+     ArredondarValor(gVlrIcm,2);
+     Fim;
+Cur_E440Ipc.FecharCursor();
+ 
+gRatDfa = (gVlrDfa *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatDfa,2);
+vRatDfa = (gRatDfa *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatDfa,2); 
+
+VVlrBas2 = vRatDfa;
+
+x=1;

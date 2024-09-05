@@ -1,0 +1,54 @@
+/*
+DESATIVO CONFORME CHAMADO 5320 - ARF - 20/12/2016
+
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecIcm;
+Definir Alfa gCodPro;
+Definir Numero gCodEmp;
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor  = 0;
+
+Cur_E075Pro.Sql"Select RecIcm from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro.RecIcm;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (gRecIcm = 'S')  
+  gValor = E440Ipc.VlrIsd;
+
+VVlrBas7 = gValor;
+*/
+
+Definir Alfa TClaSql;
+Definir Alfa CCurPro;
+Definir Alfa VCodPro;
+Definir Alfa VRecIcm;
+VCodEmp = E440IPC.CodEmp;
+VCodPro = E440IPC.CodPro;
+VVlrAux = 0;
+VRecIcm = "";
+
+TClaSql = "Select E075PRO.RecIcm WWRecIcm \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarAlfa(CCurPro,"WWRecIcm",VRecIcm);
+  }
+SQL_Destruir(CCurPro); 
+
+Se (VRecIcm = "S")
+  VVlrAux = E440IPC.VlrIsd;
+
+VVlrBas7 = VVlrAux;
+x=1;

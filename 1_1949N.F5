@@ -1,0 +1,51 @@
+/* INATIVAÇÃO conforme chamado 4902 - ARF - 01/09/2016
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecPis;
+Definir alfa gCodPro;
+Definir numero gCodEmp;
+
+Cur_E075Pro.Sql "Select RecPis from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor  = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecPis = Cur_E075Pro.RecPis;
+   Fim;
+Cur_E075Pro.FecharCursor();
+*/
+
+Definir Alfa   TClaSql;
+Definir Alfa   CCurPro;
+Definir Numero VCodEmp;
+Definir Alfa   VRecPis;
+Definir Alfa   VCodPro;
+VCodEmp = E440IPC.CodEmp;
+VCodPro = E440IPC.CodPro;
+VRecPis = "";
+TClaSql = "Select E075PRO.RecPis WWRecPis \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarAlfa(CCurPro,"WWRecPis",VRecPis);
+  }
+SQL_Destruir(CCurPro); 
+
+VValor = 0;
+
+Se (VRecPis = 'S')  
+ VValor = E440IPC.VlrPis;
+
+VVlrBas5 = VValor;
+
+X=1;

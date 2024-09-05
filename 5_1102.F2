@@ -1,0 +1,52 @@
+Definir Cursor Cur_E075Pro;
+Definir Cursor Cur_E012Fam;
+Definir Alfa gRecCof;
+Definir Alfa gRecIcm;
+Definir Alfa gRecIpi;
+Definir Alfa gRecPis;
+Definir alfa gCodPro;
+Definir Alfa gCodFam;
+Definir numero gCodEmp;
+
+Cur_E075Pro.Sql "Select CodFam,RecIcm, RecPis, RecCof from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor1 = 0;
+gValor3 = 0;
+gValor4 = 0;
+gCtaDeb = 0;
+gCodFam = "";
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro.RecIcm;
+     gRecPis = Cur_E075Pro.RecPis;
+     gRecCof = Cur_E075Pro.RecCof;
+     gCodFam = Cur_E075Pro.CodFam;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Cur_E012Fam.Sql "Select CtaRed from e012Fam where codemp=:gCodEmp and codFam=:gCodFam";
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+Inicio
+  gCtaDeb = Cur_E012Fam.CtaRed; 
+Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (E440Ipc.codFil = 2)
+Inicio
+   Se (gCtaDeb = 0)
+   Inicio
+      gCtaDeb = E440Ipc.CtaRed; /* Se for filial e não tiver produto na nota, pega conta contábil informada na nota */
+   Fim;
+Fim;
+
+Se (gRecIcm = 'S')  gValor1 = E440Ipc.VlrIcm;
+Se (gRecPis = 'S')  gValor3 = E440Ipc.VlrPis;
+Se (gRecCof= 'S')   gValor4 = E440Ipc.VlrCor;
+
+VVlrBas2 = E440Ipc.VlrLiq - (gValor1 + gValor3 + gValor4);
+vCtaDeb2 = gCtaDeb;

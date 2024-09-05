@@ -1,0 +1,36 @@
+@ Criado para contabilizar a conta 861 o valor de outro acrescimo - ECC em 30/08/2017 - Chamado 6539 @
+Definir numero VnCodFor;
+Definir Alfa VaCodTpt;
+VnCodFor = E501MCP.CodFor;
+VaCodTpt = E501MCP.CodTpt;
+
+VVlrBas6 = 0;
+
+Se (VnCodFor = 6348)
+  VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6349)
+  VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6350)
+   VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6351)
+   VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6352)
+  VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6353)
+   VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6354)
+   VVlrBas6 = E501MCP.VLROAC;
+
+Se (VnCodFor = 6330)
+   VVlrBas6 = E501MCP.VLROAC;
+
+Se (VaCodTpt= "97"){
+   VVlrBas6 = E501MCP.VLROAC;
+   VCtaCre6 = 916;
+}

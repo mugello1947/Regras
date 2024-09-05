@@ -1,0 +1,23 @@
+Definir Cursor Cur_E085CLI;
+Definir Numero vCodCli;
+Definir Alfa vNomCli;
+Definir Alfa vObsMcr;
+Definir Alfa vCplBas42s;
+
+
+vCodcli = E301TCR.CodCli;
+vObsMcr = E301MCR.ObsMcr;
+
+Cur_E085CLI.SQL "Select NomCli \
+                   From E085CLI \
+                  Where CodCli = :vCodCli";
+
+Cur_E085CLI.AbrirCursor();
+
+Se (Cur_E085CLI.Achou)
+   vNomCli = Cur_E085CLI.NomCli;
+
+Cur_E085CLI.FecharCursor();
+
+
+vCplBas42s = vNomCli + " - " +vObsMcr; 

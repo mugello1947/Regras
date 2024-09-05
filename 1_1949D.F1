@@ -1,0 +1,79 @@
+Definir Cursor Cur_E440ipc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqipc;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqipc = E440Rat.Seqipc;
+
+Cur_E440ipc.Sql "Select vlrirf, vlrpit, vlrcrt, vlrcsl, vlrour, vlrpis, vlrcor from E440ipc where CodEmp=:gCodEmp \
+                 and CodFil=:gCodFil and CodFor=:gCodFor and NumNfc=:gNumNfc and CodSnf=:gCodSnf and Seqipc=:gSeqipc";
+
+ 
+Cur_E440ipc.AbrirCursor();
+Se (Cur_E440ipc.Achou)
+   Inicio
+  
+     gVlrCsl = Cur_E440ipc.VlrCsl;
+     ArredondarValor(gVlrCsl,2);
+     gVlrIrf = Cur_E440ipc.VlrIrf;
+     ArredondarValor(gVlrIrf,2);
+     gVlrOur = Cur_E440ipc.VlrOur;
+     ArredondarValor(gVlrOur,2);
+     gVlrPit = Cur_E440ipc.VlrPit;
+     ArredondarValor(gVlrPit,2);
+     gVlrCrt = Cur_E440ipc.VlrCrt;
+     ArredondarValor(gVlrCrt,2);   
+     gVlrPis = Cur_E440ipc.VlrPis;
+     ArredondarValor(gVlrPis,2);
+     gVlrCor = Cur_E440ipc.VlrCor;
+     ArredondarValor(gVlrCor,2);
+
+   Fim;
+Cur_E440ipc.FecharCursor();
+
+gRatIrf = (gVlrIrf *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIrf,2);
+vRatIrf = (gRatIrf *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatIrf,2); 
+
+gRatOur = (gVlrOur *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatOur,2);
+vRatOur = (gRatOur *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatOur,2);
+
+gRatCsl = (gVlrCsl *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCsl,2);
+vRatCsl = (gRatCsl *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatCsl,2);
+
+gRatPit = (gVlrPit *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatPit,2);
+vRatPit = (gRatPit *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatPit,2); 
+
+gRatCrt = (gVlrCrt *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCrt,2);
+vRatCrt = (gRatCrt *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatCrt,2);
+
+gRatPis = (gVlrPis *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatPis,2);
+vRatPis = (gRatPis *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatPis,2); 
+
+gRatCor = (gVlrCor *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCor,2);
+vRatCor = (gRatCor *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatCor,2);
+
+VVlrBas1 = E440rat.VlrRat  + (vRatIss +vRatIrf + vRatCsl + vRatOur + vRatIns + vRatPis + vRatCor);
+
+x=1;

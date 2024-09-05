@@ -1,0 +1,42 @@
+Definir Numero vVlrBas1;
+Definir Numero vDatBas1;
+Definir Cursor Cur_E661OCS;
+Definir Numero vCodEmp;
+Definir Numero vCodFil;
+Definir Numero vTipCre;
+Definir Numero vAliImp;
+Definir Numero vVlrBnc;
+Definir Alfa vCodImp;
+Definir Data vDatApi;
+
+vCodEmp = E661CSP.CodEmp;
+vCodFil = E661CSP.CodFil;
+vCodImp = E661CSP.CodImp;
+vDatApi = E661CSP.DatApi;
+vTipCre = E661CSP.TipCre;
+vAliImp = E661CSP.AliImp;
+
+@ Busca a base do crédito referente ao imobilizado @
+Cur_E661OCS.SQL "SELECT VLRBCA FROM E661OCS \
+                  WHERE CODEMP = :vCodEmp \
+                    AND CODFIL = :vCodFil \
+                    AND CODIMP = :vCodImp \
+                    AND DATAPI = :vDatApi \
+                    AND TIPCRE = :vTipCre \
+                    AND ALIIMP = :vAliImp \
+                    AND BASCRE in ('09','10') \
+                    AND CSTCRE in ('56','50')";
+Cur_E661OCS.AbrirCursor();
+vVlrBca = 0;
+Enquanto (Cur_E661OCS.Achou) {
+   vVlrBca = vVlrBca + Cur_E661OCS.VlrBca;
+   Cur_E661OCS.Proximo();
+}
+Cur_E661OCS.FecharCursor();
+
+vVlrBas1 = vVlrBca * 0.0165;
+
+vDatBas1 = vDatApi;
+UltimoDia(vDatBas1); 
+
+x=0;

@@ -1,0 +1,11 @@
+Se (E301Mcr.NumCco = " ")
+    vVlrBas5 = 0;
+
+Definir Alfa vNumTit;
+vNumTit = E301Mcr.NumTit;
+
+Se ((vNumTit <> "0410") e (vNumTit <> "10662") e (vNumTit <> "1000") e (vNumTit <> "2034"))
+
+    vVlrBas5 = 0;
+
+X=0;

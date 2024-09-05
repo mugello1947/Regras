@@ -1,0 +1,7 @@
+
+Se (E440IPC.VLRICM <> 0)
+  vVlrBas3 = E440IPC.VLRICM;
+ Senao
+  vVlrBas3 = E440IPC.VECICM;
+
+x=1;

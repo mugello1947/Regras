@@ -1,0 +1,123 @@
+Definir Cursor Cur_E440Isc;
+Definir Cursor Cur_E440Nfc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqIsc;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIsc = E440Rat.SeqIpc;
+gPerCta = E440Rat.PerCta;
+gPerRat = E440Rat.PerRat;
+
+xVlrBruNf = 0;
+xVlrIcmNf = 0;
+xVlrCorNf = 0;
+xVlrPisNf = 0;
+Cur_E440Nfc.Sql "Select vlrbru, vlricm, vlrisd, vlrpis, vlrcor \
+                   From E440Ipc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf ";
+Cur_E440Nfc.AbrirCursor();
+Enquanto (Cur_E440Nfc.Achou) {
+   xVlrBruNf = xVlrBruNf + Cur_E440Nfc.VlrBru;
+   xVlrIcmNf = xVlrIcmNf + Cur_E440Nfc.VlrIcm;
+   Se (Cur_E440Nfc.VlrIsd <> 0) {
+      xVlrIcmNf = xVlrIcmNf + Cur_E440Nfc.VlrIsd;
+   } 
+   xVlrCorNf = xVlrCorNf + Cur_E440Nfc.VlrCor;
+   xVlrPisNf = xVlrPisNf + Cur_E440Nfc.VlrPis;
+   Cur_E440NFC.Proximo();
+}
+Cur_E440Nfc.FecharCursor();
+
+Cur_E440Isc.Sql "Select vlrbru, vlricm, vlrisd, vlrpis, vlrcor \
+                   From E440Ipc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf \
+                    And SeqIpc=:gSeqIsc";
+Cur_E440Isc.AbrirCursor();
+Se (Cur_E440Isc.Achou) {
+   xVlrBru = Cur_E440ISC.VlrBru;
+   xVlrIcm = Cur_E440ISC.VlrIcm;
+   Se (Cur_E440ISC.VlrIsd <> 0) {
+      xVlrIcm = xVlrIcm + Cur_E440ISC.VlrIsd;
+   } 
+   xVlrCor = Cur_E440ISC.VlrCor;
+   xVlrPis = Cur_E440ISC.VlrPis;
+}
+Cur_E440Isc.FecharCursor();
+
+@ Valor Bruto proporcional ao Rateio @
+xVlrBruRat = xVlrBru * gPerCta / 100;
+xVlrBruRat = xVlrBruRat * gPerRat / 100;
+
+@ Valor ICMS proporcional ao Rateio @
+xVlrIcmRat = xVlrIcm * gPerCta / 100;
+xVlrIcmRat = xVlrIcmRat * gPerRat / 100;
+
+@ Valor PIS proporcional ao Rateio @
+xVlrPisRat = xVlrPis * gPerCta / 100;
+xVlrPisRat = xVlrPisRat * gPerRat / 100;
+
+@ Valor COFINS proporcional ao Rateio @
+xVlrCorRat = xVlrCor * gPerCta / 100;
+xVlrCorRat = xVlrCorRat * gPerRat / 100;
+
+@ Valor do Lançamento Contábil proporcional ao Rateio @
+
+@ Regra definida conforme chamado #24109 @
+
+Definir Alfa VaDatEnt;
+ConverteMascara(3,VDatBas2,VaDatEnt,"DD/MM/YYYY");
+
+Se ((VaDatEnt >= "01/08/2022") e (E440IPC.CodFor = 7422))
+   VVlrBas2 = xVlrBruRat - xVlrIcmRat;
+senao
+   VVlrBas2 = xVlrBruRat - xVlrIcmRat - xVlrPisRat - xVlrCorRat;
+
+ArredondarValor(VVlrBas2,2);
+
+
+  Se ((GerTabNum[1] = gNumNfc) e (GerTabAlf[1] = gCodSnf) e (GerTabNum[2] = gCodFor)) {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = GerTabNum[3] + VVlrBas2;
+  }
+  Senao {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = VVlrBas2;
+  }
+
+  xVlrDif = (xVlrBruNf - xVlrIcmNf - xVlrPisNf - xVlrCorNf) - GerTabNum[3];
+  @ArredondarValor(xVlrDif,2);@
+  Se ((xVlrDif >= -0.05) e (xVlrDif < 0.10))  {
+     VVlrBas2 = VVlrBas2 + xVlrDif;
+     ArredondarValor(VVlrBas2,2);
+  }
+
+  Se (xVlrDif < 0)
+    Inicio
+      GerTabNum[1] = 0;
+      GerTabAlf[1] = "";
+      GerTabNum[2] = 0;
+      GerTabNum[3] = 0;
+    Fim;
+
+
+x=1;

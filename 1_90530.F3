@@ -1,0 +1,17 @@
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VCplBas1;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501RAT.CodFor;
+gCodEmp = E501RAT.CodEmp; 
+gCodFil = E501RAT.CodFil;
+gNumTit = E501RAT.NumTit;
+gCodTpt = E501RAT.CodTpt;
+
+
+Se(gCodTpt <> "89")
+   vVlrBas3 = 0;

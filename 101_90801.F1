@@ -1,0 +1,54 @@
+Definir Cursor Cur_E670Mov;
+
+Definir Data vDatMov;
+Definir Numero vSeqMov;
+Definir Numero vCodEsp;
+Definir Alfa vCodBem;
+Definir Alfa vTnsori;
+Definir Alfa vCodTns;
+
+vCodEmp = E670Mov.CodEmp;
+vDatMov = E670Mov.DatMov;
+vTnsOri = E670Mov.TnsOri;
+vCodTns = E670mov.CodTns;
+vCtaRed = E670Mov.CtaRed;
+vCodBem = E670Mov.CodBem;
+vCodEsp = E670Mov.CodEsp;
+vSeqMov = E670Mov.SeqMov;
+
+/**** Busca Dados da Conta de Transferência ****/
+
+Se(vTnsOri = "90825")
+   Inicio 
+Cur_E670mov.SQL "Select CtaRed From E670mov \
+                  Where CodEmp = :vCodEmp \
+                    And DatMov = :vDatMov \
+                    And CodEsp = :vCodEsp \
+                    And CodBem = :vCodBem \
+                    And SeqMov = :vSeqMov \
+                    And TnsOri = :vTnsOri";
+
+ Cur_E670Mov.AbrirCursor()
+Se (Cur_E670mov.Achou)
+   vCtared = Cur_E670mov.CtaRed;
+Cur_E670Mov.FecharCursor();
+   Fim;
+
+vCtaDeb1 = vCtaRed;
+
+Se (vCtaDeb1 = vCtaCre1)
+    vCtaDeb1 = E670Bem.CtaRed;
+
+Se ((E670Mov.TnsOri = "90802") ou (E670Mov.TnsOri = "90803") ou (E670Mov.TnsOri = "90804") ou (E670Mov.TnsOri = "90807") ou (E670Mov.TnsOri = "90808"))
+      vCtaDeb1 = 10171; /********  A CLASSIFICAR ********/
+
+Se ((E670Mov.TnsOri = "90809") ou (E670Mov.TnsOri = "90810") ou (E670Mov.TnsOri = "90811") ou (E670Mov.TnsOri = "90812") ou (E670Mov.TnsOri = "90813"))
+      vCtaDeb1 = 10171; /********  A CLASSIFICAR ********/
+
+Se ((E670Mov.TnsOri = "90814") ou (E670Mov.TnsOri = "90826") ou (E670Mov.TnsOri = "90827") ou (E670Mov.TnsOri = "90828"))
+      vCtaDeb1 = 10171;  /********  A CLASSIFICAR ********/
+
+Se (E670Mov.TnsOri <> "90825")
+      vVlrbas1 = 0;
+
+x=1;

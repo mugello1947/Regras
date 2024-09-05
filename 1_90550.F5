@@ -1,0 +1,20 @@
+Definir alfa vaCodTpt;
+
+VaCodTpt = E501MCP.CodTpt;
+
+Se (vaCodTpt = "97") {
+
+  Definir Alfa vCplBas11s;
+  Definir alfa vCplBas12s;
+  Definir alfa vCplBas13s;
+  Definir Alfa vCplBas51s;
+  Definir alfa vCplBas52s;
+  Definir alfa vCplBas53s;
+
+  vCodHpd5 = 4001;
+  
+  vCplBas51S = vCplBas11S;
+  vCplBas52S = vCplBas12S;
+  vCplBas53S = vCplBas13S;
+
+}

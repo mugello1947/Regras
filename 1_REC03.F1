@@ -1,0 +1,89 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir Alfa gCodCrp;
+Definir Alfa gCodTns;
+
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+
+gCtaDeb= 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gCodCrp = E301TCR.CodCrp;
+gNumTit = E301Mcr.NumTit;
+gCodTns = E301MCR.CodTns;
+
+Cur_E002Htt.Sql "Select CtaRcr,ctardv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+Se (Cur_E002Htt.Achou)
+      gCtaDeb= Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaDeb= 0)
+Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaDeb= Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+Fim;
+
+Se ((gCodTpt = "44") ou (gCodTpt = "01"))
+inicio
+ Se(gCodCrp="09")  @externo@
+   gCtaDeb=1070;
+ Se(gCodCrp="10")  @interno@
+   gCtaDeb=70;
+fim; 
+
+
+VCtaDeb1 = gCtaDeb; 
+
+
+Definir cursor Cur_E301MCR;
+Definir alfa   vCplBas11S;
+Definir alfa   vCplBas12S;
+Definir alfa   aCodTpt;
+Definir alfa   aNumTit;
+
+nCodEmp =E301MCR.CodEmp;
+nCodFil =E301MCR.CodFil;
+aCodTpt =E301MCR.CodTpt;
+aNumTit =E301MCR.NumTit;
+
+/* cliente e título relacionado */
+Cur_E301MCR.SQL "Select E085CLI.NomCli, \
+                        E301MCR.NumTit \
+                   from E301MCR, \
+                        E301TCR, \
+                        E085CLI \
+                  where E301MCR.CodEmp =:nCodEmp \
+                    and E301MCR.FilRlc =:nCodFil \
+                    and E301MCR.NumRlc =:aNumTit \
+                    and E301MCR.TptRlc =:aCodTpt \
+                    and E301TCR.CodEmp =E301MCR.CodEmp \
+                    and E301TCR.CodFil =E301MCR.FilRlc \
+                    and E301TCR.CodTpt =E301MCR.TptRlc \
+                    and E301TCR.NumTit =E301MCR.NumRlc \            
+                    and E085CLI.CodCli =E301TCR.CodCli";
+Cur_E301MCR.AbrirCursor();
+Se (Cur_E301MCR.Achou)
+    Inicio
+      vCplBas11S =Cur_E301MCR.NumTit;
+      vCplBas12S =Cur_E301MCR.NomCli;
+    Fim;
+Senao
+    Inicio
+      Cur_E301MCR.FecharCursor();
+      GeraLog("Regra: Não foi encontrado título original da substituição.");
+    Fim;
+Cur_E301MCR.FecharCursor();

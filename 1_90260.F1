@@ -1,0 +1,20 @@
+Definir numero xposicao;
+definir alfa vcodccu;
+definir numero vperrat;
+definir numero vvlrrat;
+vCodCcu = E210MVP.CodCcu;
+LimpaEspacos(vCodCcu);
+
+
+@Regra para Inserir 100% Rateio Integração@
+Se (vCodCcu <> "")
+inicio
+  /* Para excluir todos registros de rateios que vieram */
+  xPosicao = 1;
+  RateioIntegracao("Excluir_Tudo",xPosicao,vCodCcu,vPerRat,vVlrRat); 
+
+  /* Para inserir um rateio único */
+  vPerRat = 100;
+  vVlrRat = E210MVP.VLRMOV;
+  RateioIntegracao("Inserir",xPosicao,vCodCcu,vPerRat,vVlrRat);
+Fim;

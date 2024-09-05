@@ -1,0 +1,5 @@
+Definir alfa gCodTpt;
+gCodtpt = E501Mcp.CodTpt;
+
+Se (gCodTpt = "31")
+  VVlrBas4 = 0;

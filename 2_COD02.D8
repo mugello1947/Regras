@@ -1,0 +1,38 @@
+vAbgFil8 = E440ISC.CODFIL;
+vDatBas8 = E440NFC.DATENT;
+vCtaDeb8 = 954;
+vCtaCre8 = 0;
+vVlrBas8 = E440ISC.VLRCOR;
+vCodHpd8 = 91;
+Definir Alfa vObsCpl8S[200]; vObsCpl8S = E440ISC.TNSSER;
+vCgcCpf8 = 0;
+vCgcCre8 = 0;
+vCodMoe8 = 0;
+vCplBas81 = E440ISC.NUMNFC;
+Definir Alfa vCplBas82S[200]; vCplBas82S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Definir cursor Cur_E045PLA;
+Definir alfa	 aAplCta;
+Definir alfa   aCodSnf;
+
+nCodEmp =E440ISC.CodEmp;
+nCodFil =E440ISC.CodFil;
+nCodFor =E440ISC.CodFor;
+nCtaRed =E440ISC.CtaRed;
+nNumNfc =E440ISC.NumNfc;
+nSeqIsc =E440ISC.SeqIsc;
+aCodSnf =E440ISC.CodSnf;
+aAplCta = "P";
+
+@ Busca Conta Patrimonial @
+Cur_E045PLA.SQL "Select CodEmp \
+                   from E045PLA \
+                  where CodEmp =:nCodEmp \
+                    and CtaRed =:nCtaRed \
+                    and AplCta =:aAplCta";
+Cur_E045PLA.AbrirCursor();
+Se (Cur_E045PLA.Achou)
+    Inicio
+      VCtaCre8 = 0; 
+    Fim;
+Cur_E045PLA.FecharCursor();

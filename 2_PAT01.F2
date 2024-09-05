@@ -1,0 +1,32 @@
+Se (E670Mov.Vlrmvt = 0)
+  VVlrBas2 = 0;
+
+Definir Cursor CUR_E044CCU;
+
+Definir Alfa VCODCCU;
+Definir Numero VTIPCCU;
+
+VCODEMP=E670RAT.CODEMP;
+VCODCCU=E670RAT.CODCCU;
+
+Se (VVlrBas2 <> 0)
+inicio
+CUR_E044CCU.SQL "Select TipCcu from E044CCU WHERE CodEmp=:VCodEmp AND CodCcu=:VCodCcu";
+
+CUR_E044CCU.AbrirCursor();
+Se (CUR_E044CCU.Achou) 
+  vTipCcu = CUR_E044CCU.TipCcu;
+CUR_E044CCU.FecharCursor();
+
+Se (vTipCcu = 2) @ Produtivo Indireto ou Produtivo Direto @
+    vCtaCre2 = 6661;
+Senao
+Se ((VTIPCCU=3) ou (vTipCcu = 5)) @ Administrativo ou Financeiro @
+    GeraLog("Centro de Custo Administrativo não pode ter pis e cofins, favor verificar cadastro do bem");
+Senao
+Se (vTipCcu = 4) @ Comercial @
+    vCtaCre2 = 7661;
+Fim;
+
+
+x = 1;

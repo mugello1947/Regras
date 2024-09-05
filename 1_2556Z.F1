@@ -1,0 +1,148 @@
+Definir Alfa TClaSql;
+Definir Alfa CCurNfc;
+Definir Alfa CCurRat;
+Definir Alfa CCurIpc;
+Definir Alfa VCodSnf;
+VCodEmp = E440RAT.CodEmp;
+VCodFil = E440RAT.CodFil;
+VCodFor = E440RAT.CodFor;
+VNumNfc = E440RAT.NumNfc;
+VCodSnf = E440RAT.CodSnf;
+VSeqIpc = E440RAT.SeqIpc;
+VCtaDeb1= E440RAT.CtaRed;
+VPerCta = E440RAT.PerCta;
+VPerRat = E440RAT.PerRat;
+
+@ Limpeza de variáveis @
+VSeqAux = 0; 
+VVlrImp = 0;
+VVlrAux = 0;
+VVlrLiq = 0;
+VVlrIcm = 0;
+VVlrCor = 0;
+VVlrPis = 0;
+VVlrIpi = 0;
+VVlrIsn = 0;
+
+Se ((GerTabNum[1] <> VNumNfc) e (GerTabNum[2] <> VCodFor))  
+  {
+    GerTabNum[1] = VNumNfc;
+    GerTabNum[2] = VCodFor;
+    GerTabNum[3] = 0;
+    GerTabNum[4] = 0;
+  }
+
+@ Conta a quantidade de sequencias de rateio @
+TClaSql = "Select Count(E440RAT.SeqIpc) WWSeqIpc \    
+             From E440RAT \
+            Where E440RAT.CodEmp = :VCodEmp \
+              And E440RAT.CodFil = :VCodFil \
+              And E440RAT.CodFor = :VCodFor \
+              And E440RAT.CodSnf = :VCodSnf \
+              And E440RAT.NumNfc = :VNumNfc \
+         Order by 1 Desc";
+SQL_Criar(CCurRat);
+SQL_DefinirComando(CCurRat, TClaSql);
+SQL_DefinirInteiro(CCurRat,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurRat,"VCodFil",VCodFil);
+SQL_DefinirInteiro(CCurRat,"VCodFor",VCodFor);
+SQL_DefinirAlfa(CCurRat,"VCodSnf",VCodSnf);  
+SQL_DefinirInteiro(CCurRat,"VNumNfc",VNumNfc);
+SQL_AbrirCursor(CCurRat);
+Se (SQL_EOF(CCurRat) = 0)
+  {
+    SQL_RetornarInteiro(CCurRat,"WWSeqIpc",VSeqAux);    
+  }
+SQL_Destruir(CCurRat);
+
+@ Procura data base para contabilização @
+TClaSql = "Select E440NFC.DatEnt WWDatEnt \  
+             From E440NFC \
+            Where E440NFC.CodEmp = :VCodEmp \
+              And E440NFC.CodFil = :VCodFil \
+              And E440NFC.CodFor = :VCodFor \
+              And E440NFC.CodSnf = :VCodSnf \
+              And E440NFC.NumNfc = :VNumNfc";
+SQL_Criar(CCurNfc);
+SQL_DefinirComando(CCurNfc, TClaSql);
+SQL_DefinirInteiro(CCurNfc,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurNfc,"VCodFil",VCodFil);
+SQL_DefinirInteiro(CCurNfc,"VCodFor",VCodFor);
+SQL_DefinirAlfa(CCurNfc,"VCodSnf",VCodSnf);  
+SQL_DefinirInteiro(CCurNfc,"VNumNfc",VNumNfc);
+SQL_AbrirCursor(CCurNfc);
+Se (SQL_EOF(CCurNfc) = 0)
+  {
+    SQL_RetornarData(CCurNfc,"WWDatEnt",VDatBas1);
+  }
+SQL_Destruir(CCurNfc); 
+
+@ Procura o valor líquido e impostos para cálculo do rateio @
+TClaSql = "Select E440IPC.VlrLiq WWVlrLiq, E440IPC.VlrIcm WWVlrIcm,\
+                  E440IPC.VlrIpi WWVlrIpi, E440IPC.VlrCor WWVlrCor,\
+                  E440IPC.VlrPis WWVlrPis, E440IPC.VlrIsn WWVlrIsn \    
+             From E440IPC \
+            Where E440IPC.CodEmp = :VCodEmp \
+              And E440IPC.CodFil = :VCodFil \
+              And E440IPC.CodFor = :VCodFor \
+              And E440IPC.CodSnf = :VCodSnf \
+              And E440IPC.NumNfc = :VNumNfc \
+              And E440IPC.SeqIpc = :VSeqIpc";
+SQL_Criar(CCurIpc);
+SQL_DefinirComando(CCurIpc, TClaSql);
+SQL_DefinirInteiro(CCurIpc,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurIpc,"VCodFil",VCodFil);
+SQL_DefinirInteiro(CCurIpc,"VCodFor",VCodFor);
+SQL_DefinirAlfa(CCurIpc,"VCodSnf",VCodSnf);  
+SQL_DefinirInteiro(CCurIpc,"VNumNfc",VNumNfc);
+SQL_DefinirInteiro(CCurIpc,"VSeqIpc",VSeqIpc);
+SQL_AbrirCursor(CCurIpc);
+Se (SQL_EOF(CCurIpc) = 0)
+  {
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrLiq",VVlrLiq);
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrIcm",VVlrIcm);
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrIpi",VVlrIpi);        
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrCor",VVlrCor);    
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrPis",VVlrPis); 
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrIsn",VVlrIsn);
+  }
+SQL_Destruir(CCurIpc);
+
+@ Realiza cálculos @
+VVlrImp = VVlrIcm + VVlrIpi + VVlrCor + VVlrPis + VVlrIsn;
+VVlrLiq = VVlrLiq - VVlrImp;
+VVlrAux = ((VVlrLiq * VPerCta) / 100); 
+VVlrBas1= ((VVlrAux * VPerRat) / 100);
+VVlrAux = 0;
+VVlrAux = VVlrBas1;
+ArredondarValor(VVlrBas1,2);
+
+VVlrDif = VVlrAux - VVlrBas1; @ Identifica a diferença do arredondamento @
+Se (VVlrDif <> 0)
+  GerTabNum[3] = GerTabNum[3] + VVlrDif; 
+
+GerTabNum[4]++; @ Contador da número de execuções da forma de contabilização @
+
+Se (GerTabNum[4] = VSeqAux) @ Quando o número de rateios é igual ao número do contador, @
+  {  
+    Se ((GerTabNum[1] = VNumNfc) e (GerTabNum[2] = VCodFor)) @ Compara o número da nota e número do fornecedor, com que está em execução @
+      {
+        VVlrBas1 = VVlrBas1 + GerTabNum[3]; @ Soma a diferença ao valor do rateio @
+        @ Limpeza de variáveis @
+        LimpaGerTabNum();
+        LimpaGerTabAlf();
+      } 
+  }
+
+ /* ou (VCtaDeb1 = 95) - Retirada condição em 17/10/2016 conforme chamado 4935 */
+ Se ((VCtaDeb1 = 79) ou (VCtaDeb1 = 83) ou (VCtaDeb1 = 85) ou 
+     (VCtaDeb1 = 89) ou (VCtaDeb1 = 96) ou 
+     (VCtaDeb1 = 97) ou (VCtaDeb1 = 98) ou (VCtaDeb1 = 99) ou 
+     (VCtaDeb1 = 102) ou (VCtaDeb1 = 103))
+   VVlrBas1 = 0;
+
+/*
+- Remodelação da forma de contabilização 2556Z, "limpeza" de lógica e nova programação para ajustar efentuais diferença de valores - Chamado 2137 (Sequencia 1);
+- 18/05/2016 - ARF (manutenção);
+*/
+x=1;

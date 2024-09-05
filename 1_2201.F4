@@ -1,0 +1,56 @@
+Definir Numero VCodEmp;
+Definir Alfa   VRecIpi;
+Definir Alfa   VCodPro;
+VCodPro = E440Ipc.CodPro;
+VCodEmp = E440Ipc.CodEmp;
+VValor4 = 0;
+VRecIpi = "";
+
+/* Inativado - ARF - 31/08/2016 - chamado 4902 
+Definir Cursor Cur_E075Pro;
+Cur_E075Pro.Sql "Select RecIpi \
+                   from E075Pro \
+                  where CodPro=:gCodPro \
+                    and CodEmp=:gCodEmp";
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIpi = Cur_E075Pro.RecIpi;
+   Fim;
+Cur_E075Pro.FecharCursor();
+*/
+
+@ Implementação abaixo, conforme chamado 4902 - ARF - 31/08/2016@
+Definir Alfa TClaSql;
+Definir Alfa CCurPro;
+TClaSql = "Select E075PRO.RecIpi WWRecIpi \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarAlfa(CCurPro,"WWRecIpi",VRecIpi);
+  }
+SQL_Destruir(CCurPro); 
+
+
+/* Adicionado tratamento para buscar o IPI Cred. Devi. caso */
+/* seja diferente de 0 (zero) - Rodrigo Costa - 04/03/2013 */
+
+Se ((VRecIpi = 'S')  ou (VCodPro = ' '))
+ Inicio
+   Se (E440Ipc.VecIpi <> 0)
+    gValor4 = E440Ipc.VecIpi;
+   Senao
+    gValor4 = E440Ipc.VlrIpi;
+ Fim;
+/* Fim - Adicionado trat... */
+
+VVlrBas4 = gValor4;
+
+x = 1;

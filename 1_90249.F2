@@ -1,0 +1,58 @@
+Definir Cursor Cur_E012Fam;
+Definir Cursor Cur_E075Pro;
+Definir Cursor Cur_E210Rat;
+Definir Cursor Cur_E210Mvp;
+
+Definir Numero vCtaDeb2;
+Definir Numero vCodEmp;
+Definir Numero vSeqMov;
+Definir Numero vSeqRat;
+Definir Alfa   vCodFam;
+Definir Alfa   vCodPro;
+Definir Alfa   VCodCcu;
+
+vCodEmp = E210Rat.CodEmp;
+vCodPro = E210rat.CodPro;
+vSeqmov = e210Rat.SeqRat;
+vCtaRed = E210Rat.CtaRed;
+
+vCtaDeb2 = 0;
+vCtaRed  = 0;
+
+EstaNulo(vCodpro,VRet);
+
+/* Se não achou Conta Contabil no MOVIMENTO do Produto - Busca no RATEIO ***********************/
+ 
+        Inicio
+        Cur_E210Rat.Sql "Select CtaRed  \
+                           From E210Rat \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro \
+                            And SeqRat = :vSeqRat";
+        Cur_E210Rat.AbrirCursor();
+        Se (Cur_E210Rat.Achou)
+          Inicio
+            vCtaDeb2 = Cur_E210Rat.CtaRed;
+         Fim;
+      Cur_E210Rat.FecharCursor();
+ Fim;
+
+/* Se não achou Conta Contabil no PRODUTO - Busca no MOVIMENTO do Produto ***********************/
+ 
+  Se ((vCtaDeb2 = 0) e (vCodpro <> ' '))
+      Inicio
+        Cur_E210Mvp.Sql "Select CtaRed  \
+                           From E210Mvp \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro \
+                            And CtaRed = :VCtaRed \
+                            And SeqMov = :vSeqMov";
+        Cur_E210Mvp.AbrirCursor();
+        Se (Cur_E210Mvp.Achou)
+          Inicio
+            vCtaDeb2 = Cur_E210Mvp.CtaRed;
+         Fim;
+      Cur_E210Mvp.FecharCursor();
+ Fim;
+
+x=1;

@@ -1,0 +1,9 @@
+Definir Alfa vCplBas12s;
+Definir alfa gObs;
+
+gObs = "A identificar";
+
+gCodCli = E301Tcr.CodCli; 
+
+Se (gCodCli = 1)
+   vCplBas12S = gObs;

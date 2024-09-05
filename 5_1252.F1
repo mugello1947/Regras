@@ -1,0 +1,39 @@
+Definir Cursor Cur_E440Par;
+Definir Cursor Cur_E002Htt;
+
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodFor;
+Definir numero gNumNfc;
+Definir alfa   gCodSnf;
+Definir alfa   gCodTpt;
+Definir numero gCtaRed;
+
+Cur_E440Par.Sql "Select CodTpt from E440Par where CodEmp=:gCodEmp and CodFil=:gCodFil and CodFor=:gCodFor and NumNfc=:gNumNfc and CodSnf=:gCodSnf";
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+gCodEmp = E440Ipc.CodEmp;
+gCodFil = E440Ipc.CodFil;
+gCodFor = E440Ipc.CodFor;
+gNumNfc = E440Ipc.NumNfc;
+gCodSnf = E440Ipc.CodSnf;
+
+gCtaRed = 0;
+
+Cur_E440Par.AbrirCursor();
+Se (Cur_E440Par.Achou)
+   Inicio
+    gCodTpt = Cur_E440Par.CodTpt;
+   Fim;
+Cur_E440Par.FecharCursor();
+
+Cur_E002Htt.AbrirCursor();
+Se (Cur_E002Htt.Achou)
+   Inicio
+    gCtaRed = Cur_E002Htt.CtaRdv;
+   Fim;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaRed = 0)  gCtaRed = 2015;
+
+VCtaCre1 = gCtaRed;

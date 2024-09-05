@@ -1,0 +1,54 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+gCtaCre = 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gNumTit = E301Mcr.NumTit;
+
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+      gCtaCre = Cur_E002Htt.CtaRcr;
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaCre = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaCre = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se (gCtaCre = 0)
+    gCtaCre = 70;
+
+VCtaCre1 = gCtaCre; 
+
+@tratamento de transacao 90352 usada errada para baixa de titulo de adiantamento@
+@ contabilização da baixa de adiantamento é pela transcao 90358  @
+Se(gCodTpt ="30")  
+inicio
+  VVlrBas1=0;
+  cancel(1);
+fim;
+
+@Baixa de Reintegra - Tipo 86 @
+Se(gCodTpt ="86")  
+inicio
+  VCtaCre1 = 1800;
+  cancel(1);
+fim;

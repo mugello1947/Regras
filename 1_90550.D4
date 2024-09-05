@@ -1,0 +1,87 @@
+vAbgFil4 = E501MCP.CODFIL;
+vDatBas4 = E501MCP.DATMOV;
+vCtaDeb4 = 0;
+vCtaCre4 = 905;
+vVlrBas4 = E501MCP.VLRDSC+E501MCP.VLRODE;
+vCodHpd4 = 507;
+Definir Alfa vObsCpl4S[200]; vObsCpl4S = E501MCP.CODTNS;
+vCgcCpf4 = 0;
+vCgcCre4 = 0;
+vCodMoe4 = 0;
+Definir Alfa vCplBas41S[200]; vCplBas41S = E501MCP.NUMTIT;
+Definir Alfa vCplBas42S[200]; vCplBas42S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VaSitTit;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+VaSitTit = E501TCP.SitTit;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select PreCar from E606PRE where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumTit =:vaNumTit and CodTpt=:vxCodTpt  and TipPre = 'P'";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VaPreCar = Cur_E501Tc2.PreCar;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  @ Leasing @
+  vnNumCcr = E501TCP.NumCcr;
+  Cur_E501Tc2.Sql "Select CodPbc from E606CCr where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumCCr=:vnNumCcr";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VnCodPbc = Cur_E501Tc2.CodPbc;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+
+  Se (VaPreCar = "S"){
+     vCtaCre4 = 916;
+     /*Se (VaSitTit  = "AB")
+        VVlrBas4 = VVlrBas4;
+     Senao
+        VVlrBas4 = VVlrBas4 + E501TCP.OutNeg - E501MCP.VlrOac - E501TCP.JrsNeg;*/
+     
+     @ Leasing @
+     Se (VnCodPbc = 2)
+        vCtaCre4 = 459;
+     Se (E501TCP.NumCcr = 16)
+        vCtaCre4 = 459;
+     Se (E501TCP.NumCcr = 19)
+        vCtaCre4 = 459;
+     Se (E501TCP.NumCcr = 20)
+        vCtaCre4 = 459;
+     }
+
+Se (VVlrBas4 < 0)
+inicio
+  VVlrBas4 = VVlrBas4*(-1);
+  vCtaDeb4 = 905;
+  vCtaCre4 = 0;
+Fim;
+
+
+Fim;

@@ -1,0 +1,126 @@
+Definir Cursor Cur_E012Fam;
+Definir alfa   gCodPro;
+Definir alfa   gCodFam;
+gCodFam = E140Ipv.CodFam;
+gCodPro = E140Ipv.CodPro;
+vCtaRed = E140Ipv.CtaRed;
+gCodEmp = E140Ipv.CodEmp;
+gCtaCre = 0;
+
+/*
+gCtaCre = E140Ipv.CtaRed;
+
+vCtaCre2 = gCtaCre;
+*/
+x=0;
+
+
+Definir Alfa TClaSql;
+Definir Alfa CCurNfc;
+Definir Alfa CCurRat;
+Definir Alfa CCurIpc;
+Definir Alfa VCodSnf;
+VCodEmp = E140RAT.CodEmp;
+VCodFil = E140RAT.CodFil;
+VNumNfv = E140RAT.NumNfv;
+VCodSnf = E140RAT.CodSnf;
+VSeqIpv = E140RAT.SeqIpv;
+VCtaCre2= E140RAT.CtaRed;
+VPerCta = E140RAT.PerCta;
+VPerRat = E140RAT.PerRat;
+
+@ Limpeza de variáveis @
+VSeqAux = 0; 
+VVlrImp = 0;
+VVlrAux = 0;
+VVlrLiq = 0;
+VVlrIcm = 0;
+VVlrCor = 0;
+VVlrPis = 0;
+VVlrIpi = 0;
+
+Se (GerTabNum[1] <> VNumNfv)  
+  {
+    GerTabNum[1] = VNumNfv;
+    GerTabNum[2] = 0;
+    GerTabNum[3] = 0;
+    GerTabNum[4] = 0;
+  }
+
+@ Conta a quantidade de sequencias de rateio @
+TClaSql = "Select Count(E140RAT.SeqIpv) WWSeqIpv \    
+             From E140RAT \
+            Where E140RAT.CodEmp = :VCodEmp \
+              And E140RAT.CodFil = :VCodFil \
+              And E140RAT.CodSnf = :VCodSnf \
+              And E140RAT.NumNfv = :VNumNfv \
+         Order by 1 Desc";
+SQL_Criar(CCurRat);
+SQL_DefinirComando(CCurRat, TClaSql);
+SQL_DefinirInteiro(CCurRat,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurRat,"VCodFil",VCodFil);
+SQL_DefinirAlfa(CCurRat,"VCodSnf",VCodSnf);  
+SQL_DefinirInteiro(CCurRat,"VNumNfv",VNumNfv);
+SQL_AbrirCursor(CCurRat);
+Se (SQL_EOF(CCurRat) = 0)
+  {
+    SQL_RetornarInteiro(CCurRat,"WWSeqIpv",VSeqAux);    
+  }
+SQL_Destruir(CCurRat);
+
+@ Procura o valor líquido e impostos para cálculo do rateio @
+TClaSql = "Select E140IPV.VlrLiq WWVlrLiq, E140IPV.VlrIcm WWVlrIcm,\
+                  E140IPV.VlrIpi WWVlrIpi, E140IPV.VlrCor WWVlrCor,\
+                  E140IPV.VlrPis WWVlrPis \    
+             From E140IPV \
+            Where E140IPV.CodEmp = :VCodEmp \
+              And E140IPV.CodFil = :VCodFil \
+              And E140IPV.CodSnf = :VCodSnf \
+              And E140IPV.NumNfv = :VNumNfv \
+              And E140IPV.SeqIpv = :VSeqIpv";
+SQL_Criar(CCurIpc);
+SQL_DefinirComando(CCurIpc, TClaSql);
+SQL_DefinirInteiro(CCurIpc,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurIpc,"VCodFil",VCodFil);
+SQL_DefinirAlfa(CCurIpc,"VCodSnf",VCodSnf);  
+SQL_DefinirInteiro(CCurIpc,"VNumNfv",VNumNfv);
+SQL_DefinirInteiro(CCurIpc,"VSeqIpv",VSeqIpv);
+SQL_AbrirCursor(CCurIpc);
+Se (SQL_EOF(CCurIpc) = 0)
+  {
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrLiq",VVlrLiq);
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrIcm",VVlrIcm);
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrIpi",VVlrIpi);        
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrCor",VVlrCor);    
+    SQL_RetornarFlutuante(CCurIpc,"WWVlrPis",VVlrPis);    
+  }
+SQL_Destruir(CCurIpc);
+
+@ Realiza cálculos @
+VVlrImp = VVlrIcm + VVlrIpi + VVlrCor + VVlrPis;
+VVlrLiq = VVlrLiq - VVlrImp;
+VVlrAux = ((VVlrLiq * VPerCta) / 100); 
+VVlrBas2= ((VVlrAux * VPerRat) / 100);
+VVlrAux = 0;
+VVlrAux = VVlrBas2;
+ArredondarValor(VVlrBas2,2);
+
+VVlrDif = VVlrAux - VVlrBas2; @ Identifica a diferença do arredondamento @
+Se (VVlrDif <> 0)
+  GerTabNum[3] = GerTabNum[3] + VVlrDif; 
+
+GerTabNum[4]++; @ Contador da número de execuções da forma de contabilização @
+
+Se (GerTabNum[4] = VSeqAux) @ Quando o número de rateios é igual ao número do contador, @
+  {  
+    Se ((GerTabNum[1] = VNumNfv)) @ Compara o número da nota e número do fornecedor, com que está em execução @
+      {
+        VVlrBas2 = VVlrBas2 + GerTabNum[3]; @ Soma a diferença ao valor do rateio @
+        @ Limpeza de variáveis @
+        LimpaGerTabNum();
+        LimpaGerTabAlf();
+      } 
+  }
+
+
+x=1;

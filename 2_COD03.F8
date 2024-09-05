@@ -1,0 +1,102 @@
+Definir Cursor Cur_E210MVP;
+Definir Cursor Cur_E075PRO;
+Definir Cursor Cur_E012FAM;
+
+Definir Numero vCodEmp;
+Definir Numero vCodFil;
+Definir Numero vCtaRed;
+Definir Numero vNumNfc;
+Definir Alfa vCodSnf;
+Definir Numero vCodFor;
+Definir Alfa vCodPro;
+Definir Alfa VCodFam;
+
+vCodEmp = E440IPC.CodEmp;
+vCodFil = E440IPC.CodFil;
+vNumNfc = E440IPC.NumNfc;
+vCodFor = E440IPC.CodFor;
+vCodSnf = E440IPC.CodSnf;
+
+Achou = 0;
+
+Definir Alfa TClaSql;
+Definir Alfa CCurRat;
+TClaSql = "Select * \  
+             From E440RAT \
+            Where E440RAT.CodEmp = :VCodEmp \
+              And E440RAT.CodFil = :vCodFil \
+              And E440RAT.NumNfc = :vNumNfc \
+              And E440RAT.CodFor = :vCodFor \
+              And E440RAT.CodSnf = :vCodSnf";
+SQL_Criar(CCurRat);
+SQL_DefinirComando(CCurRat, TClaSql);
+SQL_DefinirInteiro(CCurRat,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurRat,"vCodFil",vCodFil);
+SQL_DefinirInteiro(CCurRat,"vNumNfc",vNumNfc);
+SQL_DefinirInteiro(CCurRat,"vCodFor",vCodFor);
+SQL_DefinirAlfa(CCurRat,"vCodSnf",vCodSnf);
+SQL_AbrirCursor(CCurRat);
+Se (SQL_EOF(CCurRat) = 0)
+  {
+    Achou = 1;
+    VVlrBas8 = 0;
+  }
+SQL_Destruir(CCurRat);
+
+/*
+Se (Achou = 0)
+inicio
+  Cur_E210MVP.Sql "Select CodPro \
+                     from E210MVP \
+                    Where CodEmp = :vCodEmp \ 
+                      And CodFil = :vCodFil \ 
+                      And NumNfc = :vNumNfc \
+                      And CodFor = :vCodFor \
+                      And SnfNfc = :vCodSnf";
+  Cur_E210MVP.AbrirCursor();
+  Se (Cur_E210MVP.Achou)
+   Inicio
+    vCodPro = Cur_E210MVP.CodPro;
+   Fim;
+  Cur_E210MVP.FecharCursor();
+
+
+  Definir Alfa TClaSql;
+  Definir Alfa CCurPro;
+  TClaSql = "Select E075PRO.CtaRed WWCtaDeb, E075PRO.CodFam WWCodFam \  
+               From E075PRO \
+              Where E075PRO.CodEmp = :VCodEmp \
+                And E075PRO.CodPro = :VCodPro";
+  SQL_Criar(CCurPro);
+  SQL_DefinirComando(CCurPro, TClaSql);
+  SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+  SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+  SQL_AbrirCursor(CCurPro);
+  Se (SQL_EOF(CCurPro) = 0)
+    {
+      SQL_RetornarInteiro(CCurPro,"WWCtaDeb",VCtaDeb2);
+      SQL_RetornarAlfa(CCurPro,"WWCodFam",VCodFam);
+    }
+  SQL_Destruir(CCurPro);
+   
+
+  Se (vCtaDeb8 = 0)
+    Inicio
+      Cur_E012FAM.Sql "Select CtaRed  \
+                         From E012FAM \
+                        Where CodEmp = :VCodEmp \
+                          And CodFam = :VCodFam";
+      Cur_E012FAM.AbrirCursor();
+      Se (Cur_E012FAM.Achou)
+         Inicio
+           VCtaDeb8 = Cur_E012FAM.CtaRed;
+         Fim;
+      Cur_E012FAM.FecharCursor();
+    Fim;
+  
+  Se (vCtaDeb8 = 0)
+    vCtaDeb8 = E440IPC.CtaRed;
+
+Fim;
+*/
+x=1;

@@ -1,0 +1,50 @@
+Definir Cursor Cur_E085HCL;
+Definir Cursor Cur_E301TCR;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodCli;
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+
+gCodEmp = E301MCR.CodEmp;
+gCodFil = E301MCR.CodFil;
+gNumTit = E301MCR.NumTit;
+gCodTpt = E301MCR.CodTpt;
+gCtaRed = 0;
+
+@Buscar o cadastro do cliente - Rodrigo Costa - 14/09/2012@
+Cur_E301TCR.Sql "Select CodCli \
+                   From E301TCR \ 
+                  Where CodFil=:gCodFil \
+                    And CodEmp=:gCodEmp \
+                    And Numtit=:gNumTit \
+                    And CodTpt=:gCodTpt";
+
+Cur_E301TCR.AbrirCursor();
+ Se (Cur_E301TCR.Achou)
+  gCodCli = Cur_E301TCR.CodCli;
+Cur_E301TCR.FecharCursor();
+@Fim - Busca o cadastro...@
+
+
+@Busca a Conta Contábil 1 no cadastro do cliente - Rodrigo Costa - 14/09/2012@
+Cur_E085Hcl.Sql "Select CtaRed \
+                   From E085hcl \
+                  Where CodFil=:gCodFil \
+                    And CodEmp=:gCodEmp \ 
+                    And CodCli=:gCodCli";
+
+Cur_E085Hcl.AbrirCursor();
+  Se (Cur_E085Hcl.Achou)
+      gCtaRed = Cur_E085Hcl.CtaRed;
+Cur_E085Hcl.FecharCursor();
+@Fim - Busca a Conta Contábil 1@
+
+Se (gCodTpt = "10") 
+   gCtaRed = 344;
+
+@Carrega obrigatoriamento a conta 300 caso não haja no cadastro@
+Se (gCtaRed = 0)
+    gCtaRed = 300;
+
+VCtaDeb1 = gCtaRed; 

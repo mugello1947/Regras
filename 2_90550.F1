@@ -1,0 +1,385 @@
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Numero gCodfor;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+vCtaDeb1 = 0;
+
+
+Se ((gCodFor = 110) e (gCodTpt = "29"))
+   vCtaDeb1 = 880;
+
+Se ((gCodFor = 235) e (gCodTpt = "06"))
+   vCtaDeb1 = 855;
+
+Se ((gCodFor = 1071) e (gCodTpt = "43"))
+   vCtaDeb1 = 330;
+
+Se ((gCodFor = 1071) e (gCodTpt = "45"))
+   vCtaDeb1 = 440;
+
+Se ((gCodFor = 1071) e (gCodTpt = "15"))
+   vCtaDeb1 = 329;
+
+Se ((gCodFor = 1071) e (gCodTpt = "47"))
+   vCtaDeb1 = 329;
+
+
+Se ((gCodFor = 9646) e (gCodTpt = "100"))
+   vCtaDeb1 = 333;
+
+
+Se ((gCodFor = 108) e (gCodTpt = "09"))
+   vCtaDeb1 = 876;
+
+Se ((gCodFor = 6179) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+
+Se ((gCodFor = 1076) e (gCodTpt = "26"))
+   vCtaDeb1 = 310;
+
+Se ((gCodFor = 1074) e (gCodTpt = "41"))
+   vCtaDeb1 = 317;
+
+Se ((gCodFor = 1150) e (gCodTpt = "52"))
+   vCtaDeb1 = 326;
+
+Se ((gCodFor = 1150) e (gCodTpt = "54"))
+   vCtaDeb1 = 326;
+
+Se ((gCodFor = 1) e (gCodTpt = "08"))
+   vCtaDeb1 = 853;
+
+Se ((gCodFor = 1090) e (gCodTpt = "52"))
+   vCtaDeb1 = 844;
+
+Se ((gCodFor = 1073) e (gCodTpt = "24"))
+   vCtaDeb1 = 320;
+
+Se ((gCodFor = 1075) e (gCodTpt = "23"))
+   vCtaDeb1 = 321;
+
+Se ((gCodFor = 4593) e (gCodTpt = "02"))
+   vCtaDeb1 = 84;
+
+Se ((gCodFor = 4592) e (gCodTpt = "02"))
+   vCtaDeb1 = 83;
+
+Se ((gCodFor = 1074) e (gCodTpt = "57"))
+   vCtaDeb1 = 319;
+
+Se ((gCodFor = 995) e (gCodTpt = "09"))
+   vCtaDeb1 = 300;
+
+Se ((gCodFor = 110) e (gCodTpt = "32"))
+   vCtaDeb1 = 878;
+
+Se ((gCodFor = 110) e (gCodTpt = "33"))
+   vCtaDeb1 = 877;
+
+Se (gCodTpt = "14")
+   vCtaDeb1 = 325;
+
+Se (gCodTpt = "50")
+   vCtaDeb1 = 326;
+
+Se (gCodFor = 2432)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 294)
+   vCtaDeb1 = 300;
+
+
+Se (gCodFor = 2195)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2807)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 3463)
+   vCtaDeb1 = 110;
+
+Se (gCodFor = 2586)
+   vCtaDeb1 = 735;
+
+
+Se (gCodFor = 2603)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 1618)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 402)
+   vCtaDeb1 = 883;
+
+Se (gCodFor = 289)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 300)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 255)
+   vCtaDeb1 = 110;
+
+Se (gCodFor = 2019)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2649)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 3063)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 882)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 262)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2164)
+   vCtaDeb1 = 326;
+
+Se (gCodFor = 2956)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2653)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 3202)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 6782)
+   vCtaDeb1 = 110;
+
+Se (gCodFor = 1059)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 995)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 206)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 765)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2730)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 3515)
+   vCtaDeb1 = 82;
+
+Se (gCodFor = 235)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 220)
+   vCtaDeb1 = 622;
+
+Se (gCodFor = 1067)
+   vCtaDeb1 = 327;
+
+Se (gCodFor = 1070)
+   vCtaDeb1 = 325;
+
+Se (gCodFor = 2746)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 1069)
+   vCtaDeb1 = 325;
+
+Se (gCodFor = 2807)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 385)
+   vCtaDeb1 = 831;
+
+Se (gCodFor = 115)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 235)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 1034)
+   vCtaDeb1 = 300;
+
+Se (E501MCP.CodTpt = "28")
+   vCtaDeb1 = 318;
+
+Se (E501MCP.CodTpt = "12")
+   vCtaDeb1 = 325;
+
+Se (E501MCP.CodTpt = "13")
+   vCtaDeb1 = 325;
+
+Se (E501MCP.CodTpt = "38")
+   vCtaDeb1 = 884;
+
+Se ((gCodFor = 2976) e (gCodTpt = "01"))
+   vCtaDeb1 = 81;
+
+Se ((gCodFor = 2050) e (gCodTpt = "27"))
+   vCtaDeb1 = 393;
+
+Se ((gCodFor = 249) e (gCodTpt = "19"))
+   vCtaDeb1 = 647;
+
+Se ((gCodFor = 110) e (gCodTpt = "98"))
+   vCtaDeb1 = 975;
+
+Se (gCodFor = 115)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 2124)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 376)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 4357)
+   vCtaDeb1 = 648;
+
+Se (gCodFor = 4379)
+   vCtaDeb1 = 648;
+
+Se (gCodFor = 793)
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 384)
+   vCtaDeb1 = 300;
+
+
+Se (gCodFor = 4415)
+   vCtaDeb1 = 648;
+
+Se (gCodFor = 4723)
+   vCtaDeb1 = 648;
+
+
+Se (gCodFor = 109)
+   vCtaDeb1 = 314;
+
+
+Se (gCodFor = 1160)
+   vCtaDeb1 = 312;
+
+Se (gCodFor = 1077)
+   vCtaDeb1 = 335;
+
+
+Se (gCodFor = 4588)
+   vCtaDeb1 = 648;
+
+
+Se ((gCodFor = 108) e (gCodTpt = "73"))
+   vCtaDeb1 = 972;
+
+Se ((gCodFor = 1) e (gCodTpt = "93"))
+   vCtaDeb1 = 455;
+
+Se ((gCodFor = 458) e (gCodTpt = "19"))
+   vCtaDeb1 = 110;
+
+Se ((gCodFor = 7162) e (gCodTpt = "02"))
+   vCtaDeb1 = 85;
+
+Se ((gCodFor = 2050) e (gCodTpt = "95"))
+   vCtaDeb1 = 393;
+
+Se ((gCodFor = 7384) e (gCodTpt = "02"))
+   vCtaDeb1 = 86;
+
+Se ((gCodFor = 1304) e (gCodTpt = "56"))
+   vCtaDeb1 = 328;
+
+Se ((gCodFor = 6179) e (gCodTpt = "100"))
+   vCtaDeb1 = 333;
+
+Se ((gCodFor = 6179) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+Se ((gCodFor = 2152) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+Se ((gCodFor = 6782) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+
+Se ((gCodFor = 9259) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+Se ((gCodFor = 1071) e (gCodTpt = "43"))
+   vCtaDeb1 = 329;
+
+Se ((gCodFor = 9646) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+Se (gCodTpt = "58")
+   vCtaDeb1 = 300;
+
+Se (gCodTpt = "63")
+   vCtaDeb1 = 300;
+
+Se (gCodTpt = "66")
+   vCtaDeb1 = 300;
+
+Se (gCodTpt = "16")
+   vCtaDeb1 = 327;
+
+Se (gCodTpt = "52")
+   vCtaDeb1 = 300;
+
+Se ((gCodFor = 1936) e (gCodTpt = "19"))
+   vCtaDeb1 = 333;
+
+Se(gCodTpt = "PAR")
+  vCtaDeb1 = 70243;
+
+Se (vCtaDeb1 = 0)
+    vCtaDeb1 = 300;
+
+x=0;
+
+
+
+
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select * from E501Tcp where CodEmp=:vnCodEmp and CodFil=:vnCodFil and NumTit=:vaNumTit and CodTpt=:vxCodTpt and CodFor=:vnCodFor";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     vxCtaRed = Cur_E501Tc2.CtaRed;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  vCtaDeb1 = vxCtaRed;
+
+Se (vxCodTpt = "97")
+  VVlrBas1  = VVlrBas1 + E501MCP.VlrOac + E501MCP.JrsCal;
+
+Fim;
+
+
+x = 0;

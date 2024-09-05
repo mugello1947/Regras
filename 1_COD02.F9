@@ -1,0 +1,96 @@
+@ Valor critério backup @
+@ E440RAT;E440ISC.VLRPIS*(E440RAT.PERCTA/100*E440RAT.PERRAT/100)@
+
+Definir cursor Cur_E045PLA;
+Definir Alfa   CBusCtaEst;
+Definir Alfa   xCursor;
+Definir Alfa   VaClaCta;
+Definir Alfa   VaAplCta;
+Definir Alfa   TClaSql;
+Definir alfa	 aAplCta;
+Definir alfa   aCodSnf;
+
+nCodEmp =E440RAT.CodEmp;
+nCodFil =E440RAT.CodFil;
+nCodFor =E440RAT.CodFor;
+nCtaRed =E440RAT.CtaRed;
+nNumNfc =E440RAT.NumNfc;
+nSeqIsc =E440RAT.SeqIsc;
+aCodSnf =E440RAT.CodSnf;
+
+@ Busca Conta Contabil para saber se é de estoque ou patrimonio @
+TClaSql = "Select E045PLA.ClaCta As VaClaCta, \
+                  E045PLA.AplCta As VaAplCta \  
+             From E045PLA \
+            Where E045PLA.CodEmp = :nCodEmp \
+              And E045PLA.CtaRed = :nCtaRed";
+SQL_Criar(CBusCtaEst);
+SQL_DefinirComando(CBusCtaEst, TClaSql);
+SQL_DefinirInteiro(CBusCtaEst,"nCodEmp",nCodEmp);
+SQL_DefinirInteiro(CBusCtaEst,"nCtaRed",nCtaRed);     
+SQL_AbrirCursor(CBusCtaEst);
+Se (SQL_EOF(CBusCtaEst) = 0)
+ {
+   SQL_RetornarAlfa(CBusCtaEst,"VaClaCta",VaClaCta);
+   SQL_RetornarAlfa(CBusCtaEst,"VaAplCta",VaAplCta);
+   @IntParaAlfa(VnClaCta, VaClaCta);@
+   CopiarAlfa(VaClaCta,1,3);
+   Se (VaClaCta = "117") @ É Conta Contabil de Estoque @ 
+      VCtaCre9 = 0; 
+   Se (VaAplCta = "P") @ É Conta Contabil de Patrimonio @ 
+      VCtaCre9 = 0;                                           
+ }
+SQL_Destruir(CBusCtaEst);
+
+Se(e440rat.seqisc = 0)
+  Inicio
+    TClaSql = "Select VlrPis \
+                 from e440nfc \
+                where codemp = :ncodemp \
+                  and codfil = :ncodfil \
+                  and codfor = :ncodfor \
+                  and codsnf = :acodsnf \
+                  and numnfc = :nnumnfc";
+    SQL_Criar(xCursor);
+    SQL_DefinirComando(xCursor, TClaSql);
+    SQL_DefinirInteiro(xCursor, "nCodEmp",nCodEmp); 
+    SQL_DefinirInteiro(xCursor, "nCodFil",nCodFil);
+    SQL_DefinirInteiro(xCursor, "nCodFor",nCodFor);
+    SQL_DefinirAlfa(xCursor, "aCodSnf",aCodSnf);
+    SQL_DefinirInteiro(xCursor, "nNumNfc",nNumNfc);
+    SQL_AbrirCursor(xCursor);
+    Se(SQL_EOF(xCursor) =0)
+      Inicio
+        SQL_RetornarFlutuante(xCursor,"VlrPis",VNVlrPis);
+        VVlrBas9 = VNVlrPis * (E440RAT.PerCta/100*E440RAT.PerRat/100);
+      Fim;
+    SQL_FecharCursor(xCursor);
+    SQL_Destruir(xCursor);
+  Fim;
+senao
+  Inicio
+    TClaSql = "Select VlrPis \
+                 from e440isc \
+                where codemp = :ncodemp \
+                  and codfil = :ncodfil \
+                  and codfor = :ncodfor \
+                  and codsnf = :acodsnf \
+                  and numnfc = :nnumnfc \
+                  and seqisc = :nseqisc";
+    SQL_Criar(xCursor);
+    SQL_DefinirComando(xCursor, TClaSql);
+    SQL_DefinirInteiro(xCursor, "nCodEmp",nCodEmp); 
+    SQL_DefinirInteiro(xCursor, "nCodFil",nCodFil);
+    SQL_DefinirInteiro(xCursor, "nCodFor",nCodFor);
+    SQL_DefinirAlfa(xCursor, "aCodSnf",aCodSnf);
+    SQL_DefinirInteiro(xCursor, "nNumNfc",nNumNfc);
+    SQL_DefinirInteiro(xCursor, "nSeqIsc",nSeqIsc);
+    SQL_AbrirCursor(xCursor);
+    Se(SQL_EOF(xCursor) =0)
+      Inicio
+        SQL_RetornarFlutuante(xCursor,"VlrPis",VNVlrPis);
+        VVlrBas9 = VNVlrPis * (E440RAT.PerCta/100*E440RAT.PerRat/100);
+      Fim;
+    SQL_FecharCursor(xCursor);
+    SQL_Destruir(xCursor);    
+  Fim;

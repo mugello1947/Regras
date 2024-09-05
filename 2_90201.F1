@@ -1,0 +1,15 @@
+Definir Alfa   vCodOri;
+vCodOri = E075pro.CodOri;
+Definir Alfa  VaCodFam;
+VaCodFam = E075Pro.CodFam;
+Definir Numero vCtaCre1;
+
+
+Se(VaCodFam ="3002")  @cavaco@
+   vCtaCre1 = 50200;
+
+Se(VaCodFam ="3001")  @Lenha@
+   vCtaCre1 = 50237;
+
+Se(VaCodFam ="3006")  @cavaco@
+   vCtaCre1 = 50200;

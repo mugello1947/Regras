@@ -1,0 +1,43 @@
+Definir Cursor Cur_E670Mov;
+Definir Data vDatMov;
+Definir Numero vSeqMov;
+Definir Numero vCodEsp;
+Definir Alfa vCodBem;
+Definir Alfa vTnsori;
+Definir Alfa vCodTns;
+
+vCodEmp = E670Mov.CodEmp;
+vDatMov = E670Mov.DatMov;
+vTnsOri = E670Mov.TnsOri;
+vCodTns = E670mov.CodTns;
+vCtaRed = E670Mov.CtaRed;
+vCtaCre = E670Mov.CtaRcr;
+vCodBem = E670Mov.CodBem;
+vCodEsp = E670Mov.CodEsp;
+vSeqMov = E670Mov.SeqMov;
+
+/**** Busca Dados da Conta de Transferência ****/
+
+Se (vTnsOri = "90806")
+   Inicio 
+   Cur_E670mov.SQL "Select CtaRed From E670bem \
+                     Where CodEmp = :vCodEmp \
+                       And CodBem = :vCodBem";
+
+   Cur_E670Mov.AbrirCursor()
+   Se (Cur_E670mov.Achou)
+      vCtaRedAux = Cur_E670mov.CtaRed;
+   Cur_E670Mov.FecharCursor();
+   
+   Se (vCtaRed <> vCtaRedAux)
+      vCtaCre1 = vCtaRed;
+
+   Fim;
+Senao
+   Inicio
+   vVlrbas1 = 0;
+   Fim;
+x=0;
+
+Se ((vTnsOri = "90807") e (vCodEsp = 80))
+  vVlrbas1 = 0;

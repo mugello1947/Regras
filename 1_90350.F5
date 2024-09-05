@@ -1,0 +1,19 @@
+/***************************************************************
+Definir Numero vCtaCre5;
+Definir Numero gCodCli;
+gCodCli = E301TCR.CodCli;
+
+vCtaCre5 = 904;
+
+@*** Se o Cliente for 770 - Devera contabilizar na conta 980 - Variação Monetaria Ativa ***@
+Se (gCodCli = 770)
+  vCtaCre5 = 980;
+
+x=1;
+
+@*** Se o Cliente for 771 - Devera contabilizar na conta 980 - Variação Monetaria Ativa ***@
+Se (gCodCli = 771)
+ vCtaCre5 = 980;
+
+x=1;
+***************************************************************/

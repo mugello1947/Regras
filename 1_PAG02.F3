@@ -1,0 +1,89 @@
+/* REGRA_PARCIAL */
+Definir cursor Cur_E600CCO;
+Definir alfa   aNumCco;
+Definir alfa   aCodSnf;
+
+nCodEmp =E501TCP.CodEmp;
+nCodFil =E501TCP.FilNfv;
+nNumNfv =E501TCP.NumNfv;
+aCodSnf =E501TCP.SnfNfv;
+aNumCco =E501MCP.NumCco;
+
+/* conta interna */
+Se (E501MCP.EmpCco =0)
+    Inicio
+      vVlrBas3 =0;
+    Fim;
+
+/* devolução adiantamento na tesouraria */
+Se (E501MCP.EmpCco >0)
+    Inicio
+      Cur_E600CCO.SQL "Select CtaRed \
+                         from E600CCO \
+                        where CodEmp =:nCodEmp \
+                          and NumCco =:aNumCco";
+      Cur_E600CCO.AbrirCursor();
+      Se (Cur_E600CCO.Achou)
+          vCtaDeb3 =Cur_E600CCO.CtaRed;
+      Cur_E600CCO.FecharCursor();           
+    Fim;
+
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp ;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+vCtaDeb1 = 0;
+
+/* Para baixar a crédito conforme a conta do fornecedor,tipo titulo,grupo */
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCtaRed = 0;
+
+Definir cursor Cur_E095Hfo;
+Definir Cursor Cur_E002Htt;
+Definir Cursor Cur_E023Hrp;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRed;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRdv;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+VCtaCre3 = gCtaRed;
+
+
+@ Só contabiliza o que passou pela tesouraria @
+Se (E501MCP.TnsCxb <> "90613")
+    Inicio
+      vVlrBas3 =0;
+      Cancel(1);
+    Fim;

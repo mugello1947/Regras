@@ -1,0 +1,201 @@
+/* @ Colocado em comentário em 25/07/2023 cfe solicitado pro Rozangela - Alterado por Edilce @
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+
+gCodFor = E440IPC.CodFor;
+gNumNfc = E440IPC.NUMNFC;
+
+
+Se (gCodFor = 2022) @ TRUBER @
+  vCtaCre1 = 1622;
+
+Se (gCodFor = 564) @ TRUBERBEL @
+  vCtaCre1 = 1622;
+
+Se (gCodFor = 3061) @ ECO CLEAR @
+  vCtaCre1 = 1621;
+
+Se (gCodFor = 584) @ MILCLEAN @
+  vCtaCre1 = 1631;
+
+Se (gCodFor = 838) @ PLATI @
+  vCtaCre1 = 1623;
+
+Se (gCodFor = 2181) @ SANIPEL @
+  vCtaCre1 = 1620;
+
+Se (gCodFor = 3018) @ REGLY @
+  vCtaCre1 = 1616;
+
+Se (gCodFor = 2175) @ EJS @
+  vCtaCre1 = 1630;
+
+Se (gCodFor = 3281) @ TRENIER @
+  vCtaCre1 = 1625;
+
+Se (gCodFor = 3473) @ DETYLINE @
+  vCtaCre1 = 1634;
+
+Se (gCodFor = 2329) @ SCHULZ @
+  vCtaCre1 = 1629;
+
+Se (gCodFor = 3504) @ EC II @
+  vCtaCre1 = 1621;
+
+Se (gCodFor = 3986) @ JEVERSON @
+  vCtaCre1 = 1640;
+
+Se (gCodFor = 4328) @ MEDI HOUSE @
+  vCtaCre1 = 4328;
+
+Se (gCodFor = 1167) @ FABIO @
+  vCtaCre1 = 10120;
+
+Se (gCodFor = 4410) @ VALMIRA @
+  vCtaCre1 = 2738;
+
+Se (gCodFor = 4791) @ SPP @
+  vCtaCre1 = 2847;
+
+Se (gCodFor = 21)
+  vVlrBas1 = 0;
+
+Se (gCodFor = 391)
+  vVlrBas1 = 0;
+
+Se (gCodFor = 112)
+  vVlrBas1 = 0;
+
+Se (gCodFor = 1973)
+  vVlrBas1 = 0;
+
+
+Se (gCodFor <> 21)
+ vCtaDeb1 = 276;
+
+
+Se (gCodFor <> 21)
+ vCtaCre1 = E440IPC.CTARED;
+
+
+Se (gCodFor = 2329)   
+   vCtaCre1 = 1629;
+
+Se (gCodFor = 3504)   
+   vCtaCre1 = 1637;
+
+Se (gCodFor = 564)   
+   vCtaCre1 = 1622;
+
+Se (gCodFor = 2022)   
+   vCtaCre1 = 1622;
+
+Se (gCodFor = 3018)   
+   vCtaCre1 = 1616;
+
+Se (gCodFor = 3281)   
+   vCtaCre1 = 1625;
+
+Se (gCodFor = 3473)   
+   vCtaCre1 = 1634;
+
+Se (gCodFor = 2181)   
+   vCtaCre1 = 1620;
+
+Se (gCodFor = 3986)   
+   vCtaCre1 = 1640;
+
+Se (gCodFor = 3061)   
+   vCtaCre1 = 1621;
+
+Se (gCodFor = 4538)   
+   vCtaCre1 = 2740;
+
+Se (gCodFor = 1167)   
+   vCtaCre1 = 10120;
+
+Se (gCodFor = 4410)   
+   vCtaCre1 = 2738;
+
+Se (gCodFor = 4328)   
+   vCtaCre1 = 4328;
+
+Se (gCodFor = 4781)   
+   vCtaCre1 = 4781;
+
+Se (gCodFor = 5525) @ CMPC @
+  vCtaCre1 = 4056;
+
+Se (gCodFor = 6239) @ VALLE @
+  vCtaCre1 = 6239;
+
+Se (gCodFor = 5920) @ R.RIBASKI @
+  vCtaCre1 = 5920;
+
+Se (gCodFor = 5957) @ MICAEL @
+  vCtaCre1 = 4437;
+
+Se (gCodFor = 5958) @ SN FLORES @
+  vCtaCre1 = 4438;
+
+Se (gCodFor = 5960) @ ML OLIVEIRA @
+  vCtaCre1 = 4439;
+
+Se (gCodFor = 6198) @ SRT2 @
+  vCtaCre1 = 6198;
+
+Se (gCodFor = 6011) @ IG JABOUR @
+  vCtaCre1 = 6011;
+
+Se (gCodFor = 2599) @ BR SUPPLY @
+  vCtaCre1 = 2599;
+
+Se (gCodFor = 6243) @ ECS @
+  vCtaCre1 = 1637;
+
+Se (gCodFor = 6423) @ COMERC.PICA PAU @
+  vCtaCre1 = 1635;
+
+Se (gCodFor = 7970) @ PAULO ROBERTO @
+  vCtaCre1 = 7970;
+
+Se (gCodFor = 3047) @ BRS @
+  vCtaCre1 = 2633;
+
+Se (gCodFor = 8064) @ HYGIECORP @
+  vCtaCre1 = 7448;
+
+Se (gCodCli = 8284) @ Hygiecorp @
+  vCtaCre1 = 7448;
+
+
+Se (gCodFor = 24) @ DELCRIS @
+  vCtaCre1 = 285;
+
+Se (gCodFor = 5937) @ ESSYTI @
+  vCtaCre1 = 5937;
+
+Se (gCodFor = 4634) @ AVELINO @
+  vCtaCre1 = 4635;
+
+Se (gCodFor = 8284) @ HYGIECORP @
+  vCtaCre1 = 7448;
+
+Se (gCodFor = 9063) @ BRASSEN @
+  vCtaCre1 = 6400;
+
+Se (gCodFor = 9205) @ WALTER @
+  vCtaCre1 = 9205;
+
+Se (gCodFor = 3011) @ MG @
+  vCtaCre1 = 3011;
+
+Se (gCodFor = 9376) @ WGF @
+  vCtaCre1 = 9377;
+
+Se (gCodFor = 6580) @ BRASCLEAN @
+  vCtaCre1 = 6400;
+*/
+
+
+x=0;

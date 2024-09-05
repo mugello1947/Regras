@@ -1,0 +1,32 @@
+/* REGRA_PARCIAL */
+Definir Alfa   aNumCco;
+Definir Cursor Cur_E600CCO;
+
+aNumCco =E301MCR.NumCco;
+nCodEmp =E301MCR.CodEmp;
+
+LimpaEspacos(aNumCco);
+
+/* conta interna */
+Se (aNumCco = "")
+    Inicio
+      vVlrBas3 =0;
+      Cancel(1);
+    Fim;
+
+
+/* devolução adiantamento na tesouraria */
+Se (aNumCco <> "")
+    Inicio
+      Cur_E600CCO.SQL "Select CtaRed \
+                         from E600CCO \
+                        where CodEmp =:nCodEmp \
+                          and NumCco =:aNumCco";
+      Cur_E600CCO.AbrirCursor();
+      Se (Cur_E600CCO.Achou)
+          vCtaCre3 =Cur_E600CCO.CtaRed;
+      Cur_E600CCO.FecharCursor();           
+    Fim;
+
+Se (E301MCR.CodTpt = "30")
+    VCtaDeb3 = 308;

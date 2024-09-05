@@ -1,0 +1,142 @@
+Definir Cursor Cur_E440IPC;
+Definir Cursor Cur_E440IPCS;
+Definir Cursor Cur_E440NFC;
+Definir Alfa vCodSnf;
+Definir Alfa vTnsPro;
+
+vCodEmp = E440Rat.CodEmp;
+vCodFil = E440Rat.CodFil;
+vCodFor = E440Rat.CodFor;
+vNumNfc = E440Rat.NumNfc;
+vCodSnf = E440Rat.CodSnf;
+vSeqIpc = E440Rat.SeqIpc;
+vTnsPro = E440Rat.TnsPro;
+vCtaRed = E440Rat.CtaRed;
+vVlrCta = E440Rat.VlrCta;
+vPerCta = E440Rat.PerCta;
+vVlrRat = E440Rat.VlrRat;
+vPerRat = E440Rat.PerRat;
+vSeqRat = E440Rat.SeqRat;
+
+
+@Procura data base para contabilização@
+
+Cur_E440NFC.Sql "Select DatEnt \
+                   from E440NFC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf";
+Cur_E440NFC.AbrirCursor();
+Se (Cur_E440NFC.Achou)
+ Inicio
+   vDatBas1 = Cur_E440NFC.DatEnt;
+ Fim;
+Cur_E440NFC.FecharCursor();
+
+@Soma o valor líquido e dos impostos da transação para cálculo o rateio@
+
+Se (vPerRat <> 100)
+Inicio
+ Cur_E440IPCS.Sql "Select VlrLiq,VlrCor,vlrpis,vlricm,vlripi \
+                    from E440IPC \
+  		     Where CodEmp = :VCodEmp \
+ 		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf \ 
+			And TnsPro = :vTnsPro";
+Cur_E440IPCS.AbrirCursor();
+Enquanto (Cur_E440IPCS.Achou)
+ Inicio
+    vLiqNfc = vLiqNfc + Cur_E440IPCS.VlrLiq;
+    vCorNfc = vCorNfc + Cur_E440IPCS.VlrCor;
+    vPisNfc = vPisNfc + Cur_E440IPCS.VlrPis;
+    Cur_E440IPCS.Proximo();
+  Fim;
+Cur_E440IPCS.FecharCursor();
+Fim;
+
+@Procura o valor líquido e impostos para cálculo do rateio@
+
+Cur_E440IPC.Sql "Select VlrLiq,VlrIcm, VlrIpi, VlrCor, VlrPis \
+                   from E440IPC \
+ 		     Where CodEmp = :VCodEmp \
+		       And CodFil = :VCodFil \
+			And CodFor = :VCodFor \
+			And NumNfc = :VNumNfc \
+			And CodSnf = :VCodSnf \
+			And SeqIpc = :VSeqIpc";
+Cur_E440IPC.AbrirCursor();
+Se (Cur_E440IPC.Achou)
+ Inicio  
+    vCtaDeb1 = vCtaRed;  
+    vVlrLiq = Cur_E440IPC.VlrLiq;
+    vVlrIcm = Cur_E440IPC.VlrIcm;
+    vVlrCor = Cur_E440IPC.VlrCor;
+    vVlrPis = Cur_E440IPC.VlrPis;
+    vVlrIpi = Cur_E440IPC.VlrIpi;
+  Fim;
+Cur_E440IPC.FecharCursor();
+
+
+Se ((vPerRat = 50) e (vNumnfc = 9741) e (vCodFor = 210) e (vCodSnf = "1") e (vSeqRat = 2))
+  vNfc210 = 0.01;
+
+VlrImp = vVlrIcm + vVlrIpi + vVlrCor + vVlrPis;
+vVlrLiq = vVlrLiq - VlrImp;
+vVlrAux = ((vVlrLiq * vPerCta)/100); 
+vVlrBas1 = ((vVlrAux * vPerRat)/100)  + vNfc210;
+
+Se (vPerRat <> 100)
+Inicio
+ Se ((GerTabNum[1] <> vNumNfc) e (GerTabAlf[1] <> vCodSnf) e (GerTabNum[2] <> vCodFor))
+  Inicio
+   GerTabNum[1] = vNumNfc;
+   GerTabAlf[1] = vCodSnf;
+   GerTabNum[2] = vCodFor;
+   GerTabNum[3] = 0;
+  Fim;
+Fim;
+
+Se (vPerRat <> 100)
+Inicio
+ Se ((GerTabNum[1] = vNumNfc) e (GerTabAlf[1] = vCodSnf) e (GerTabNum[2] = vCodFor))
+   Inicio     
+    GerTabNum[1] = vNumNfc;
+    GerTabAlf[1] = vCodSnf;
+    GerTabNum[2] = vCodFor;
+    ArredondarValor(vVlrbas1,2);
+    GerTabNum[3] = GerTabNum[3] + vVlrBas1;      
+    TotRat = GerTabNum[3];
+    VlrDif = vLiqNfc - (TotRat + vPisNfc + vCorNfc);
+    Se (VlrDif < 0.04)
+     Inicio
+      Se (VlrDif <> 0)
+       Inicio 
+        vVlrBas1 = vVlrBas1 + VlrDif;
+        GerTabNum[1] = 0;
+        GerTabAlf[1] = "0";
+        GerTabNum[2] = 0;
+        GerTabNum[3] = 0;
+       Fim;
+     Fim;
+   Fim;
+Fim;
+
+Se ((vVlrIcm = 0) e (vVlrIpi = 0) e (vVlrCor = 0) e (vVlrPis = 0))
+Inicio
+   vVlrBas1 = vVlrRat;
+   GerTabNum[1] = 0;
+   GerTabAlf[1] = "0";
+   GerTabNum[2] = 0;
+   GerTabNum[3] = 0;
+Fim;
+
+ArredondarValor (vVlrBas1,2);
+
+Se ((VCtaDeb = 79) ou (VCtaDeb = 83) ou (VCtaDeb = 85) ou (VCtaDeb = 89) ou  (VCtaDeb = 95) ou (VCtaDeb = 96) ou (VCtaDeb = 97) ou (VCtaDeb = 98) ou (VCtaDeb = 99) ou (VCtaDeb = 102) ou (VCtaDeb = 103))
+   VVlrBas1 = 0;
+
+x=1;

@@ -1,0 +1,19 @@
+Definir Cursor Cur_E075Pro;
+Definir alfa   gCodPro;
+Definir alfa   gCodFam;
+gCodFam = "";
+gCodPro = E140Ipv.CodPro;
+vCtaRed = E140Ipv.CtaRed;
+
+Cur_E075Pro.Sql "Select CodFam, CtaRed From E075Pro where CodPro=:gCodPro";
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+  Inicio
+    gCodFam  = Cur_E075Pro.CodFam;
+    VCtaCre2 = Cur_E075Pro.CtaRed;
+  Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (VCtaCre2 = 0)
+  VCtaCre2 = vCtaRed;

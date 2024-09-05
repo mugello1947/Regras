@@ -1,0 +1,101 @@
+Definir Cursor Cur_E440Isc;
+Definir Cursor Cur_E440Nfc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqIsc;
+Definir Numero gCtaRed;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIsc = E440Rat.SeqIsc;
+gPerCta = E440Rat.PerCta;
+gPerRat = E440Rat.PerRat;
+gCtaRed = E440Rat.CtaRed;
+
+xVlrBruNf = 0;
+xVlrPisNf = 0;
+xVlrCorNf = 0;
+xVlrDscNf = 0;
+Cur_E440Nfc.Sql "Select vlrbru, vlrpis, vlrcor, vlrdsc \
+                   From E440Isc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf ";
+Cur_E440Nfc.AbrirCursor();
+Enquanto (Cur_E440Nfc.Achou) {
+   xVlrBruNf = xVlrBruNf + Cur_E440Nfc.VlrBru;
+   xVlrPisNf = xVlrPisNf + Cur_E440Nfc.VlrPis;
+   xVlrCorNf = xVlrCorNf + Cur_E440Nfc.VlrCor;
+   xVlrDscNf = xVlrDscNf + Cur_E440Nfc.VlrDsc;
+   Cur_E440Nfc.Proximo();
+}
+Cur_E440Nfc.FecharCursor();
+
+Cur_E440Isc.Sql "Select vlrbru, vlrpis, vlrcor, vlrdsc \
+                   From E440Isc \
+                  Where CodEmp=:gCodEmp \
+                    And CodFil=:gCodFil \
+                    And CodFor=:gCodFor \
+                    And NumNfc=:gNumNfc \
+                    And CodSnf=:gCodSnf \
+                    And SeqIsc=:gSeqIsc";
+Cur_E440Isc.AbrirCursor();
+Se (Cur_E440Isc.Achou)
+   Inicio
+   xVlrBru = Cur_E440ISC.VlrBru;
+   xVlrPis = Cur_E440ISC.VlrPis;
+   xVlrCor = Cur_E440ISC.VlrCor;
+   xVlrDsc = Cur_E440ISC.VlrDsc;
+   Fim;
+Cur_E440Isc.FecharCursor();
+
+@ Valor Bruto Proprocional ao Rateio @
+xVlrBruRat = xVlrBru * gPerCta / 100;
+xVlrBruRat = xVlrBruRat * gPerRat / 100;
+
+@ Valor PIS Proporcional ao Rateio @
+xVlrPisRat = xVlrPis * gPerCta / 100;
+xVlrPisRat = xVlrPisRat * gPerRat / 100;
+
+@ Valor COFINS Proporcional ao Rateio @
+xVlrCorRat = xVlrCor * gPerCta / 100;
+xVlrCorRat = xVlrCorRat * gPerRat / 100;
+
+@ Valor Desconto Proporcional ao Rateio @
+xVlrDscRat = xVlrDsc * gPerCta / 100;
+xVlrDscRat = xVlrDscRat * gPerRat / 100;
+
+@ Valor do Lançamento Contábil Proporcional ao Rateio @
+VVlrBas2 = xVlrBruRat - xVlrPisRat - xVlrCorRat - xVlrDscRat;
+ArredondarValor(VVlrBas2, 2);
+
+
+  Se ((GerTabNum[1] = gNumNfc) e (GerTabAlf[1] = gCodSnf) e (GerTabNum[2] = gCodFor)) {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = GerTabNum[3] + VVlrBas2;
+  }
+  Senao {
+     GerTabNum[1] = gNumNfc;
+     GerTabAlf[1] = gCodSnf;
+     GerTabNum[2] = gCodFor;
+     GerTabNum[3] = VVlrBas2;
+  }
+
+  xVlrDif = (xVlrBruNf - xVlrPisNf - xVlrCorNf - xVlrDscNf) - GerTabNum[3];
+  ArredondarValor(xVlrDif,2);
+  Se (xVlrDif < 0.10) {
+     VVlrBas2 = VVlrBas2 + xVlrDif;
+     ArredondarValor(VVlrBas2,2);
+  }
+
+x=1;

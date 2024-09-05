@@ -1,0 +1,41 @@
+Definir Alfa   TClaSql; 
+Definir Alfa   CCurCip;
+VCodEmp = CodEmp; 
+VFilCal = CodFil;                                                           
+VVlrPar = 0; 
+Definir data Vdata;
+
+Vdata=vDatBas6;
+DesmontaData(VData,VDia,VMes,VAno);
+Vdia=01;
+MontaData(VDia,VMes,VAno,VData);
+VDatIni = VData;
+VDatFim=VData;
+UltimoDia(VDatFim);
+
+    TClaSql = "SELECT (sum(E660CIP.VLRPAR)-sum(E660CIP.VLRCIP)) WWVlrPar FROM   E660NFC, E660CIP, E670BEM \
+               WHERE E660CIP.CODEMP =:VCodEmp   AND E660CIP.FILLOC =:VFilCal  and \
+   (E660CIP.TRFPAR <> 'S' OR E660CIP.TRFPAR IS NULL) AND \
+   E670BEM.CODEMP = E660CIP.CODEMP AND E670BEM.CODBEM = E660CIP.CODBEM AND \
+   E660CIP.CODEMP = E660NFC.CODEMP AND E660CIP.CODFIL = E660NFC.CODFIL AND \
+   E660CIP.CODFOR = E660NFC.CODFOR AND E660CIP.NUMNFI = E660NFC.NUMNFI AND \
+   E660CIP.NUMNFF = E660NFC.NUMNFF AND E660CIP.CODSNF = E660NFC.CODSNF AND \
+   E660CIP.CODTNS = E660NFC.CODTNS and (e670bem.datbai >=:VDatIni and e670bem.datbai <=:VDatFim ) \
+   and E660CIP.MesAno >=:VDatIni";
+ @  and (E660CIP.CalCip is null or E660CIP.CalCip=' ') and (E660CIP.SitVal is null or E660CIP.SitVal=' ')"; @ @ Retirado da regra por ECC em 07/03/2018 - chamado @
+
+    SQL_Criar(CCurCip);
+    SQL_DefinirComando(CCurCip, TClaSql);
+    SQL_DefinirInteiro(CCurCip,"VCodEmp",VCodEmp);
+    SQL_DefinirInteiro(CCurCip,"VFilCal",VFilCal);
+    SQL_DefinirData(CCurCip,"VDatIni",VDatIni);
+    SQL_DefinirData(CCurCip,"VDatFim",VDatFim);
+
+    SQL_AbrirCursor(CCurCip);
+    Se (SQL_EOF(CCurCip) = 0)
+      {
+        SQL_RetornarFlutuante(CCurCip,"WWVlrPar",VVlrPar);
+      }
+    SQL_Destruir(CCurCip);
+     
+vVlrBas6 = VVlrPar;

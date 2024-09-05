@@ -1,0 +1,14 @@
+/************************** Considera Analítico ou Sintético *********************************************************/
+
+/*Declara SQL*/
+VCodEmp=E301MCR.CODEMP;
+VCodFil=E301MCR.CODFIL;
+
+
+
+FVlrCom=E301MCR.VLRBCO* E301TCR.PERCOM / 100;
+
+
+vvlrbas6=FVlrCom;
+
+vvlrbas6=vvlrbas6*0.25;

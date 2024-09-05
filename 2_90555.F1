@@ -1,0 +1,179 @@
+/* REGRA_PARCIAL */
+/************* Regra para trazer a CtaDeb 26 quando for. igual 1068 e codtpt = 30  ******/
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp ;
+gCodFor = E501MCP.CodFor;
+gCodTpt = E501MCP.CodTpt;
+gNumTit = E501MCP.NumTit;
+vCtaDeb1 = 0;
+
+/* gustavo para baixar a débito conforme a conta do fornecedor,tipo titulo,grupo */
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gCtaRed = 0;
+
+Definir cursor Cur_E095Hfo;
+Definir Cursor Cur_E002Htt;
+Definir Cursor Cur_E023Hrp;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRed;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRcr;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+VCtaCre1 = gCtaRed;
+
+
+
+
+
+
+
+
+
+
+Se (gCodTpt = "34") 
+    vVlrBas1 = 0;
+
+Se (gCodTpt = "66") 
+    vVlrBas1 = 0;
+
+
+Se (gCodFor = 532) 
+   vCtaDeb1 = 331;
+
+Se (gCodFor = 533) 
+   vCtaDeb1 = 331;
+
+Se (gCodFor = 109) 
+   vCtaDeb1 = 314;
+
+Se (gCodFor = 1079) 
+   vCtaDeb1 = 313;
+
+Se (gCodFor = 255) 
+   vCtaDeb1 = 110;
+
+Se (gCodFor = 1143) 
+   vCtaDeb1 = 315;
+
+Se (gCodFor = 1075) 
+   vCtaDeb1 = 321;
+
+Se (gCodFor = 1073) 
+   vCtaDeb1 = 320;
+
+Se (gCodFor = 536) 
+   vCtaDeb1 = 331;
+
+Se (gCodFor = 544) 
+   vCtaDeb1 = 331;
+
+Se (gCodFor = 765) 
+   vCtaDeb1 = 300;
+
+Se ((gCodFor = 765) e (gNumTit="2704"))
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 1022) 
+   vCtaDeb1 = 331;
+
+Se (gCodFor = 1068) 
+   vCtaDeb1 = 26;
+
+Se (gCodFor = 105) 
+   vCtaDeb1 = 300;
+
+Se (gCodFor = 1085) 
+   vCtaDeb1 = 300;
+
+Se (vCtaDeb1 = 0)
+    vCtaDeb1 = 300;
+
+Se((E501MCP.DatMov < 01/01/2011) e (gCodFor = 199))
+    vVlrBas1 = 0;
+
+Se ((gCodFor = 765) e (gCodTpt = "30") e (gNumTit="01"))
+    vVlrBas1 = 0;
+
+Se ((gCodFor = 765) e (gNumTit="150110") e (gCodTpt = "30"))
+    vVlrBas1 = 0;
+
+Se ((gCodFor = 399) e (gNumTit="22222") e (gCodTpt = "30"))
+    vVlrBas1 = 0;
+
+Se ((gCodFor = 1067) e (gCodTpt = "30"))
+   vCtaDeb1 = 327;
+
+Se ((gCodFor = 399) e (gCodTpt = "30"))
+   vCtaDeb1 = 326;
+
+Se ((gCodFor = 1304) e (gCodTpt = "56") e (gNumTit ="16"))
+   vCtaDeb1 = 328;
+
+Se ((gCodFor = 399) e (gCodTpt = "30") e (gNumTit ="072010")) 
+   vCtaDeb1 = 326;
+
+Se (gCodFor = 1071){
+  vCtaDeb1 = 329;
+  VCtaCre1 = 84;
+}
+
+
+
+
+
+Definir cursor Cur_E600CCO;
+Definir alfa   aNumCco;
+Definir alfa   aCodSnf;
+
+nCodEmp =E501TCP.CodEmp;
+nCodFil =E501TCP.FilNfv;
+nNumNfv =E501TCP.NumNfv;
+aCodSnf =E501TCP.SnfNfv;
+aNumCco =E501MCP.NumCco;
+
+/* devolução adiantamento na tesouraria */
+Se (E501MCP.EmpCco >0)
+    Inicio
+      Cur_E600CCO.SQL "Select CtaRed \
+                         from E600CCO \
+                        where CodEmp =:nCodEmp \
+                          and NumCco =:aNumCco";
+      Cur_E600CCO.AbrirCursor();
+      Se (Cur_E600CCO.Achou)
+          vCtaDeb1 =Cur_E600CCO.CtaRed;
+      Cur_E600CCO.FecharCursor();           
+    Fim;
+
+
+x = 1;

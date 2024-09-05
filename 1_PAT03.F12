@@ -1,0 +1,130 @@
+Definir Alfa VaCodBem;
+Definir Numero VnDatMov;
+Definir Data VdDatMov;
+Definir Alfa VaDatMov;
+Definir Alfa VaCodTns;
+Definir Alfa VaTipAcr;
+Definir numero VnCodEmp;
+Definir numero VnVlrSoci; @ Valor Total do Societario @
+Definir Alfa BusSoci; @ Busca a Depreciação Societária @
+Definir Alfa BusBem;
+Definir Alfa xSqlAux;
+Definir Alfa BusTipCcu; @ Busca Tipo de Centro de Custo @
+Definir Alfa VaCodTnsOri;
+Definir numero VnSeqMov;
+Definir numero VnTipCcu;
+Definir Alfa   VaCodCcu;
+Definir Data VdDatIni;
+Definir Data VdDatFim;
+Definir Data VdDatBai; @ Data da Baixa @
+
+VaCodBem = E670Rat.CodBem;
+VnDatMov = E670Rat.DatMov;
+VnCodEmp = E670Rat.CodEmp;
+VnCodEsp = E670Rat.CodEsp;
+VnSeqMov = E670Rat.SeqMov;
+VaCodCcu = E670Rat.CodCcu;
+VaCodTnsOri = E670Rat.CodTns;
+VdDatMov = vDatBas12;
+VnVlrNor = 0;
+VnDprAcu = 0;
+VnVdpAcu = 0;
+
+
+DesmontaData (vDatBas12,VDia,VMes,VAno);
+MontaData (01,VMes,VAno,VdDatIni);
+VdDatFim = vDatBas12;
+UltimoDia(VdDatFim);
+
+
+@ Busca Custo Atribuidos @
+xSqlAux = "Select TipAcr,DatBai,QtdItm from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+  SQL_RetornarData(BusBem,"DatBai",VdDatBai);
+  SQL_RetornarFlutuante(BusBem,"QtdItm",VnQtdItm);
+fim; 
+SQL_Destruir(BusBem); 
+
+se ((VdDatBai >=VdDatIni) e (VdDatBai <= VdDatFim)) @ Se teve Baixa no mês @
+inicio
+
+  xSqlAux = "Select * from E670Cal where CodEmp =:VnCodEmp and CodBem =:VaCodBem and DatCal =:VdDatMov";
+
+  SQL_Criar(BusSoci); 
+  SQL_DefinirComando(BusSoci,xSqlAux);
+  SQL_DefinirInteiro(BusSoci,"VnCodEmp",VnCodEmp);
+  SQL_DefinirAlfa(BusSoci,"VaCodBem",VaCodBem);
+  SQL_DefinirData(BusSoci,"VdDatMov",VdDatMov);
+  SQL_AbrirCursor(BusSoci); 
+  Se (SQL_EOF(BusSoci) = 0)
+  inicio
+    SQL_RetornarFlutuante(BusSoci,"DprAcu",VnDprAcu);
+    SQL_RetornarFlutuante(BusSoci,"VdpAcu",VnVdpAcu);
+  fim; 
+  SQL_Destruir(BusSoci); 
+    VVlrBas12 = (VnDprAcu * VnQtdItm); @ Buca o valor da Depreciação Acumulada Normal - Depreciação Acumulada Paralela @
+    ArredondarValor (VVlrBas12, 2);
+
+
+  @ Busca Custo Atribuidos @
+
+  Se (VaTipAcr = "J")
+  inicio
+     VCodHpd1 = 124;
+     Se (VnCodEsp = 7)
+     inicio
+       VctaDeb12 = 5175;
+     Fim;
+     Se (VnCodEsp = 4)
+     inicio
+       VctaDeb12 = 5171;
+     Fim;
+  Fim;
+
+
+  @ Busca Centro de custo se é Administrativo, Comercial ou Industrial @
+  xSqlAux = "Select TipCcu from E044Ccu    \
+              where E044Ccu.CodCcu = :VaCodCcu and          \
+                    E044Ccu.CodEmp = :VnCodEmp";
+  SQL_Criar(BusTipCcu); 
+  SQL_DefinirComando(BusTipCcu,xSqlAux);
+  SQL_DefinirInteiro(BusTipCcu,"VnCodEmp",VnCodEmp);
+  SQL_DefinirAlfa(BusTipCcu,"VaCodCcu",VaCodCcu);
+  SQL_AbrirCursor(BusTipCcu); 
+  Se (SQL_EOF(BusTipCcu) = 0)
+  inicio
+    SQL_RetornarInteiro(BusTipCcu,"TipCcu",VnTipCcu);
+  fim; 
+  SQL_Destruir(BusTipCcu); 
+
+  Se (VnTipCcu = 3) @ Adminsitrativo @
+     VCtaDeb12 = 5830;
+  Se (VnTipCcu = 4) @ Comercial @
+     VCtaDeb12 = 5829;
+Fim;
+senao
+  VvlrBas12=0;
+
+
+@ Adoção Inicial negativa @
+Se (VVlrBas12 < 0)
+inicio
+   VvlrBas12=(VVlrBas12 * -1);
+   Vctacre=vctacre12;
+   VctaCre12=VctaDeb12;
+   VctaDeb12=vctacre;
+Fim;
+
+VnCtaRed = E670MOV.CtaRed;
+Se ((VnCtaRed = 2141) ou (VnCtaRed = 2142))
+  VvlrBas12 = 0; 
+
+x=0;

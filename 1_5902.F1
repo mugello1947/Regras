@@ -1,0 +1,243 @@
+Definir Cursor Cur_E085Cli;
+Definir numero gCodEmp;
+Definir numero gCodCli;
+Definir numero gCtaRed;
+
+gCodEmp = E140Ipv.CodEmp;
+gCodCli = E140Nfv.CodCli;
+gCtaRed = 0;
+
+Cur_E085Cli.Sql "Select CodCli from E085Cli where CodCli=:gCodCli";
+
+Cur_E085Cli.AbrirCursor();
+Se (Cur_E085Cli.Achou)
+   Inicio
+     gCodCli = Cur_E085Cli.CodCli;
+   Fim;
+Cur_E085Cli.FecharCursor();
+
+Se (gCtaRed = 0)
+    gCtaRed = E140Ipv.CtaRed;
+
+VCtaDeb1 = gCtaRed;
+
+Se (gCodCli = 631) @ RL Sistemas @
+  vVlrBas1 = 0;
+
+
+Se (gCodCli = 683)
+ vCtaDeb1 = 1636;
+
+Se (gCodCli = 223)
+ vCtaDeb1 = 1622;
+
+Se (gCodCli = 2323)
+ vCtaDeb1 = 1637;
+
+Se (gCodCli = 596) @ PLATI @
+  VCtaDeb1 = 1623;
+
+Se (gCodCli = 1176) @ REGLY @
+  VCtaDeb1 = 1616;
+
+Se (gCodCli = 251) @ MILCLEAN @
+  VCtaDeb1 = 1631;
+
+Se (gCodCli = 1434) @ SANIPEL @
+  VCtaDeb1 = 1620;
+
+Se (gCodCli = 3080) @ SANIPEL SANIPRO @
+  VCtaDeb1 = 1620;
+
+Se (gCodCli = 137) @ TRENIER @
+  VCtaDeb1 = 1625;
+
+Se (gCodCli = 147) @ ECO CLEAR @
+  VCtaDeb1 = 1621;
+
+Se (gCodCli = 3109) @ TRUBER @
+  VCtaDeb1 = 1622;
+
+Se (gCodCli = 752) @ FABIO @
+  VCtaDeb1 = 10120;
+
+Se (gCodCli = 683) @ SCHULZ @
+  VCtaDeb1 = 1629;
+
+Se (gCodCli = 73) @ EJS @
+  VCtaDeb1 = 1630;
+
+Se (gCodCli = 1953) @ NIPEL @
+  VCtaDeb1 = 1633;
+
+Se (gCodCli = 3476) @ DETYLINE @
+  VCtaDeb1 = 1634;
+
+Se (gCodCli = 2036) @ WIDE STOCK @
+  VCtaDeb1 = 1632;
+
+Se (gCodCli = 3307) @ LV TEXTIL @
+  VCtaDeb1 = 1628;
+
+Se (gCodCli = 2317) @ BRAS ONDA @
+  VCtaDeb1 = 1626;
+
+Se (gCodCli = 2514) @ JEVERSON @
+  VCtaDeb1 = 1640;
+
+Se (gCodCli = 2721) @ MEDI @
+  VCtaDeb1 = 4328;
+
+Se (gCodCli = 2738) @ VALMIRA @
+  VCtaDeb1 = 2738;
+
+Se (gCodCli = 2768) @ OUROPEL @
+  VCtaDeb1 = 2740;
+
+Se (gCodCli = 2847) @ SPP @
+  VCtaDeb1 = 2847;
+
+Se (gCodCli = 4437) @ ANDRÉ @
+  VCtaDeb1 = 4437;
+
+Se (gCodCli = 4439) @ ML OLIVEIRA @
+  VCtaDeb1 = 4439;
+
+Se (gCodCli = 4438) @ PC @
+  VCtaDeb1 = 4438;
+
+Se (gCodCli = 4432) @ R.RIBASKI @
+  VCtaDeb1 = 5920;
+
+Se (gCodCli = 4436) @ IB JABOUR @
+  VCtaDeb1 = 6011;
+
+Se (gCodCli = 4121) @ FENIX @
+  VCtaDeb1 = 5585;
+
+Se (gCodCli = 1177) @ Mg @
+  VCtaDeb1 = 1177;
+
+Se (gCodCli = 2024) @ VALLE @
+  VCtaDeb1 = 6239;
+
+Se (gCodCli = 5100) @ SRT2 @
+  VCtaDeb1 = 6198;
+
+Se (gCodCli = 64) @ ECS @
+  VCtaDeb1 = 1637;
+
+Se (gCodCli = 1633) @ DADUPACK @
+  VCtaDeb1 = 4781;
+
+Se (gCodCli = 3135) @ DETYLINE @
+  VCtaDeb1 = 1634;
+
+
+Se (gCodCli = 631) @ RL Sistemas @
+  vVlrBas1 = 0;
+
+
+Se (gCodCli = 596) @ PLATI @
+  VCtaDeb1 = 1623;
+
+Se (gCodCli = 1176) @ REGLY @
+  VCtaDeb1 = 1616;
+
+Se (gCodCli = 251) @ MILCLEAN @
+  VCtaDeb1 = 1631;
+
+Se (gCodCli = 1434) @ SANIPEL @
+  VCtaDeb1 = 1620;
+
+Se (gCodCli = 137) @ TRENIER @
+  VCtaDeb1 = 1625;
+
+Se (gCodCli = 147) @ ECO CLEAR @
+  VCtaDeb1 = 1621;
+
+Se (gCodCli = 3109) @ TRUBER @
+  VCtaDeb1 = 1622;
+
+Se (gCodCli = 752) @ FABIO @
+  VCtaDeb1 = 10120;
+
+Se (gCodCli = 683) @ SCHULZ @
+  VCtaDeb1 = 1629;
+
+Se (gCodCli = 73) @ EJS @
+  VCtaDeb1 = 1630;
+
+Se (gCodCli = 1953) @ NIPEL @
+  VCtaDeb1 = 1633;
+
+Se (gCodCli = 3476) @ DETYLINE @
+  VCtaDeb1 = 1634;
+
+Se (gCodCli = 2036) @ WIDE STOCK @
+  VCtaDeb1 = 1632;
+
+Se (gCodCli = 3307) @ LV TEXTIL @
+  VCtaDeb1 = 1628;
+
+Se (gCodCli = 3458) @ MEDI HOUSE @
+  VCtaDeb1 = 4328;
+
+Se (gCodCli = 2721) @ MEDI HOUSE @
+  VCtaDeb1 = 4328;
+
+Se (gCodCli = 752) @ FABIO @
+  VCtaDeb1 = 10120;
+
+Se (gCodCli = 440) @ BR SUPPLY @
+  VCtaDeb1 = 2633;
+
+Se (gCodCli = 2758) @ SUSEJ @
+  VCtaDeb1 = 2397;
+
+Se (gCodCli = 6239) @ BOM PASTOR @
+  VCtaDeb1 = 7251;
+
+Se (gCodCli = 5479) @ BRS @
+  VCtaDeb1 = 2633;
+
+Se (gCodCli = 208) @ PLENA @
+  VCtaDeb1 = 2495;
+
+Se (gCodCli = 4427) @ ESSITY @
+  VCtaDeb1 = 5937;
+
+Se (gCodCli = 831) @ PEREIRA @
+  VCtaDeb1 = 2102;
+
+Se (gCodCli = 5103) @ LIDER @
+  VCtaDeb1 = 5103;
+
+Se (gCodCli = 3067) @ JP @
+  VCtaDeb1 = 6895;
+
+Se (gCodCli = 1607) @ BRS @
+  VCtaDeb1 = 2633;
+
+Se (gCodCli = 6395) @ HYGIECORP @
+  VCtaDeb1 = 7448;
+
+Se (gCodCli = 291) @ PULIRE @
+  VCtaDeb1 = 2605;
+
+Se (gCodCli = 7518) @ CLIMBER @
+  VCtaDeb1 = 7448;
+
+Se (gCodCli = 3007) @ M E G @
+  VCtaDeb1 = 3011;
+
+Se (gCodCli = 8468) @ WALTER @
+  VCtaDeb1 = 9205;
+
+Se (gCodCli = 5531) @ BRASCLEAN @
+  VCtaDeb1 = 6400;
+
+
+
+
+x=0;

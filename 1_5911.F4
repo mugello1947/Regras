@@ -1,0 +1,22 @@
+Definir Cursor Cur_E085CLI;
+Definir Alfa vSigUfs;
+Definir alfa gDatBas;
+
+ConverteMascara (3,E140NFV.DatEmi,gDatBas,"00/00/0000");
+
+gCodCli = E140NFV.CodCli;
+gTipNfs = E140Nfv.TipNfs;
+
+vVlrBas7 = E140IPV.VlrIcs;
+
+Se (TipNfs = 9)
+    vVlrBas7 = 0;
+
+Cur_E085CLI.Sql "Select SigUfs From E085CLI Where CodCli = :gCodCli";
+
+Cur_E085CLI.AbrirCursor();
+  vSigUfs = Cur_E085CLI.SigUfs;
+Cur_E085CLI.FecharCursor();
+
+
+x=1;

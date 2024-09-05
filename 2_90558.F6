@@ -1,0 +1,51 @@
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select PreCar from E606PRE where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumTit =:vaNumTit and CodTpt=:vxCodTpt  and TipPre = 'P'";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VaPreCar = Cur_E501Tc2.PreCar;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  Se (VaPreCar <> "S"){
+   vVlrBas6 = E501MCP.JrsCal;
+  }
+Fim;
+
+
+Se (vxCodTpt <> "97"){
+   vVlrBas6 = 0;
+ }
+
+
+
+@ Leasing @
+Se (E501TCP.NumCcr = 15){
+   VCtaCre6 = 459;
+}
+Se (E501TCP.NumCcr = 16){
+   VCtaCre6 = 459;
+}

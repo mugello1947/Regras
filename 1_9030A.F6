@@ -1,0 +1,73 @@
+/**** Nao contabilizar a movimentação se o Tipo de titulo relacionado for igual a "34" - FC - Devolução****/
+Definir Alfa gTptRlc;
+gTptRlc = E301Mcr.TptRlc;
+
+Se(gTptRlc <> "30")
+   vVlrBas6 = 0;
+
+Se(E301TCR.CodCrp="09") @ Exterior @
+ vCtaCre6 = 1070;
+
+/**** Se o tipo de Titulo for igual a 04 - FN - Cheque Devolvido, Contabilizar na Conta 19-Chq em Cobrança ****/
+Definir Alfa gCodTpt;
+gCodTpt = E301Mcr.CodTpt;
+
+Se (gCodTpt = "04") 
+  vCtaCre6 = 19;
+
+
+X=0;
+
+
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+Definir Alfa gCodTns;
+gCtaCre = 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+Definir Alfa gCodCrp;
+gCodCrp = E301TCR.CodCrp; 
+gNumTit = E301Mcr.NumTit;
+gCodTns = E301MCR.CodTns;
+
+Cur_E002Htt.Sql "Select CtaRcr,CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+      gCtaCre = Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaCre = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaCre = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se(gCodCrp="09")  @externo@
+  gCtaCre=1070;
+Se(gCodCrp="10")  @interno@
+  gCtaCre=70;
+Se(gCodCrp="05")  @Socios@
+  gCtaCre=70;
+Se(gCodCrp="02")  @Funcionarios@
+  gCtaCre=70;
+ 
+  
+Se (gCodCrp  = " ") @Lembrar que se no cliente não TER O GRUPO, não vai levar para o titulo@
+ gCtaCre=70;
+
+
+VCtaCre6 = gCtaCre; 

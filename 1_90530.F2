@@ -1,0 +1,62 @@
+Definir Alfa VNumTit;
+Definir Alfa VCodTpt;
+VCodFor  = E501MCP.CodFor;
+VCodEmp  = E501MCP.CodEmp;
+VCodFil  = E501MCP.CodFil;
+VNumTit  = E501MCP.NumTit;
+VCodTpt  = E501MCP.CodTpt;
+VVlrBas2 = E501MCP.VLRMOV;  @ Inclusão da variável conforme - ARF 28/09/2016 - chamado 5014 @
+
+
+Se ((VCodTpt = "30") e (VNumTit = "02012016"))
+  VVlrBas2 = 0;
+
+Se ((VCodTpt = "40") e (VNumTit = "022016"))
+  VVlrBas2 = 0;
+
+Se ((VCodTpt = "21") Ou (VCodTpt = "40")) @ Zeramento realizado conforme chamado 5234 - ARF - 30/11/2016 @
+  {
+     VVlrBas2 = 0;
+     VCtaCre2 = 0;
+  }
+
+Se ((VNumTit = "082016") e (VCodTpt = "40"))
+  { 
+     VVlrBas2 = 0;
+     VCtaCre2 = 0;
+    cancel(1);
+  }
+
+
+
+Definir Alfa TClaSql;
+Definir Alfa CCurCco;
+Definir Alfa VNumCco;
+Definir Data VDatCco;
+VNumCco = E501MCP.NumCco;
+VCtaRed = 0;
+
+EstaNulo(VNumCco,VRetCco);
+Se (VRetCco = 0)
+ {
+   TClaSql = "Select E600CCO.CtaRed WWCtaRed \  
+                From E600CCO \
+               Where E600CCO.CodEmp = :VCodEmp \
+                 And E600CCO.NumCco = :VNumCco";
+   SQL_Criar(CCurCco);
+   SQL_DefinirComando(CCurCco, TClaSql);
+   SQL_DefinirInteiro(CCurCco,"VCodEmp",VCodEmp);
+   SQL_DefinirAlfa(CCurCco,"VNumCco",VNumCco);
+   SQL_AbrirCursor(CCurCco);
+   Se (SQL_EOF(CCurCco) = 0)
+     {
+       SQL_RetornarInteiro(CCurCco,"WWCtaRed",VCtaRed);
+     }
+   SQL_Destruir(CCurCco); 
+
+   Se (VCtaRed > 0)
+   VCtaCre2 = VCtaRed;
+
+  }
+x=1;
+ 

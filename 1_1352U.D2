@@ -1,0 +1,68 @@
+vAbgFil2 = E440IPC.CODFIL;
+vDatBas2 = E440NFC.DATENT;
+vCtaDeb2 = 0;
+vCtaCre2 = 0;
+vVlrBas2 = E440IPC.VLRLIQ-(E440IPC.VLRIPI+E440IPC.VLRPIS+E440IPC.VLRCOR+E440IPC.VLRICM);
+vCodHpd2 = 31;
+Definir Alfa vObsCpl2S[200]; vObsCpl2S = "";
+vCgcCpf2 = 0;
+vCgcCre2 = 0;
+vCodMoe2 = 0;
+vCplBas21 = E440IPC.NUMNFC;
+Definir Alfa vCplBas22S[200]; vCplBas22S = E095FOR.NOMFOR;
+/* REGRA_PARCIAL */
+Definir Cursor Cur_E440IPC;
+Definir Cursor Cur_E440RAT;
+Definir Numero VCtaDeb2;
+Definir Numero VCodEmp;
+Definir Numero VCodFil;
+Definir Numero VNumNfc;
+Definir Numero VSeqIpc;
+Definir numero xposicao;
+definir alfa vcodccu;
+definir numero vperrat;
+definir numero vvlrrat;
+
+VCodEmp = E440IPC.CodEmp;
+VCodFil = E440IPC.CodFil;
+VNumNfc = E440IPC.NumNfc;
+VCodFor = E440IPC.CodFor;
+VSeqIpc = E440IPC.SeqIpc;
+VCtaDeb2 = 0;
+VCtaRcr = 0;
+vPerRat = 100;
+
+
+ Se (VCtaDeb = 0)
+       Inicio
+         Cur_E440IPC.Sql "Select CtaRed, CodCcu  \
+                            From E440RAT \
+                           Where CodEmp = :VCodEmp \
+                             And CodFil = :VCodFil \
+                             And NumNfc = :VNumNfc \
+                             And CodFor = :VCodFor";
+         Cur_E440IPC.AbrirCursor();
+         Se (Cur_E440IPC.Achou)
+           Inicio
+             VCtaDeb2 = Cur_E440IPC.CtaRed;
+             VCodCcu = Cur_E440IPC.CodCcu;
+           Fim;
+         Cur_E440IPC.FecharCursor();
+       Fim;
+ Senao
+   VCtaDeb2 = E440IPC.CtaRed;
+
+
+@Regra para Inserir 100% Rateio Integração@
+
+/* Para excluir todos registros de rateios que vieram */
+xPosicao = 1;
+RateioIntegracao("Excluir_Tudo",xPosicao,vCodCcu,vPerRat,vVlrRat); 
+
+/* Para inserir um rateio único */
+vVlrRat = VVlrBas2;
+RateioIntegracao("Inserir",xPosicao,vCodCcu,vPerRat,vVlrRat);
+
+
+
+x=1;

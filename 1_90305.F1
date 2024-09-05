@@ -1,0 +1,47 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+Definir Alfa gCodTns;
+gCtaDeb= 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+Definir Alfa gCodCrp;
+gCodCrp = E301TCR.CodCrp;
+gNumTit = E301Mcr.NumTit;
+gCodTns = E301MCR.CodTns;
+
+Cur_E002Htt.Sql "Select CtaRcr,ctardv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+Se (Cur_E002Htt.Achou)
+      gCtaDeb= Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaDeb= 0)
+Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaDeb= Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+Fim;
+
+Se ((gCodTpt = "44") ou (gCodTpt = "01"))
+inicio
+ Se(gCodCrp="09")  @externo@
+   gCtaDeb=1070;
+ Se(gCodCrp="10")  @interno@
+   gCtaDeb=70;
+fim; 
+
+
+VCtaDeb1 = gCtaDeb; 

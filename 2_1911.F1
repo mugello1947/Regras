@@ -1,0 +1,48 @@
+Definir cursor Cur_E001TNS;
+Definir cursor Cur_E044CCU;
+Definir cursor Cur_E075PRO;
+Definir cursor Cur_E210MVP;
+Definir cursor Cur_R999ENT;
+Definir cursor Cur_E440EXF;
+Definir cursor Cur_E440IPC;
+Definir alfa   aCmdSql;    
+Definir alfa   aCodCcu;    
+Definir alfa   aCodMod;
+Definir alfa   aCodPro;    
+Definir alfa   aCodSnf;    
+Definir alfa   aCodTns;    
+Definir alfa   aNomVar;    
+Definir alfa   aQtdReg;    
+Definir alfa   aRetSql;    
+Definir alfa   aVarAux;
+Definir alfa   aSnfRlc;
+
+
+nCodEmp =E440IPC.CodEmp;
+nCodFil =E440IPC.CodFil;
+nNumNfc =E440IPC.NumNfc;
+nSeqIpc =E440IPC.SeqIpc;
+nCodFor =E440IPC.CodFor;
+aCodSnf =E440IPC.CodSnf;
+aCodTns =E440IPC.TnsPro;
+nUsuLog =CodUsu;
+nVlrLct =0;
+
+aCodPro =E440IPC.CodPro;
+
+/* movimento estoque */
+  Cur_E210MVP.SQL "Select CodEmp \
+                     from E210MVP \
+                    where NumNfc =:nNumNfc \
+                      and CodFor =:nCodFor \
+                      and CodEmp =:nCodEmp \
+                      and FilNfc =:nCodFil \
+                      and SeqIpc =:nSeqIpc \
+                      and SnfNfc =:aCodSnf";
+  Cur_E210MVP.AbrirCursor();
+  Se (Cur_E210MVP.Achou)
+  Inicio
+    vVlrBas1 =0;
+    Cancel(1);
+  Fim;
+  Cur_E210MVP.FecharCursor();

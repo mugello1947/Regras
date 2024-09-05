@@ -1,0 +1,65 @@
+Definir Cursor Cur_E440Isc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqIsc;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqIsc = E440Rat.SeqIsc;
+
+Cur_E440Isc.Sql "Select vlrirf, vlrpit, vlrcrt, vlrcsl, vlrour, vlrins from E440Isc where CodEmp=:gCodEmp \
+                 and CodFil=:gCodFil and CodFor=:gCodFor and NumNfc=:gNumNfc and CodSnf=:gCodSnf and SeqIsc=:gSeqIsc";
+
+ 
+Cur_E440Isc.AbrirCursor();
+Se (Cur_E440Isc.Achou)
+   Inicio
+     gVlrIrf = Cur_E440Isc.VlrIrf;
+     ArredondarValor(gVlrIrf,2);
+     gVlrPit = Cur_E440Isc.VlrPit;
+     ArredondarValor(gVlrPit,2);
+     gVlrCrt = Cur_E440Isc.VlrCrt;
+     ArredondarValor(gVlrCrt,2);
+     gVlrCsl = Cur_E440Isc.VlrCsl;
+     ArredondarValor(gVlrCsl,2);
+     gVlrOur = Cur_E440Isc.VlrOur;
+     ArredondarValor(gVlrOur,2);
+     gVlrIns = Cur_E440Isc.VlrIns;
+     ArredondarValor(gVlrIns,2);
+   Fim;
+Cur_E440Isc.FecharCursor();
+ 
+gRatIrf = (gVlrIrf *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIrf,2);
+vRatIrf = (gRatIrf *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatIrf,2); 
+gRatPit = (gVlrPit *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatPit,2);
+vRatPit = (gRatPit *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatPit,2); 
+gRatCrt = (gVlrCrt *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCrt,2);
+vRatCrt = (gRatCrt *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatCrt,2);
+gRatCsl = (gVlrCsl *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatCsl,2);
+vRatCsl = (gRatCsl *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatCsl,2);
+gRatOur = (gVlrOur *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatOur,2);
+vRatOur = (gRatOur *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatOur,2);
+gRatIns = (gVlrIns *( E440RAT.PerCta / 100) );
+ArredondarValor(gRatIns,2);
+vRatIns = (gRatIns *( E440RAT.PerRat / 100) );
+ArredondarValor(vRatIns,2); 
+
+VVlrBas2 = E440rat.VlrRat + (vRatIrf + vRatCsl + vRatOur + vRatIns);
+
+x=1;

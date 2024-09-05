@@ -1,0 +1,4 @@
+
+vVlrBas2=vVlrBas2*0.25;
+ArredondarValor(vVlrBas2,2);
+x=1;

@@ -1,0 +1,10 @@
+
+@tratamento de transacao 90352 usada errada para baixa de titulo de adiantamento@
+@ contabilização da baixa de adiantamento é pela transcao 90358  @
+Definir Alfa gCodTpt;
+gCodTpt = E301Mcr.CodTpt;
+Se(gCodTpt ="30")  
+inicio
+  VVlrBas3=0;
+  cancel(1);
+fim;

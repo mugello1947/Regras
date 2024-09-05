@@ -1,0 +1,29 @@
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecIpi;
+Definir alfa gCodPro;
+Definir numero gCodEmp;
+
+Cur_E075Pro.Sql "Select RecIpi from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor  = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIpi = Cur_E075Pro.RecIpi;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+/* Adicionado tratamento para buscar o IPI Cred. Devi. caso seja diferente de 0 (zero) - Rodrigo Costa - 04/03/2013 */
+Se (gRecIpi = 'S')  
+ Inicio
+   Se (E440Ipc.VecIpi <> 0)
+    gValor2 = E440Ipc.VecIpi;
+   Senao
+    gValor2 = E440Ipc.VlrIpi;
+ Fim;
+/* Fim - Adicionado trat... */
+
+VVlrBas4 = gValor2;

@@ -1,0 +1,49 @@
+Definir Alfa   vCodOri;
+vCodOri = E075pro.CodOri;
+Definir Numero vCtaCre1;
+
+
+Se ((vCodOri="100") ou (vCodOri = "110")) { @ Adicionado em 29/05 -Edilce @
+   vCtaCre1 = 699;
+}
+
+Se(vCodOri="120") @ Adicionado em 31/05/2017 - RFC @
+   vCtaCre1 = 699; 
+
+Se(vCodOri="200")
+   vCtaCre1 = 1699; 
+
+Se(vCodOri="190") @ Adicionado em 21/05/2018 - ECC @
+   vCtaCre1 = 1699; 
+
+Se(vCodOri="250") @a partir do mes 11/2017@
+   vCtaCre1 = 4699; 
+
+Se(vCodOri="400")
+   vCtaCre1 = 2699;
+
+Se(vCodOri="500")  @cavaco@
+   vCtaCre1 = 3699;
+
+
+
+Definir numero xposicao;
+definir alfa vcodccu;
+definir numero vperrat;
+definir numero vvlrrat;
+vCodCcu = E210MVP.CodCcu;
+LimpaEspacos(vCodCcu);
+
+
+@Regra para Inserir 100% Rateio Integração@
+Se (vCodCcu <> "")
+inicio
+  @ Para excluir todos registros de rateios que vieram @
+  xPosicao = 1;
+  RateioIntegracao("Excluir_Tudo",xPosicao,vCodCcu,vPerRat,vVlrRat); 
+
+  @ Para inserir um rateio único @
+  vPerRat = 100;
+  vVlrRat = E210MVP.VLRMOV;
+  RateioIntegracao("Inserir",xPosicao,vCodCcu,vPerRat,vVlrRat);
+Fim;

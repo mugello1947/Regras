@@ -1,0 +1,9 @@
+
+/* Adicionado tratamento para buscar o IPI Cred. Devi. caso seja diferente de 0 (zero) - Rodrigo Costa - 04/03/2013 */
+
+Se (E440Ipc.VecIpi <> 0)
+   VVrBas4 = E440Ipc.VecIpi;
+ Senao
+   VVrBas4 = E440Ipc.VlrIpi;
+
+/* Fim - Adicionado trat... */

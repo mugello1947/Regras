@@ -1,0 +1,34 @@
+Definir cursor Cur_E019SUB;
+Definir alfa   aCodTst;
+
+nCodEmp =E440IPC.CodEmp;
+nCodFil =E440IPC.CodFil;
+nCodFor =E440IPC.CodFor;
+aCodTst =E440IPC.CodTst;
+
+/* Tratamento para soma/subtração do ICMS ST do valor base*/
+Se (E440IPC.VlrIcs >0)
+Inicio
+  /*F019TIS - Campo "Soma Líq." */
+  Cur_E019SUB.SQL "SELECT \
+                  E019SUB.SOMNFS \
+                FROM \
+                  E019SUB,\
+                  E095FOR \
+                WHERE \
+                  E095FOR.CODFOR = :nCodFor AND \
+                  E019SUB.SIGUFS = E095FOR.SIGUFS AND \                 
+                  E019SUB.CODEMP = :nCodEmp AND \
+                  E019SUB.CODFIL = :nCodFil AND \
+                  E019SUB.CODTST = :aCodTst";
+  Cur_E019SUB.AbrirCursor(); 
+ 
+  Se (Cur_E019SUB.Achou)
+  Inicio   
+    Se (Cur_E019SUB.SomNfs = 'N')
+    Inicio
+      vVlrBas7 = vVlrBas7 + E440IPC.VlrIcs;
+    Fim
+  Fim
+  Cur_E019SUB.FecharCursor();   
+Fim

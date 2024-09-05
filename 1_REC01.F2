@@ -1,0 +1,76 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+Definir Cursor Cur_E600Cco;
+Definir Cursor Cur_E501MCP;
+
+Definir Alfa vNumCco;
+Definir Alfa gCodTpt;
+Definir Alfa vCodTpt;
+Definir Alfa gNumTit;
+
+Definir Numero vCodEmp;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodCli;
+Definir Numero gVlrMov;
+Definir Numero gCodFor;
+
+gCtaDeb = 0;
+
+vCodEmp = E301Mcr.CodEmp;
+vNumCco = E301Mcr.NumCco;
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gNumTit = E301Mcr.NumTit;
+gVlrMov = E301Mcr.VlrMov;
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor()
+  Se (Cur_E002Htt.Achou)
+      gCtaDeb = Cur_E002Htt.CtaRcr;  @ Conta 2 do Tito de titulo @
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaDeb = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaDeb = Cur_E085HCL.CtaRed; @ Conta 1 do Cliente @
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se (gCtaDeb = 0)
+    gCtaDeb = 70; @ Conta Cliente @
+
+VCtaDeb2 = gCtaDeb; 
+
+@ Buscar TIPO do Título ligado ao Contas à Pagar - 29/05/2013 - Rodrigo Costa@
+
+Cur_E501MCP.Sql " Select CodTpt \
+                    From E501MCP \
+                   Where CodEmp = :gCodEmp \
+                     And CodFil = :gCodFil \
+                     And CodTpt = '44' \
+                     And VlrMov = :gVlrMov"
+
+Cur_E501MCP.AbrirCursor();
+Se (Cur_E501MCP.Achou)
+  vCodTpt = Cur_E501MCP.CodTpt;
+Cur_E501MCP.FecharCursor();
+
+@ Fim - Buscar TIPO do Título ligado ao Contas à Pagar @
+
+Se((gCodTpt = "44") ou (vCodTpt = "44"))
+  Inicio
+    vCtaCre2 = 313;
+  Fim;
+
+Se (gCodCli = 2825) @ Latina @
+  vCtaCre2 = 763; @ Serviços de Cobrança - Deduzindo do valor da fatura da Latina @
+
+x=1;

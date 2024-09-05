@@ -1,0 +1,89 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+Definir Alfa gCodTns;
+gCtaCre = 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+Definir Alfa gCodCrp;
+gCodCrp = E301TCR.CodCrp; 
+gNumTit = E301Mcr.NumTit;
+gCodTns = E301MCR.CodTns;
+
+Cur_E002Htt.Sql "Select CtaRcr,CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+      gCtaCre = Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaCre = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaCre = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se(gCodCrp="09")  @externo@
+  gCtaCre=1070;
+Se(gCodCrp="10")  @interno@
+  gCtaCre=70;
+Se(gCodCrp="05")  @Socios@
+  gCtaCre=70;
+Se(gCodCrp="02")  @Funcionarios@
+  gCtaCre=70;
+ 
+  
+Se (gCodCrp  = " ") @Lembrar que se no cliente não TER O GRUPO, não vai levar para o titulo@
+ gCtaCre=70;
+
+
+VCtaCre1 = gCtaCre; 
+
+
+Se ((gCodTpt = "10") e (gCodCli = 2493))
+  vCtaCre1 = 1901;
+
+Se ((gCodTpt = "10") e (gCodCli = 2971))
+  vCtaCre1 = 1912;
+
+
+Se (gCodTpt = "04") 
+  vCtaCre1 = 19;
+
+Se (gCodTpt = "03") 
+  vCtaCre1 = 19;
+
+Se (gCodTpt = "04A") 
+  vCtaCre1 = 19;
+
+
+Se (gCodTpt = "08") 
+  vCtaCre1 = 949;
+
+
+Se ((gCodTpt = "09") e (gCodCli = 949))
+  vCtaCre1 = 70;
+
+Se ((gCodTpt = "01") e (gCodCli = 5121))
+  vCtaCre1 = 70;
+
+Se ((gCodTpt = "93") e (gCodCli = 1259))
+  vCtaCre1 = 1904;
+
+
+Se ((gCodTpt = "09") e (gCodCli = 913))
+  vCtaCre1 = 70;
+
+x=1;

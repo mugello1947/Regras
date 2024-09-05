@@ -1,0 +1,17 @@
+Definir Cursor Cur_E075Pro;
+Definir alfa gCodPro;
+Definir numero gCtaRed;
+
+Cur_E075Pro.Sql "Select CtaRed from E075Pro where CodPro=:gCodPro";
+
+gCodPro = E440Ipc.CodPro;
+gCtaRed = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gCtaRed = Cur_E075Pro.CtaRed;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+VCtaDeb4 = gCtaRed;

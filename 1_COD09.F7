@@ -1,0 +1,13 @@
+Se (E440ISC.TnsSer = "1352I")
+    vCtaDeb7 =10081;
+
+Se (E440ISC.TnsSer = "2352I")
+    vCtaDeb7 =10081;
+
+
+Se (E440ISC.VecIcm = 0)
+    vVlrBas7 =0;
+
+
+Se(E440ISC.VlrBru = 0)
+   VCtaCre7 = 755;

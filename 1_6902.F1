@@ -1,0 +1,79 @@
+Definir Cursor Cur_E085Cli;
+Definir numero gCodEmp;
+Definir numero gCodCli;
+Definir numero gCtaRed;
+
+gCodEmp = E140Ipv.CodEmp;
+gCodCli = E140Nfv.CodCli;
+gCtaRed = 0;
+
+Cur_E085Cli.Sql "Select CodCli from E085Cli where CodCli=:gCodCli";
+
+Cur_E085Cli.AbrirCursor();
+Se (Cur_E085Cli.Achou)
+   Inicio
+     gCodCli = Cur_E085Cli.CodCli;
+   Fim;
+Cur_E085Cli.FecharCursor();
+
+Se (gCtaRed = 0)
+    gCtaRed = E140Ipv.CtaRed;
+
+VCtaDeb1 = gCtaRed;
+
+Se (gCodCli = 631) @ RL Sistemas @
+  vVlrBas1 = 0;
+
+
+Se (gCodCli = 596) @ PLATI @
+  VCtaDeb1 = 1623;
+
+Se (gCodCli = 1176) @ REGLY @
+  VCtaDeb1 = 1616;
+
+Se (gCodCli = 251) @ MILCLEAN @
+  VCtaDeb1 = 1631;
+
+Se (gCodCli = 1434) @ SANIPEL @
+  VCtaDeb1 = 1620;
+
+Se (gCodCli = 137) @ TRENIER @
+  VCtaDeb1 = 1625;
+
+Se (gCodCli = 147) @ ECO CLEAR @
+  VCtaDeb1 = 1621;
+
+Se (gCodCli = 3109) @ TRUBER @
+  VCtaDeb1 = 1622;
+
+Se (gCodCli = 752) @ FABIO @
+  VCtaDeb1 = 10120;
+
+Se (gCodCli = 683) @ SCHULZ @
+  VCtaDeb1 = 1629;
+
+Se (gCodCli = 73) @ EJS @
+  VCtaDeb1 = 1630;
+
+Se (gCodCli = 1953) @ NIPEL @
+  VCtaDeb1 = 1633;
+
+Se (gCodCli = 3476) @ DETYLINE @
+  VCtaDeb1 = 1634;
+
+Se (gCodCli = 2036) @ WIDE STOCK @
+  VCtaDeb1 = 1632;
+
+Se (gCodCli = 3307) @ LV TEXTIL @
+  VCtaDeb1 = 1628;
+
+Se (gCodCli = 3458) @ MEDI HOUSE @
+  VCtaDeb1 = 4328;
+
+Se (gCodCli = 2721) @ MEDI HOUSE @
+  VCtaDeb1 = 4328;
+
+Se (gCodCli = 752) @ FABIO @
+  VCtaDeb1 = 10120;
+
+x=0;

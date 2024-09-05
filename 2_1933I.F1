@@ -1,0 +1,21 @@
+Definir Cursor Cur_E095Hfo;
+Definir numero gCodEmp;
+Definir numero gCodFor;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFor=:gCodFor and CodEmp=:gCodEmp";
+
+gCodEmp = E440Isc.CodEmp;
+gCodFor = E440Nfc.CodFor;
+gCtaCre = 0;
+
+Cur_E095Hfo.AbrirCursor();
+Se (Cur_E095Hfo.Achou)
+   Inicio
+     gCtaCre = Cur_E095Hfo.CtaRed;
+   Fim;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaCre = 0)
+    gCtaCre = 300;
+
+VCtaCre1 = gCtaCre;

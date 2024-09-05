@@ -1,0 +1,13 @@
+Definir Cursor Cur_E095FOR;
+Definir Alfa vSigUfs;
+
+gCodFor = E440NFC.CodFor;
+
+Cur_E095FOR.Sql "Select SigUfs From E095FOR Where CodFor = :gCodFor";
+
+Cur_E095FOR.AbrirCursor();
+  vSigUfs = Cur_E095FOR.SigUfs;
+Cur_E095FOR.FecharCursor();
+
+
+x=1;

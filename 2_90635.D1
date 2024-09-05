@@ -1,0 +1,12 @@
+vAbgFil1 = E600MCC.CODFIL;
+vDatBas1 = E600MCC.DATMOV;
+vCtaDeb1 = E600CCO.CTARED;
+vCtaCre1 = 512;
+vVlrBas1 = E600MCC.VLRMOV;
+vCodHpd1 = 2047;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+Definir Alfa vCplBas11S[200]; vCplBas11S = E600MCC.HISMOV;
+/* REGRA_PARCIAL */

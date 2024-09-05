@@ -1,0 +1,158 @@
+Definir Numero gCodFor;
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+
+vCtaDeb2 = 3559;
+
+Se (E501TCP.CodCrp = "20") @ Grupo de Fornecedores . Adicionado por solicitação da Controladoria em reunião dia 24/03/23@
+    vCtaDeb2 = 3571;
+
+Se ((gCodFor = 1799) e (gCodTpt = "09"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2752) e (gCodTpt = "02"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 3356) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+
+Se ((gCodFor = 3475) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+
+Se ((gCodFor = 3400) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+
+Se ((gCodFor = 3401) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+
+Se ((gCodFor = 3431) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+
+Se ((gCodFor = 2976) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 3515) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 3514) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 4663) e (gCodTpt = "09"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2750) e (gCodTpt = "02"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2751) e (gCodTpt = "02"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2752) e (gCodTpt = "02"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2752) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+Se ((gCodFor = 2768) e (gCodTpt = "01"))
+ vCtaDeb2 = 3562;
+
+@ Criado para contabilizar a conta 3562 o valor de juros - ECC em 30/08/2017 - Chamado 6539 @
+
+
+Se (E501TCP.CodCrp = "30") @ Grupo de Emprestimos e Financiamentos @
+    vCtaDeb2 = 3562;
+
+@ Tratamento pagamento PRODEC @
+Se(gCodTpt = "105")
+  vCtaDeb2 = 2205;
+
+@ Tratamento para Financiamentos - Tipo de Título 97 @
+
+Definir Alfa vxCodTpt;
+Definir Alfa gCodCrp;
+
+vxCodTpt = E501Mcp.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+
+Se ((vxCodTpt = "97") e (gCodCrp  = "30"))
+Inicio
+  Definir Cursor Cur_E501Tc2;
+  Definir Alfa vaNumCbo;
+  Definir Alfa vaNumTit;
+  Definir Alfa vxCodTpt;
+  Definir Alfa VaPreCar;
+   
+  vnCodEmp = E501Mcp.CodEmp;
+  vnCodFil = E501Mcp.CodFil;
+  vaNumTit = E501Mcp.NumTit;
+  vxCodTpt = E501Mcp.CodTpt;
+  vnCodFor = E501Mcp.CodFor; 
+
+  Cur_E501Tc2.Sql "Select PreCar from E606PRE where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumTit =:vaNumTit and CodTpt=:vxCodTpt  and TipPre = 'P'";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VaPreCar = Cur_E501Tc2.PreCar;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  @ Leasing @
+  vnNumCcr = E501TCP.NumCcr;
+  Cur_E501Tc2.Sql "Select CodPbc from E606CCr where CodEmp=:vnCodEmp and \
+                 CodFil=:vnCodFil and NumCCr=:vnNumCcr";
+
+  Cur_E501Tc2.AbrirCursor();
+  Se (Cur_E501Tc2.Achou)
+  Inicio
+     VnCodPbc = Cur_E501Tc2.CodPbc;
+  Fim;
+  Cur_E501Tc2.FecharCursor();
+
+  vCtaDeb2 = 3562;
+   
+/*  @ Leasing @
+  Se (VnCodPbc  = 2)
+    VCtaDeb2 = 459;
+  Se (E501TCP.NumCcr = 16)
+    VCtaDeb2 = 459;
+  Se (E501TCP.NumCcr = 19)
+    VCtaDeb2 = 459;
+  Se (E501TCP.NumCcr = 20)
+    VCtaDeb2 = 459; */
+
+  Se (VaPreCar = "S")
+     VVlrBas2 = VVlrBas2 + E501MCP.VlrMov - E501TCP.DscNeg;
+
+  Definir Alfa vCplBas11s;
+  Definir alfa vCplBas12s;
+  Definir alfa vCplBas13s;
+  Definir Alfa vCplBas21s;
+  Definir alfa vCplBas22s;
+  Definir alfa vCplBas23s;
+
+  vCodHpd2 = 4002;
+  
+  vCplBas21S = vCplBas11S;
+  vCplBas22S = vCplBas12S;
+  vCplBas23S = vCplBas13S;
+      
+Fim;

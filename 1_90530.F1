@@ -1,0 +1,174 @@
+/* REGRA_PARCIAL */
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa VCplBas1;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp; 
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+VVlrBas1 = E501MCP.VlrMov; @ Inclusão da variável conforme - ARF 28/09/2016 - chamado 5014 @
+/*VCplBas1 = E600MCC.CplMov; @ Inclusão da variável conforme - ARF 28/09/2016 - chamado 5014 @*/
+gCtaRed = 0;
+
+
+Cur_E095Hfo.Sql "Select CtaRcr from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRcr from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRcr ;
+Cur_E095Hfo.FecharCursor();
+
+Se ((gCtaRed = 0) e (gCodCrp <> "24"))
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRcr ;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRcr;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+/* já busca do grupo
+Se(gCodTpt = "66")
+    gCtaRed = 512;
+
+Se(gCodTpt = "31")
+    gCtaRed = 512;
+*/
+
+/* isso deveria tratar direto no fornecedor*/
+Se((gCodTpt = "30") e (gCodFor = 2996))
+    gCtaRed = 10112;
+
+/* para que isso?  */
+Se((gCodTpt = "30") e (gNumTit = "02012016"))
+   VVlrBas1 = 0;
+
+Se((gCodTpt = "30") e (gNumTit = "DEPJUDICIAL"))
+   VVlrBas1 = 0;
+
+Se(gCodTpt = "40")
+  gCtaRed = 0;
+
+
+/* Colocado direto no tipo 30 03/03/2017
+Se(gCodTpt = "30")
+  gCtaRed = 2900;
+*/
+
+/*
+- Consistir conta contábil caso o colaborador pertença ao ramo "6","13","14", chamado 4962;
+- 27/09/2016 - JLS (Implementação);
+
+- Gustavo - 03/03/2017  Acho que isso não faz sentido, deveria criticar ao lançar o titulo.
+*/
+
+Definir Alfa TClaSql;
+Definir Alfa CCurRam;
+Definir Alfa WWCodRam;
+WWCodRam = "";
+TClaSql = "Select E095FOR.CodRam WWCodRam  \  
+             From E095FOR \
+            Where E095FOR.CodFor = :gCodFor";
+
+SQL_Criar(CCurRam);
+SQL_DefinirComando(CCurRam, TClaSql);
+SQL_DefinirInteiro(CCurRam,"gCodFor",gCodFor);
+SQL_AbrirCursor(CCurRam);
+Se (SQL_EOF(CCurRam) = 0)
+  {
+    SQL_RetornarAlfa(CCurRam,"WWCodRam",WWCodRam);
+  }
+SQL_Destruir(CCurRam); 
+
+/*
+Se((WWCodRam = "6") OU (WWCodRam = "13") OU (WWCodRam = "14"))
+   gCtaRed = 512; 
+*/
+
+/* 03/03/2017 tirado esse fixo para conseguir ver as origens para não ficar jogando fixo
+
+Se (gCtaRed = 0)
+ gCtaRed = 2900;
+
+*/
+
+/* não entendi o que é isso?  */
+Inicio
+  Definir Cursor Cur_E095For;
+  Definir Cursor Cur_E600Cco;
+
+  Definir Alfa vCplBas11s;
+  Definir Alfa vCplBas12s;
+  Definir Alfa vCplBas13s;
+  Definir Alfa gNomFor;
+  Definir Alfa gDesCco;
+  Definir Alfa gNumCco;
+
+  gNumCco = E501Mcp.NumCco; 
+  gCodFor = E501Mcp.CodFor;
+
+  Definir numero vCodHpd1;
+ 
+  gDesCco = "";
+  gNomFor = "";
+
+  Cur_E095For.Sql "Select NomFor from E095For where CodFor=:gCodFor";
+  Cur_E600Cco.Sql "Select DesCco from E600Cco where CodEmp=:gCodEmp and NumCco=:gNumCco";
+
+  Cur_E095For.AbrirCursor();
+  Se (Cur_E095For.Achou)
+     gNomFor = Cur_E095For.NomFor;
+  Cur_E095For.FecharCursor();
+
+  Cur_E600Cco.AbrirCursor();
+  Se (Cur_E600Cco.Achou)
+     gDesCco = Cur_E600Cco.DesCco;
+  Cur_E600Cco.FecharCursor();
+
+  vCodHpd1 = 56;
+  vCplBas11s = gNumTit;
+  vCplBas12s = gNomFor;
+  vCplBas13s = gDesCco;
+
+Se((gCodTpt = "30") e (gCodFor = 2782))
+    gCtaRed = 0;
+
+Fim;
+
+Se((gCodTpt = "30") e (gCodFor = 2782))
+    gCtaRed = 0;
+
+/* 03/03/2017 verificar item abaixo, creditos tributarios deveria ter uma conta já que esta pagando.*/
+Se ((gCodTpt = "21") Ou (gCodTpt = "40")) @ Zeramento realizado conforme chamado 5234 - ARF - 30/11/2016 @
+  {
+    vVlrBas1 = 0;
+    gCtaRed = 0;
+  }
+
+Se(gCodTpt = "89")
+  {
+    vVlrBas1 = 0;
+    gCtaRed = 0;
+  }
+
+VCtaDeb1 = gCtaRed;
+
+x=1;

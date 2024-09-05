@@ -1,0 +1,70 @@
+Definir Cursor Cur_E012Fam;
+Definir numero gCodEmp;
+Definir alfa gCodFam;
+Definir numero gCtaRed;
+
+Cur_E012Fam.Sql "Select CtaRed from E012Fam where CodFam=:gCodFam and CodEmp=:gCodEmp";
+
+gCodEmp = E440Ipc.CodEmp;
+gCodFam = E440Ipc.CodFam;
+gCtaRed = 0;
+
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+   Inicio
+     gCtaRed = Cur_E012Fam.CtaRed;
+   Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (gCtaRed = 0)
+    gCtaRed = E440Ipc.CtaRed;
+
+VCtaDeb2 = gCtaRed;
+
+Definir Cursor Cur_E075Pro;
+Definir Alfa gRecCof;
+Definir Alfa gRecIcm;
+Definir Alfa gRecIpi;
+Definir Alfa gRecPis;
+Definir alfa gCodPro;
+Definir numero gCodEmp;
+
+Cur_E075Pro.Sql "Select RecIcm, RecIpi, RecPis, RecCof from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+gValor1 = 0;
+gValor2 = 0;
+gValor3 = 0;
+gValor4 = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIcm = Cur_E075Pro.RecIcm;
+     gRecIpi = Cur_E075Pro.RecIpi;
+     gRecPis = Cur_E075Pro.RecPis;
+     gRecCof = Cur_E075Pro.RecCof;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (gRecIcm = 'S')  gValor1 = E440Ipc.VlrIcm;
+
+/* Adicionado tratamento para buscar o IPI Cred. Devi. caso seja diferente de 0 (zero) - Rodrigo Costa - 04/03/2013 */
+Se (gRecIpi = 'S')  
+ Inicio
+   Se (E440Ipc.VecIpi <> 0)
+    gValor2 = E440Ipc.VecIpi;
+   Senao
+    gValor2 = E440Ipc.VlrIpi;
+ Fim;
+/* Fim - Adicionado trat... */
+Se (gRecPis = 'S')  gValor3 = E440Ipc.VlrPis;
+Se (gRecCof= 'S')   gValor4 = E440Ipc.VlrCor;
+
+ Se(E440IPC.VlrLiq = 0)
+  VVlrBas2 = 0;
+ Senao
+  VVlrBas2 = E440Ipc.VlrLiq - (gValor1 + gValor2 + gValor3 + gValor4) + E440Ipc.VlrFun + E440Ipc.VlrIcs + E440Ipc.VlrIsd;
+
+x=1;

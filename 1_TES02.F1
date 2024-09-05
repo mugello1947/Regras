@@ -1,0 +1,51 @@
+Definir Cursor Cur_E501Tc2;
+Definir Alfa vaNumTit;
+Definir Alfa VaCodTns;
+Definir Alfa VaDebCre;
+   
+vnCodEmp = E600MCC.CodEmp;
+vaNumTit = E600MCC.NumTem;
+VaDebCre = E600MCC.DebCre;
+
+Cur_E501Tc2.Sql "Select E501TCP.CodTns, E606CCR.CtaRlp, E606CCR.CtaRcp  \
+                 From E501TCP,E606CCR \
+                Where E501TCP.CodEmp = E606CCR.CodEmp \
+                  And E501TCP.NumCcr = E606CCR.NumCcr \
+                  And E501TCP.NumTit = :VaNumTit \ 
+                  And E501TCP.CodEmp = :VnCodEmp";
+
+Cur_E501Tc2.AbrirCursor();
+Se (Cur_E501Tc2.Achou)
+Inicio
+   VnCtaRcp = Cur_E501Tc2.CtaRcp;
+   VnCtaRlp = Cur_E501Tc2.CtaRlp;
+   VaCodTns = Cur_E501Tc2.CodTns;
+Fim;
+Cur_E501Tc2.FecharCursor();
+
+Se (VaDebCre = "D")
+inicio
+  Se (VaCodTns = "90512")
+  Inicio
+    VCtaCre1 = VnCtaRlp; @ Conta do Longo prazo @
+    VCtaDeb1 = 1209;
+  Fim;
+  senao
+  inicio
+    VCtaCre1 = VnCtaRcp; @ Conta do Curto Prazo @
+    VCtaDeb1 = 1208;
+  Fim;
+Fim;
+Se (VaDebCre = "C")
+inicio
+  Se (VaCodTns = "90512")
+  Inicio
+    VCtaDeb1 = VnCtaRlp; @ Conta do Longo prazo @
+    VCtaCre1 = 1209;
+  Fim;
+  senao
+  inicio
+    VCtaDeb1 = VnCtaRcp; @ Conta do Curto Prazo @
+    VCtaCre1 = 1208;
+  Fim;
+Fim;

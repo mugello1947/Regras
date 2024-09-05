@@ -1,0 +1,51 @@
+Definir Cursor CUR_E044CCU;
+Definir Cursor CUR_E670Rat;
+
+Definir Alfa VCODCCU;
+Definir Numero VTIPCCU;
+Definir Numero vCodEsp;
+
+VCODEMP=E670RAT.CODEMP;
+VCODCCU=E670RAT.CODCCU;
+vCodEsp=E670Rat.Codesp;
+
+gCtaDeb = 0;
+CUR_E044CCU.SQL "Select TipCcu from E044CCU WHERE CodEmp=:VCodEmp AND CodCcu=:VCodCcu";
+
+CUR_E044CCU.AbrirCursor();
+Se (CUR_E044CCU.Achou) 
+  vTipCcu = CUR_E044CCU.TipCcu;
+CUR_E044CCU.FecharCursor();
+
+Se ((VTIPCCU=1) ou (vTipCcu = 2)) @ Produtivo Indireto ou Produtivo Direto @
+    gCtaDeb = 632;
+Senao
+Se ((VTIPCCU=3) ou (vTipCcu = 5)) @ Administrativo ou Financeiro @
+    gCtaDeb = 828;
+Senao
+se (VTIPCCU=4) @ Comercial @
+   gCtaDeb = 732;
+
+vCtaDeb1 = gCtaDeb;
+
+x=0;
+
+/*** Se a ESPÉCIE for Licença de Software e for AVG ***/
+/***
+CUR_E670Rat.SQL "Select CodEsp from E670Rat WHERE CodEmp=:VCodEmp AND CodEsp=:VCodEsp";
+
+CUR_E670Rat.AbrirCursor();
+Se (CUR_E670Rat.Achou) 
+  vCodEsp = CUR_E670Rat.CodEsp;
+CUR_E670Rat.FecharCursor();
+
+se (vCodEsp=36) @ Software AVG @
+   gCtaCre = 1163;
+
+Senao
+  vCtaCre1 = E674Esp.CtaRcr;
+
+vCtaCre1 = gCtaCre;
+
+x=0;
+***/

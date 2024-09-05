@@ -1,0 +1,56 @@
+Definir Cursor Cur_E075Pro;
+Definir Cursor Cur_E440Nfc;
+Definir Alfa gRecIpi;
+Definir Alfa gCodPro;
+Definir Numero gCodEmp;
+Definir Numero vCodFil;
+Definir Numero vCodFor;
+Definir Numero vNumNfc;
+Definir Alfa vCodSnf;
+Definir Numero gTipNfe;
+
+Cur_E075Pro.Sql "Select RecIpi from E075Pro where CodPro=:gCodPro and CodEmp=:gCodEmp";
+
+gCodPro = E440Ipc.CodPro;
+gCodEmp = E440Ipc.CodEmp;
+vCodFil = E440Ipc.CodFil;
+vCodFor = E440Ipc.CodFor;
+vNumNfc = E440Ipc.NumNfc;
+vCodSnf = E440Ipc.CodSnf;
+gValor  = 0;
+
+Cur_E075Pro.AbrirCursor();
+Se (Cur_E075Pro.Achou)
+   Inicio
+     gRecIpi = Cur_E075Pro.RecIpi;
+   Fim;
+Cur_E075Pro.FecharCursor();
+
+Se (gRecIpi = 'S')  gValor = E440Ipc.VlrIpi;
+
+VVlrBas4 = gValor;
+
+@ Buscar o valor do IPI quando o Tipo da Nota Fiscal for 9 (Acerto) - Rodrigo Costa 07/10/2011 @
+
+Cur_E440Nfc.Sql "Select TipNfe \
+                 From E440Nfc  \
+                 Where CodFor=:vCodFor \
+                   and NumNfc=:vNumNfc \
+                   and CodSnf=:vCodSnf \
+                   and CodFil=:vCodFil \
+                   and CodEmp=:gCodEmp";
+Cur_E440Nfc.AbrirCursor();
+
+Se (Cur_E440Nfc.Achou)
+  Inicio
+   gTipNfe = Cur_E440Nfc.TipNfe;
+  Fim;
+
+Cur_E440Nfc.FecharCursor();
+
+Se (gTipNfe = 9)  
+    gValor = E440Ipc.VlrIpi;
+
+VVlrBas4 = gValor;
+
+x=1;

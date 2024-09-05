@@ -1,0 +1,69 @@
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+gCtaDeb = 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+gNumTit = E301Mcr.NumTit;
+
+
+Cur_E002Htt.Sql "Select CtaRcr from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+  Se (Cur_E002Htt.Achou)
+      gCtaDeb = Cur_E002Htt.CtaRcr;
+Cur_E002Htt.FecharCursor();
+
+
+Se (gCtaDeb = 0)
+   Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaDeb = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+    Fim;
+
+Se (gCtaDeb = 0)
+    gCtaDeb = 70;
+
+VCtaDeb1 = gCtaDeb; 
+
+@ Inclusao CRE na Tesouraria @
+
+Definir cursor Cur_E600Cco;
+Definir numero vCodEmp;
+Definir alfa vNumCco;
+
+vCodEmp = E301Mcr.CodEmp;
+vNumCco = E301Mcr.NumCco;
+vCtaCre = 0;
+
+
+Se (vNumCco <> " ")
+  Inicio
+    Cur_E600Cco.Sql "Select CtaRed from E600Cco where CodEmp=:vCodEmp and NumCco=:vNumCco";
+
+    Cur_E600Cco.AbrirCursor();
+      Se (Cur_E600Cco.Achou)
+        vCtaCre = Cur_E600Cco.CtaRed;
+    Cur_E600Cco.FecharCursor();
+
+    vCtaCre1 = vCtaCre;
+  Fim;
+
+Se (vCtaCre = 0)
+   vCtaCre = E301Rat.CtaRed;
+
+vCtaCre1 = vCtaCre;
+
+x=1;

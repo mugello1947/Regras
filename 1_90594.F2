@@ -1,0 +1,60 @@
+/*
+- Configuração do histórico padrão personalizada, monta o número da nota fiscal e o nome do cliente da nota fiscal de faturamento - chamado 5514;
+- 06/02/2017 - ARF (implantação);
+*/
+Definir Alfa VCplBas21S;
+Definir Alfa TClaSql;
+Definir Alfa CCurCli;
+Definir Alfa VNumTit;
+Definir Alfa VCodTpt;
+Definir Alfa VNomCli;
+Definir Alfa VCodSnf;
+Definir Alfa VObsCap;
+VCodEmp = E504CAP.CodEmp;
+VCodFil = E504CAP.CodFil;
+VNumTit = E504CAP.NumTit;
+VCodTpt = E504CAP.CodTpt;
+VObsCap = E504CAP.ObsCap;
+VCodSnf = "E";
+
+/*VCplBas21S = "";
+VNomCli = "";
+VAchou  = 0;
+@ VCplBas21S = "REVERSÃO IRPJ DIFERIDO S/ COMISSÕES (RESULTADO) - 25%"; @
+
+@ Busca o nome do cliente da nota fiscal de faturamento @
+TClaSql = "Select E085CLI.NomCli WWNomCli, E301TCR.NumNfv WWNumNfv \  
+             From E301TCR, E085CLI \
+            Where E301TCR.CodCli = E085CLI.CodCli \
+              And E301TCR.CodEmp = :VCodEmp \
+              And E301TCR.CodFil = :VCodFil \
+              And E301TCR.CodTpt = :VCodTpt \
+              And E301TCR.NumTit = :VNumTit";
+SQL_Criar(CCurCli);
+SQL_DefinirComando(CCurCli, TClaSql);
+SQL_DefinirInteiro(CCurCli,"VCodEmp",VCodEmp);
+SQL_DefinirInteiro(CCurCli,"VCodFil",VCodFil);
+SQL_DefinirAlfa(CCurCli,"VCodTpt",VCodTpt);
+SQL_DefinirAlfa(CCurCli,"VNumTit",VNumTit);
+SQL_AbrirCursor(CCurCli);
+Se (SQL_EOF(CCurCli) = 0)
+  {
+    SQL_RetornarAlfa(CCurCli,"WWNomCli",VNomCli);
+    SQL_RetornarInteiro(CCurCli,"WWNumNfv",VNumNfv);
+    IntParaAlfa(VNumNfv,VNumTit);
+    VAchou = 1;
+  }
+SQL_Destruir(CCurCli);  
+
+Se (VAchou = 1)
+  VCplBas21S = "Vlr.Provisão IRPJ Diferido s/Comissão Faturamento NF." + VNumTit + " - " + VNomCli;
+ Senao
+   VCplBas21S = VObsCap;*/
+ 
+vVlrBas2=e504cap.VlrCom*0.25;
+ArredondarValor(vVlrBas2,2);
+x=1;
+
+
+Se (E504CAP.AdtImp <> "N")
+  vVlrBas2=0;

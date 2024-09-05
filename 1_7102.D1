@@ -1,0 +1,13 @@
+vAbgFil1 = E140IPV.CODFIL;
+vDatBas1 = E140NFV.DATEMI;
+vCtaDeb1 = 1070;
+vCtaCre1 = E075PRO.CTAFDV;
+vVlrBas1 = E140IPV.VLRLIQ;
+vCodHpd1 = 85;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+vCplBas11 = E140IPV.NUMNFV;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E085CLI.NOMCLI;
+/* REGRA_PARCIAL */

@@ -1,0 +1,83 @@
+Definir Cursor Cur_E210MVP;
+Definir Cursor Cur_E075PRO;
+Definir Cursor Cur_E012FAM;
+
+Definir Numero vCodEmp;
+Definir Numero vCodFil;
+Definir Numero vCtaRed;
+Definir Numero vNumNfc;
+Definir Alfa vCodSnf;
+Definir Numero vCodFor;
+Definir Alfa vCodPro;
+Definir Alfa VCodFam;
+
+vCodEmp = E440IPC.CodEmp;
+vCodFil = E440IPC.CodFil;
+vNumNfc = E440IPC.NumNfc;
+vCodFor = E440IPC.CodFor;
+vCodSnf = E440IPC.CodSnf;
+
+Cur_E210MVP.Sql "Select CodPro \
+                   from E210MVP \
+                  Where CodEmp = :vCodEmp \ 
+                    And CodFil = :vCodFil \ 
+                    And NumNfc = :vNumNfc \
+                    And CodFor = :vCodFor \
+                    And SnfNfc = :vCodSnf";
+Cur_E210MVP.AbrirCursor();
+Se (Cur_E210MVP.Achou)
+ Inicio
+  vCodPro = Cur_E210MVP.CodPro;
+ Fim;
+Cur_E210MVP.FecharCursor();
+
+/* INATIVAÇÃO conforme chamado 4902 - ARF - 31/08/2016
+Cur_E075PRO.Sql "Select CtaRed,CodFam From E075PRO \
+                 Where CodEmp = :VCodEmp \
+                   And CodPro = :VCodPro";
+Cur_E075PRO.AbrirCursor();
+Se (Cur_E075PRO.Achou)
+  Inicio
+    VCtaDeb2 = Cur_E075PRO.CtaRed;
+    vCodFam = Cur_E075PRO.CodFam;
+  Fim;
+Cur_E075PRO.FecharCursor();
+*/ 
+
+Definir Alfa TClaSql;
+Definir Alfa CCurPro;
+TClaSql = "Select E075PRO.CtaRed WWCtaDeb, E075PRO.CodFam WWCodFam \  
+             From E075PRO \
+            Where E075PRO.CodEmp = :VCodEmp \
+              And E075PRO.CodPro = :VCodPro";
+SQL_Criar(CCurPro);
+SQL_DefinirComando(CCurPro, TClaSql);
+SQL_DefinirInteiro(CCurPro,"VCodEmp",VCodEmp);
+SQL_DefinirAlfa(CCurPro,"VCodPro",VCodPro);
+SQL_AbrirCursor(CCurPro);
+Se (SQL_EOF(CCurPro) = 0)
+  {
+    SQL_RetornarInteiro(CCurPro,"WWCtaDeb",VCtaDeb2);
+    SQL_RetornarAlfa(CCurPro,"WWCodFam",VCodFam);
+  }
+SQL_Destruir(CCurPro);
+ 
+
+Se (vCtaDeb2 = 0)
+  Inicio
+    Cur_E012FAM.Sql "Select CtaRed  \
+                       From E012FAM \
+                      Where CodEmp = :VCodEmp \
+                        And CodFam = :VCodFam";
+    Cur_E012FAM.AbrirCursor();
+    Se (Cur_E012FAM.Achou)
+       Inicio
+         VCtaDeb2 = Cur_E012FAM.CtaRed;
+       Fim;
+    Cur_E012FAM.FecharCursor();
+Fim;
+  
+Se (vCtaDeb2 = 0)
+  vCtaDeb2 = E440IPC.CtaRed;
+
+x=1;

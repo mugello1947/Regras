@@ -1,0 +1,14 @@
+@Verificar porque tem essa regra@
+Definir Numero vCodHpd;
+Definir Numero vCtaCre3;
+Definir Numero gCodCli;
+gCodCli = E301TCR.CodCli;
+
+
+Se ((gCodCli = 770) ou (gCodCli = 771))
+  vCtaCre3 = 980;
+
+@***** Se a Conta Contabil for 980 - o Historico sera  559 *******@
+
+Se (vCtaCre3 = 980)
+ vCodHpd = 559;

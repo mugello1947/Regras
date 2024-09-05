@@ -1,0 +1,13 @@
+Definir Alfa gRecIpi;
+
+/* Aplicado conforme chamado 3391 */
+
+  Se (E440Ipc.VecIpi <> 0)
+    gValor4 = E440Ipc.VecIpi;
+  Senao
+    gValor4 = E440Ipc.VlrIpi;
+
+
+VVlrBas4 = gValor4;
+
+x = 1;

@@ -1,0 +1,105 @@
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodFor;
+
+gCodFor = E501Mcp.CodFor;
+gCodEmp = E501Mcp.CodEmp;
+gCodFil = E501Mcp.CodFil;
+gCodTpt = E501Mcp.CodTpt;
+gNumTit = E501Mcp.NumTit;
+
+
+Se ( (E501Mcp.CodTpt = "36") ou (E501Mcp.CodTpt = "38") ou (E501Mcp.CodTpt = "39") )
+
+Inicio
+
+  Definir Cursor Cur_E002Tpt;
+  Definir Cursor Cur_E095For;
+  Definir Cursor Cur_E501Tcp;
+
+  Definir Alfa vCplBas51s;
+  Definir Alfa vCplBas52s;
+  Definir Alfa vCplBas53s;
+  Definir Alfa gDesTpt;
+  Definir Alfa gNomFor;
+  Definir Alfa gNota;
+
+  Definir numero vCodHpd1;
+  Definir numero gForNfc;
+  Definir numero gNumNfc;
+
+ 
+  gDesTpt = "";
+  gNomFor = "";
+  gNumNfc = 0;
+  gForNfc = 0;
+  gNota = "";
+
+  Cur_E002Tpt.Sql "Select DesTpt from E002Tpt where Codtpt=:gCodtpt";
+  Cur_E095For.Sql "Select NomFor from E095For where CodFor=:gForNfc";
+  Cur_E501Tcp.Sql "Select ForNfc, NumNfc from E501Tcp where CodEmp=:gCodEmp and CodFil=:gCodFil and NumTit=:gNumTit and CodTpt=:gCodTpt and CodFor=:gCodFor";
+
+  Cur_E002Tpt.AbrirCursor();
+  Se (Cur_E002Tpt.Achou)
+      gDesTpt = Cur_E002Tpt.DesTpt;
+  Cur_E002Tpt.FecharCursor();
+
+  Cur_E501Tcp.AbrirCursor();
+  Se (Cur_E501Tcp.Achou)
+      Inicio
+        gNumNfc = Cur_E501Tcp.NumNfc;
+        gForNfc = Cur_E501Tcp.ForNfc;
+      Fim;
+  Cur_E501Tcp.FecharCursor();
+
+  Cur_E095For.AbrirCursor();
+  Se (Cur_E095For.Achou)
+      gNomFor = Cur_E095For.NomFor;
+  Cur_E095For.FecharCursor();
+
+  IntParaAlfa(gNumNfc,gNota);
+  vCodHpd5 = 245;
+  vCplBas51s = gDesTpt;
+  vCplBas52s = gNota;
+  vCplBas53s = gNomFor;
+
+Fim;
+Senao
+Inicio
+
+  Definir Cursor Cur_E002Tpt;
+  Definir Cursor Cur_E095For;
+
+  Definir Alfa vCplBas51s;
+  Definir Alfa vCplBas52s;
+  Definir Alfa vCplBas53s;
+  Definir Alfa gDesTpt;
+  Definir Alfa gNomFor;
+
+  Definir numero vCodHpd1;
+ 
+  gDesTpt = "";
+  gNomFor = "";
+
+  Cur_E002Tpt.Sql "Select DesTpt from E002Tpt where Codtpt=:gCodtpt";
+  Cur_E095For.Sql "Select NomFor from E095For where CodFor=:gCodFor";
+
+  Cur_E002Tpt.AbrirCursor();
+  Se (Cur_E002Tpt.Achou)
+      gDesTpt = Cur_E002Tpt.DesTpt;
+  Cur_E002Tpt.FecharCursor();
+
+  Cur_E095For.AbrirCursor();
+  Se (Cur_E095For.Achou)
+      gNomFor = Cur_E095For.NomFor;
+  Cur_E095For.FecharCursor();
+
+  vCodHpd5 = 245;
+  vCplBas51s = gDesTpt;
+  vCplBas52s = gNumTit;
+  vCplBas53s = gNomFor;
+
+Fim;

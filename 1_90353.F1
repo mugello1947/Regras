@@ -1,0 +1,4 @@
+@ Só contabiliza o Tipo 86 @
+
+Se (E301MCR.CodTpt <> "86")
+  VVlrBas1 = 0;

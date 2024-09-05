@@ -1,0 +1,53 @@
+Definir Cursor Cur_E075Pro;
+Definir Cursor Cur_E012Fam;
+
+Definir Numero vCtaDeb1;
+Definir Numero vCodEmp;
+
+Definir Alfa   vCodFam;
+Definir Alfa   vCodPro;
+
+vCodEmp = E440ipc.CodEmp;
+vCodFam = E440ipc.CodFam;
+vCodpro = E440ipc.Codpro;
+vCtaCre = 0;
+vCtaFcr = 0;
+
+EstaNulo(vCodpro,VRet);
+
+/* Se não achou Conta Contabil - Busca no Cadastro da Familia*/
+
+   Se ((vCtaCre = 0) e (VCodpro <> ' '))
+      Inicio
+      Cur_E012Fam.Sql "Select CtaFcr  \
+                       From E012Fam \
+                      Where CodEmp = :vCodEmp \
+                        And CodFam = :vCodFam";
+      Cur_E012Fam.AbrirCursor();
+      Se (Cur_E012Fam.Achou)
+         Inicio
+         VCtaCre = Cur_E012Fam.CtaFcr;
+         Fim;
+      Cur_E012Fam.FecharCursor();
+      Fim;
+
+/* Se não achou Conta Contabil na Família - Busca no cadastro do Produto */
+
+   Se ((vCtaCre = 0) e (vCodpro <> ' '))
+      Inicio
+
+        Cur_E075Pro.Sql "Select CtaFcr  \
+                           From E075Pro \
+                          Where CodEmp = :vCodEmp \
+                            And Codpro = :vCodpro";
+        Cur_E075Pro.AbrirCursor();
+        Se (Cur_E075Pro.Achou)
+          Inicio
+            vCtaFcr = Cur_E075Pro.CtaFcr;
+          Fim;
+
+      Fim;
+
+VCtaCre1 = VCtaCre;
+VCodCcu1 = VCodCcu;
+x=1;

@@ -1,0 +1,2 @@
+VVlrBas7 = VVlrBas7 * E301TCR.PERCOM / 100;
+ArredondarValor(VVlrBas7,2);

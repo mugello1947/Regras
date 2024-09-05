@@ -1,0 +1,14 @@
+/*
+- Configuração do histórico padrão personalizada, mensagem fixa + observação digitada na CAP - chamado 5514;
+- 06/02/2017 - ARF (implantação);
+
+Definir Alfa VCplBas11S;
+Definir Alfa VObsCap;
+VObsCap = E504CAP.ObsCap;
+VCplBas11S = "Entrada Título MANUAL";
+LimpaEspacos(VObsCap);
+EstaNulo(VObsCap,VRetCap);
+Se (VRetCap = 0)
+ VCplBas11S = VCplBas11S + ": " + VObsCap;
+x=1;
+*/

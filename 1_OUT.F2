@@ -1,0 +1,31 @@
+/*Definir Numero VCodHpd2;
+Definir Numero VCplBas21; @ Data @
+Definir Numero vCtaDeb2;
+Definir Numero vCtaCre2;
+Definir Alfa VCplBas22S; @ Número do Título no Contas a Pagar @
+Definir Alfa vCplBas23S; @ Nome do Fornecedor do título no Contas a Pagar @
+Definir Cursor Cur_E095FOR;
+
+vCtaDeb2 = 954;
+Se (E660ODC.CSTPIS = "56") {
+   Se (E660ODC.BASCRE = 13) {  @ Outros Documentos referente insumos da produção @
+      VCodHpd2 = 102;
+      vCtaCre2 = 662;
+   }
+   Se (E660ODC.BASCRE = 14) {  @ Outros Documentos referente Frete Autonomo @
+      VCodHpd2 = 100;
+      vCtaCre2 = 3077;
+   }
+}
+
+vCplBas21 = E660ODC.DatOpe;
+vCplBas22S = E660ODC.NumMcp;
+vCodFor = E660ODC.ForMcp;
+Cur_E095FOR.SQL "SELECT NOMFOR FROM E095FOR WHERE CODFOR = :vCodFor";
+Cur_E095FOR.AbrirCursor();
+Se (Cur_E095FOR.Achou) { 
+   vCplBas23S = Cur_E095FOR.NomFor;
+}
+Cur_E095FOR.FecharCursor();
+
+x=0;*/

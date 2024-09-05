@@ -1,0 +1,9 @@
+/*** Se for Origem for OU CONTABILIZA ****/
+
+Definir Alfa vOriMcc;
+vOriMcc = E600Mcc.OriMcc;
+
+Se (vOriMcc = "CR")
+   vVlrBas1 = 0;
+
+x=1;

@@ -1,0 +1,70 @@
+/*************************************************************
+Definir Cursor Cur_E012Fam;
+Definir Cursor Cur_E075Pro;
+Definir Numero vCtaCre1;
+Definir Numero vCodEmp;
+Definir Alfa   vCodFam;
+Definir Alfa   vCodPro;
+
+vCodEmp = E210Mvp.CodEmp;
+vCodPro = E210Mvp.CodPro;
+
+vCtaCre1 = 0;
+vCtaRed  = 0;
+
+EstaNulo(vCodpro,VRet);
+
+Definir Alfa gCodOri;
+Definir Alfa gCodfam;
+
+gCodOri = E083Ori.CodOri;
+gCodFam = E012Fam.CodFam;
+
+Se ((gCodFam <> "4003") ou (gCodFam <> "2001") ou (gCodFam <> "2002") ou (gCodFam <> "2003") ou (gCodFam <> "2004") ou (gCodFam <> "2005") ou (gCodFam <> "2006") ou (gCodFam <> "2007"))
+Se ((gCodFam <> "8010") ou (gCodFam <> "2008") ou (gCodFam <> "2009") ou (gCodFam <> "2010") ou (vCodPro = "80100007"))
+
+VvlrBas1 = 0;
+
+x=0;
+*************************************************************/
+/*
+Se (E012Fam.CtaRed = 0)
+   vCtaDeb1 = E075Pro.CtaRed;
+
+X=0;
+
+Definir Cursor Cur_E075Pro;
+Definir Alfa vCodPro;
+
+vCodPro = E210Mvp.CodPro;
+
+Se (vCodPro = "80100007")
+VvlrBas1 = 0;
+
+x=0;
+*/
+
+Se (E210MVP.EstCoc <> "S")
+  VCtaCre1 = 699;
+
+
+Definir numero xposicao;
+definir alfa vcodccu;
+definir numero vperrat;
+definir numero vvlrrat;
+vCodCcu = E210MVP.CodCcu;
+LimpaEspacos(vCodCcu);
+
+
+@Regra para Inserir 100% Rateio Integração@
+Se (vCodCcu <> "")
+inicio
+  /* Para excluir todos registros de rateios que vieram */
+  xPosicao = 1;
+  RateioIntegracao("Excluir_Tudo",xPosicao,vCodCcu,vPerRat,vVlrRat); 
+
+  /* Para inserir um rateio único */
+  vPerRat = 100;
+  vVlrRat = E210MVP.VLRMOV;
+  RateioIntegracao("Inserir",xPosicao,vCodCcu,vPerRat,vVlrRat);
+Fim;

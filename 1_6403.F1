@@ -1,0 +1,56 @@
+/***
+================================================================
+Definir Cursor Cur_E012Fam;
+Definir numero gCodEmp;
+Definir alfa gCodFam;
+Definir numero gCtaRed;
+
+Cur_E012Fam.Sql "Select CtaRcr from E012Fam where CodFam=:gCodFam and CodEmp=:gCodEmp";
+
+gCodEmp = E140Ipv.CodEmp;
+gCodFam = E140Ipv.CodFam;
+gCtaRed = E140Ipv.CtaRed;
+gVlrIcs = E140Ipv.VlrIcs;
+gTipNfs = E140Nfv.TipNfs;
+gCtaRed = 0;
+
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+   Inicio
+     gCtaRed = Cur_E012Fam.CtaRcr;
+   Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (gCtaCre = 0)
+    gCtaCre = E140Ipv.CtaRed;
+
+Se ((gCtaRed = 0) e (gVlrIcs > 0) e (gTipNfs = 9))
+   gCtaRed = 929;                                               
+
+VCtaCre1 = gCtaRed;
+================================================================
+***/
+
+Definir Cursor Cur_E012Fam;
+Definir alfa   gCodPro;
+Definir alfa   gCodFam;
+
+gCodFam = E140Ipv.CodFam;
+gCodPro = E140Ipv.CodPro;
+vCtaRed = E140Ipv.CtaRed;
+gCodEmp = E140Ipv.CodEmp;
+gCtaCre = 0;
+
+Cur_E012Fam.Sql "Select CtaRcr From E012fam where CodFam=:gCodFam and CodEmp=:gCodEmp";
+
+Cur_E012Fam.AbrirCursor();
+Se (Cur_E012Fam.Achou)
+  Inicio
+    gCtaCre = Cur_E012Fam.CtaRcr;
+  Fim;
+Cur_E012Fam.FecharCursor();
+
+Se (gCtaCre = 0)
+    gCtaCre = E140Ipv.CtaRed;
+
+vCtaCre1 = gCtaCre;

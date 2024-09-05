@@ -1,0 +1,14 @@
+
+Definir alfa gCodTpt;
+gCodtpt = E501Mcp.CodTpt;
+
+Se (gCodTpt = "31")
+  VVlrBas3 = 0;
+/***
+Se ((E501Mcp.NumCco = " ") e (E501MCP.Codfor <> 1068))
+   vVlrBas3 = 0;
+***/
+
+
+Se (E501MCP.CodTpt = "97")
+  VVlrBas3 = VVlrBas3 - E501MCP.VlrOac;

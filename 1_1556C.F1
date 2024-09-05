@@ -1,0 +1,60 @@
+Definir Cursor Cur_E440ipc;
+Definir Numero gCodEmp;
+Definir Numero gCodFil;
+Definir Numero gCodFor;
+Definir Numero gNumNfc;
+Definir Alfa gCodSnf;
+Definir numero gSeqipc;
+
+gCodEmp = E440Rat.CodEmp;
+gCodFil = E440Rat.CodFil;
+gCodFor = E440Rat.CodFor;
+gNumNfc = E440Rat.NumNfc;
+gCodSnf = E440Rat.CodSnf;
+gSeqipc = E440Rat.Seqipc;
+
+Cur_E440ipc.Sql "Select VlrIpi,vlrpis, vlrcor, VlrIcm from E440ipc where CodEmp=:gCodEmp \
+                 and CodFil=:gCodFil and CodFor=:gCodFor and NumNfc=:gNumNfc and CodSnf=:gCodSnf and Seqipc=:gSeqipc";
+ 
+Cur_E440ipc.AbrirCursor();
+Se (Cur_E440ipc.Achou)
+   Inicio
+  
+  gVlrIpi = Cur_E440Ipc.VlrIpi;
+     ArredondarValor(gVlrIpi,2);
+  gVlrPis = Cur_E440ipc.VlrPis; /*** Estava comentado desativado comentário dia 22/02/11 Rodrigo Costa ***/
+     ArredondarValor(gVlrPis,2);
+  gVlrCor = Cur_E440ipc.VlrCor; /*** Estava comentado desativado comentário dia 22/02/11 Rodrigo Costa ***/
+     ArredondarValor(gVlrCor,2);
+  gVlrIcm = Cur_E440Ipc.VlrIcm;
+     ArredondarValor(gVlrIcm,2);
+
+   Fim;
+
+
+Cur_E440ipc.FecharCursor();
+
+gRatIpi = (gVlrIpi *( E440Rat.PerCta / 100) );
+  ArredondarValor(gRatIpi,2);
+  vRatIpi = (gRatIpi *( E440Rat.PerRat / 100) );
+  ArredondarValor(vRatIpi,2); 
+
+gRatPis = (gVlrPis *( E440Rat.PerCta / 100) );
+  ArredondarValor(gRatPis,2);
+  vRatPis = (gRatPis *( E440Rat.PerRat / 100) );
+  ArredondarValor(vRatPis,2);
+
+gRatCor = (gVlrCor *( E440Rat.PerCta / 100) );
+  ArredondarValor(gRatCor,2);
+  vRatCor = (gRatCor *( E440Rat.PerRat / 100) );
+  ArredondarValor(vRatCor,2);
+
+gRatIcm = (gVlrIcm *( E440Rat.PerCta / 100) );
+  ArredondarValor(gRatIcm,2);
+  vRatIcm = (gRatIcm *( E440Rat.PerRat / 100) );
+  ArredondarValor(vRatIcm,2);
+
+
+VVlrBas1 = E440rat.VlrRat - (vRatIpi + vRatPis + vRatCor + vRatIcm);
+
+x=1;

@@ -1,0 +1,31 @@
+/*** Se a Origem for "OU" CONTABILIZA ****/
+
+Definir Alfa vOriMcc;
+vOriMcc = E600Mcc.OriMcc;
+
+Definir Cursor Cur_E600Mcc;
+vCodEmp = E600MCC.CodEmp;
+vCodFil = E600MCC.CodFil;
+
+Se (vOriMcc = "CP")
+   vVlrBas1 = 0;
+
+Se (vOriMcc = "OU")
+Inicio
+ Cur_E600MCC.SQL "Select CtaRed From E600MCC Where CodEmp =:vCodEmp And CodFil =:vCodFil";
+ 
+ Cur_E600MCC.AbrirCursor()
+  Se (Cur_E600MCC.Achou)
+    vCtaDeb1 = Cur_E600MCC.CtaRed;
+  Cur_E600MCC.FecharCursor();
+
+   VCtaDeb1 = E600MCC.CtaRed;
+/*
+Se (gCtaDeb1 = 0)
+   Inicio
+      gCtaDeb1 = E600Rat.CtaRed;
+   Fim;*/
+Fim;
+
+Se (E600MCC.NumCco = "EMPRESTIMOS")
+  vVlrBas1 = 0; 

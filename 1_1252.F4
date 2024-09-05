@@ -1,0 +1,7 @@
+@ Regra definida conforme chamado #24109 @
+
+Definir Alfa VaDatEnt;
+ConverteMascara(3,VDatBas4,VaDatEnt,"DD/MM/YYYY");
+
+Se ((VaDatEnt >= "01/08/2022") e (E440IPC.CodFor = 7422))
+   VCtaCre4 = 60914;

@@ -1,0 +1,37 @@
+/* REGRA_PARCIAL */
+Definir Alfa vCplBas12s;
+Definir Alfa gObsTcp;
+Definir Alfa gNomFor;
+Definir Alfa vCodTpt;
+Definir Cursor Cur_E501MCP;
+
+gCodFor = E501Rat.CodFor;
+gObsTcp = E501Tcp.ObsTcp;
+
+Se (gCodFor = 1)
+   vCplBas12S = gObsTcp;
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir cursor Cur_E095Hfo;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+
+gCodFor = E501Rat.CodFor;
+gCodEmp = E501Rat.CodEmp;
+gCodFil = E501Rat.CodFil;
+gNumTit = E501Rat.NumTit;
+gCodTpt = E501Rat.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+gVlrMov = vVlrBas1;
+gCtaRed = 0;
+
+
+Se((gCodCrp <> "20") e (gCodTpt <> "22") e (gCodCrp <> "24") e (gCodTpt <> "66") e (gCodTpt <> "51") e (gCodCrp <> "25") e (gCodCrp <> "35") e (gCodTpt <> "41") e (gCodTpt <> "61"))
+      VVlrBas1 = 0;
+
+
+@ Buscar TIPO do Título ligado ao Contas à receber @
+Se (gCodTpt = "44")
+  vVlrBas1 = 0;

@@ -1,0 +1,18 @@
+Definir funcao ContaPadrao(numero Conta);
+
+funcao ContaPadrao(numero Conta);
+inicio
+  Definir cursor Cur;
+  Definir numero CtaAux;
+
+  CodEmpAux = EmpAtu;
+
+  Cur.SQL "Select CtaRed from E042Cpd where (CodEmp = :CodEmpAux) and (CodCpd = :Conta)";
+  Cur.AbrirCursor();
+  CtaAux = Cur.CtaRed;
+  Cur.FecharCursor();
+  Cancel(CtaAux);
+
+fim;
+
+

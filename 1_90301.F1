@@ -1,0 +1,51 @@
+Se (e301tcr.SitTit="CA")
+  Cancel(1);
+
+Definir Cursor Cur_E301Mcr;
+Definir alfa VNumTit[15];
+Definir alfa VCodTpt[05];
+Definir Data VDatZer;
+/************************************************* Considera Analítico ou Sintético *********************************************************/
+
+/*Declara SQL*/
+VCodEmp=E301MCR.CODEMP;
+VCodFil=E301MCR.CODFIL;
+VNumTit=E301MCR.NUMTIT;
+VCodTpt=E301MCR.CODTPT;
+VDatZer=0;
+
+Cur_E301Mcr.Sql "SELECT VLRDSC, VLRMUL, VLRJRS, VLRBCO FROM E301MCR WHERE CODEMP=:VCODEMP AND CODFIL=:VCODFIL AND NUMTIT=:VNUMTIT\
+                 AND CODTPT=:VCODTPT AND SEQMOV=1 ";
+
+Se (E301TCR.VLRABE=E301TCR.VLRORI)
+   FVlrBco = E301TCR.VLRBCO;
+Senao
+   Inicio
+   FVlrBco=0;
+   Cur_E301Mcr.AbrirCursor();
+   Enquanto (Cur_E301Mcr.Achou)
+      Inicio
+      FVlrBco=FVlrBco+Cur_E301Mcr.VlrBco;
+      Se (E070Fil.RecPcj='S') /*Juros*/
+         Inicio
+         VVlrJrs=Cur_E301Mcr.VlrJrs;
+         FVlrBco=FVlrBco-VVlrJrs;
+         Fim;
+      Se (E070Fil.RecPcm='S') /*Multa*/
+         Inicio
+         VVlrMul=Cur_E301Mcr.VlrMul;
+         FVlrBco=FVlrBco-VVlrMul;
+         Fim;
+      Se (E070Fil.RecAdc='S') /*Desconto*/
+         Inicio
+         VVlrDsc=Cur_E301Mcr.VlrDsc;
+         FVlrBco=FVlrBco+VVlrDsc;
+         Fim;
+      Cur_E301Mcr.Proximo();  
+      Fim;
+   Cur_E301Mcr.FecharCursor();  
+   Fim;
+FVlrCom=FVlrBco * E301TCR.PERCOM / 100;
+
+
+vvlrbas1=FVlrCom;

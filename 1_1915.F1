@@ -1,0 +1,58 @@
+Definir Cursor Cur_E095For;
+Definir numero gCodEmp;
+Definir numero gCodFor;
+Definir numero gCtaRed;
+
+gCodEmp = E440Ipc.CodEmp;
+gCodFor = E440Nfc.CodFor;
+gCtaRed = 0;
+
+Cur_E095For.Sql "Select CodFor from E095For where CodFor=:gCodFor";
+
+Cur_E095For.AbrirCursor();
+Se (Cur_E095For.Achou)
+   Inicio
+     gCodFor = Cur_E095For.CodFor;
+   Fim;
+Cur_E095For.FecharCursor();
+
+Se (gCodFor = 5) 
+    gCtaRed = 550;
+
+Se (gCodFor = 141) 
+    gCtaRed = 668;
+
+Se (gCodFor = 145) 
+    gCtaRed = 552;
+
+Se (gCodFor = 1819)
+    gCtaRed = 10150;
+
+Se (gCodFor = 2004)
+    gCtaRed = 1022;
+
+Se (gCodFor = 8)
+    gCtaRed = 551;
+
+Se (gCodFor = 850)
+    gCtaRed = 1018;
+
+Se (gCodFor = 3035)
+    gCtaRed = 1020;
+
+Se (gCodFor = 1924)
+    gCtaRed = 1021;
+
+Se (gCodFor = 126)
+    gCtaRed = 375;
+
+Se (gCodFor = 2004)
+    gCtaRed = 1022;
+
+Se (gCodFor = 3686)
+    gCtaRed = 1043;
+
+Se (gCtaRed = 0)
+    gCtaRed = E440Ipc.CtaRed;
+
+VCtaCre1 = gCtaRed;

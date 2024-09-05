@@ -1,0 +1,156 @@
+Definir Alfa vCplBas12s;
+Definir Alfa gObsTcp;
+Definir Alfa gNomFor;
+
+gCodFor = E501Rat.CodFor; 
+gObsTcp = E501Tcp.ObsTcp;
+
+Se (gCodFor = 1)
+   vCplBas12S = gObsTcp;
+
+Definir Alfa gNumTit;
+Definir Alfa gCodTpt;
+Definir Alfa gCodCrp;
+Definir Alfa vaNumCCo;
+Definir cursor Cur_E660CCO;
+Definir cursor Cur_E002Htt;
+Definir cursor Cur_E023Hrp;
+Definir cursor Cur_E095Hfo;
+
+gCodFor = E501MCP.CodFor;
+gCodEmp = E501MCP.CodEmp;
+gCodFil = E501MCP.CodFil;
+gNumTit = E501MCP.NumTit;
+gCodTpt = E501MCP.CodTpt;
+gCodCrp = E501TCP.CodCrp;
+VaNumCCo = E501Mcp.NumCCo;
+gCtaRed = 0;
+
+Cur_E095Hfo.Sql "Select CtaRed from E095hfo where CodFil=:gCodFil and CodEmp=:gCodEmp and CodFor=:gCodFor";
+
+Cur_E002Htt.Sql "Select CtaRdv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+
+Cur_E023Hrp.Sql "Select CtaRdv from E023Hrp where CodEmp=:gCodEmp and CodCrp=:gCodCrp";
+
+Cur_E095Hfo.AbrirCursor();
+  Se (Cur_E095Hfo.Achou)
+      gCtaRed = Cur_E095Hfo.CtaRed;
+Cur_E095Hfo.FecharCursor();
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E002Htt.AbrirCursor();
+      Se (Cur_E002Htt.Achou)
+         gCtaRed = Cur_E002Htt.CtaRdv;
+      Cur_E002Htt.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+   Inicio
+      Cur_E023Hrp.AbrirCursor();
+      Se (Cur_E023Hrp.Achou)
+         gCtaRed = Cur_E023Hrp.CtaRdv;
+      Cur_E023Hrp.FecharCursor();
+    Fim;
+
+Se (gCtaRed = 0)
+    gCtaRed = 300;
+
+/*** Não Contabiliza Salários Colaboradores  ***/
+@Se (gCodFor = 1070)@
+@    gCtaRed = 0;@
+
+VCtaCre1 = gCtaRed; 
+
+/*** Se a Origem for "IMP" Não CONTABILIZA ****/
+
+Definir Alfa gCodTpt;
+gCodtpt = E501Mcp.Codtpt;
+
+@Se (gCodTpt = "01")@
+@   vVlrBas1 = 0;@
+
+Se (gCodTpt = "05")
+   vVlrBas1 = 0;  
+
+Se (gCodTpt = "12")
+   vVlrBas1 = 0;   
+
+Se (gCodTpt = "14")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "16")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "21")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "22")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "23")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "24")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "26") 
+  vVlrBas1 = 0;
+
+Se (gCodTpt = "25") 
+  vVlrBas1 = 0;      
+
+Se (gCodTpt = "27")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "28")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "29")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "81")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "33")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "44")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "46")
+   vVlrBas1 = 0;
+
+Se (gCodTpt = "55")
+   vVlrBas1 = 0;
+
+Se ((gCodTpt = "01") e (VCtaCre1 <> 3770))
+   vVlrBas1 = 0;
+
+
+Se (VCtaCre1 = 3770) @ Colocado para ajustar uma lançamentos errado de financiamento - ECC 08/08/2017 - #6445 @
+inicio
+  VCtaCre1  = 3770;
+  VCtaDeb1 = 300;
+Fim;
+
+Se (VaNumCco <> "")
+Inicio
+  Cur_E660CCO.Sql "Select CtaRed from E600CCO where CodEmp=:gCodEmp and NumCco=:VaNumCco";
+
+  Cur_E660CCO.AbrirCursor();
+    Se (Cur_E660CCO.Achou)
+       inicio
+          gCtaRed = Cur_E660CCO.CtaRed;
+          VCtaDeb1  = gCtaRed;
+       fim
+  Cur_E660CCO.FecharCursor();
+Fim;
+
+Se (gCodTpt = "101") @ Fatura de CTE @ 
+   vVlrBas1 = 0;
+
+Se (VCtaCre1 = VCtaDeb1) @ Conta debito e Credito iguais, não contabiliza @ 
+   vVlrBas1 = 0;
+
+x=1;

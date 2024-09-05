@@ -1,0 +1,65 @@
+vAbgFil1 = E301MCR.CODFIL;
+vDatBas1 = E301MCR.DATMOV;
+vCtaDeb1 = 0;
+vCtaCre1 = 0;
+vVlrBas1 = E301MCR.VLRMOV;
+vCodHpd1 = 1504;
+Definir Alfa vObsCpl1S[200]; vObsCpl1S = "";
+vCgcCpf1 = 0;
+vCgcCre1 = 0;
+vCodMoe1 = 0;
+Definir Alfa vCplBas11S[200]; vCplBas11S = E301MCR.NUMTIT;
+Definir Alfa vCplBas12S[200]; vCplBas12S = E085CLI.NOMCLI;
+/* REGRA_PARCIAL */
+
+@se alterar esta regra verificar a 90305@
+
+
+Definir Cursor Cur_E002HTT;
+Definir Cursor Cur_E085HCL;
+
+Definir Alfa gCodTpt;
+Definir Alfa gNumTit;
+Definir numero gCodEmp;
+Definir numero gCodFil;
+Definir numero gCodCli;
+Definir Alfa gCodTns;
+gCtaCre = 0;
+
+gCodCli = E301Tcr.CodCli;
+gCodEmp = E301Mcr.CodEmp;
+gCodFil = E301Mcr.CodFil;
+gCodTpt = E301Mcr.CodTpt;
+Definir Alfa gCodCrp;
+gCodCrp = E301TCR.CodCrp;
+gNumTit = E301Mcr.NumTit;
+gCodTns = E301MCR.CodTns;
+
+Cur_E002Htt.Sql "Select CtaRcr,ctardv from E002Htt where CodEmp=:gCodEmp and CodTpt=:gCodTpt";
+Cur_E085HCL.Sql "Select CtaRed from E085Hcl where CodFil=:gCodFil and CodEmp=:gCodEmp and CodCli=:gCodCli";
+
+Cur_E002Htt.AbrirCursor();
+Se (Cur_E002Htt.Achou)
+      gCtaCre = Cur_E002Htt.CtaRdv;
+Cur_E002Htt.FecharCursor();
+
+Se (gCtaCre = 0)
+Inicio
+      Cur_E085HCL.AbrirCursor();
+      Se (Cur_E085HCL.Achou)
+         gCtaCre = Cur_E085HCL.CtaRed;
+      Cur_E085HCL.FecharCursor();
+
+Fim;
+
+Se ((gCodTpt = "44") ou (gCodTpt = "01"))
+inicio
+ Se(gCodCrp="09")  @externo@
+   gCtaCre=1070;
+ Se(gCodCrp="10")  @interno@
+   gCtaCre=70;
+ Se(gCodCrp="02")  @interno@
+   gCtaCre=70;
+fim; 
+
+VCtaCre1 = gCtaCre; 

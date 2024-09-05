@@ -1,0 +1,50 @@
+vAbgFil2 = E670MOV.CODFIL;
+vDatBas2 = E670MOV.DATMOV;
+vCtaDeb2 = E674ESP.CTARCR;
+vCtaCre2 = 939;
+vVlrBas2 = E670MOV.BDPACU+(E670BEM.QTDITM);
+vCodHpd2 = 1607;
+Definir Alfa vObsCpl2S[200]; vObsCpl2S = E670MOV.CODTNS;
+vCgcCpf2 = 0;
+vCgcCre2 = 0;
+vCodMoe2 = 0;
+vCplBas21 = E670MOV.DATMOV;
+/* REGRA_PARCIAL */
+Definir Alfa xSqlAux;
+Definir Alfa BusBem;
+Definir Alfa VaCodBem;
+Definir Alfa VaTipAcr;
+
+VnCodEmp = E670MOV.CodEmp;
+VaCodBem = E670MOV.CodBem;
+VnCodEsp = E670MOV.CodEsp;
+
+@ Busca Custo Atribuidos @
+
+xSqlAux = "Select * from E670Bem where CodEmp =:VnCodEmp and CodBem =:VaCodBem";
+
+SQL_Criar(BusBem); 
+SQL_DefinirComando(BusBem,xSqlAux);
+SQL_DefinirInteiro(BusBem,"VnCodEmp",VnCodEmp);
+SQL_DefinirAlfa(BusBem,"VaCodBem",VaCodBem);
+SQL_AbrirCursor(BusBem); 
+Se (SQL_EOF(BusBem) = 0)
+inicio
+  SQL_RetornarAlfa(BusBem,"TipAcr",VaTipAcr);
+fim; 
+SQL_Destruir(BusBem); 
+
+@ Busca Custo Atribuidos @
+
+Se (VaTipAcr = "J")
+inicio
+   VCodHpd1 = 124;
+   Se (VnCodEsp = 7)
+   inicio
+     Vctadeb2 = 5175;
+   Fim;
+   Se (VnCodEsp = 4)
+   inicio
+     Vctadeb2 = 5171;
+   Fim;
+Fim;
